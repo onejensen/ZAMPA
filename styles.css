@@ -517,8 +517,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
 .hero__gallery-grid {
   position: relative;
-  width: 380px;
-  height: 400px;
+  width: 420px;
+  height: 420px;
+  cursor: pointer;
 }
 
 .gallery-item {
