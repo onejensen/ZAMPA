@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Language selection
+    // Language selection — wired to i18n system
     if (langDropdown) {
       langDropdown.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -69,6 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
           langDropdown.querySelectorAll('button').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           langSelector.classList.remove('open');
+
+          // Trigger i18n language switch
+          setLanguage(lang.toLowerCase());
         });
       });
     }
@@ -88,4 +91,101 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // ===== i18n System =====
+  const SUPPORTED_LANGS = ['es', 'en', 'ca', 'eu', 'gl', 'pt', 'de', 'fr', 'it'];
+  const DEFAULT_LANG = 'es';
+  const STORAGE_KEY = 'zampa-lang';
+
+  let currentTranslations = {};
+
+  /**
+   * Map a browser language code (e.g. "en-US", "ca", "pt-BR") to a supported lang.
+   */
+  function detectLanguage() {
+    const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+
+    // Exact match first (e.g. "es", "ca")
+    if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
+
+    // Prefix match (e.g. "en-US" -> "en", "pt-BR" -> "pt")
+    const prefix = browserLang.split('-')[0];
+    if (SUPPORTED_LANGS.includes(prefix)) return prefix;
+
+    return DEFAULT_LANG;
+  }
+
+  /**
+   * Resolve the initial language: saved preference > browser detection > fallback.
+   */
+  function getInitialLanguage() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
+    return detectLanguage();
+  }
+
+  /**
+   * Fetch a translation JSON and apply it to the page.
+   */
+  async function loadTranslations(lang) {
+    try {
+      const resp = await fetch(`i18n/${lang}.json`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      currentTranslations = await resp.json();
+      applyTranslations();
+    } catch (err) {
+      console.warn(`[i18n] Failed to load ${lang}, falling back to ${DEFAULT_LANG}`, err);
+      if (lang !== DEFAULT_LANG) {
+        await loadTranslations(DEFAULT_LANG);
+      }
+    }
+  }
+
+  /**
+   * Apply loaded translations to all elements with [data-i18n].
+   */
+  function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (currentTranslations[key] != null) {
+        el.textContent = currentTranslations[key];
+      }
+    });
+  }
+
+  /**
+   * Update UI state to reflect the active language.
+   */
+  function updateLangUI(lang) {
+    const code = lang.toUpperCase();
+
+    // Update the selector label
+    const label = document.querySelector('.lang-selector__label');
+    if (label) label.textContent = code;
+
+    // Update active button in dropdown
+    if (langDropdown) {
+      langDropdown.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === code);
+      });
+    }
+
+    // Update <html lang="">
+    document.documentElement.lang = lang;
+  }
+
+  /**
+   * Public: switch language, persist, and re-render.
+   */
+  async function setLanguage(lang) {
+    if (!SUPPORTED_LANGS.includes(lang)) lang = DEFAULT_LANG;
+    localStorage.setItem(STORAGE_KEY, lang);
+    updateLangUI(lang);
+    await loadTranslations(lang);
+  }
+
+  // ----- Initialise i18n on page load -----
+  const initialLang = getInitialLanguage();
+  updateLangUI(initialLang);
+  loadTranslations(initialLang);
 });
