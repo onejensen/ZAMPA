@@ -375,9 +375,24 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 .step-card__icon {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary-surface);
+  color: var(--primary-dark);
+}
+
+.step-card__icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.section--alt .step-card__icon {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .step-card__number {
