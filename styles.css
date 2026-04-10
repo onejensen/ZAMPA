@@ -135,10 +135,10 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(45, 52, 54, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   height: var(--header-height);
 }
 
@@ -156,7 +156,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text);
+  color: var(--white);
   letter-spacing: -0.02em;
 }
 
@@ -164,6 +164,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   height: 40px;
   width: 40px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .header__nav {
@@ -175,7 +176,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .header__nav a {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.6);
   transition: color 0.2s;
   position: relative;
 }
@@ -193,7 +194,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 .header__nav a:hover {
-  color: var(--text);
+  color: var(--primary);
 }
 
 .header__nav a:hover::after {
@@ -215,18 +216,18 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   display: flex;
   align-items: center;
   gap: 6px;
+  color: rgba(255, 255, 255, 0.6);
   padding: 6px 14px;
   border-radius: 50px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--muted);
   background: transparent;
   transition: background 0.2s, color 0.2s;
 }
 
 .lang-selector__btn:hover {
-  background: var(--primary-surface);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary);
 }
 
 .lang-selector__btn svg {
@@ -294,7 +295,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   display: block;
   width: 24px;
   height: 2.5px;
-  background: var(--text);
+  background: var(--white);
   border-radius: 4px;
   transition: transform 0.3s, opacity 0.3s;
 }
@@ -323,7 +324,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     justify-content: flex-start;
     padding: 32px 24px;
     gap: 24px;
-    background: rgba(255, 255, 255, 0.97);
+    background: rgba(45, 52, 54, 0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     transform: translateX(100%);
@@ -337,7 +338,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   .header__nav a {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--text);
+    color: var(--white);
   }
 
   .header__nav a::after {
