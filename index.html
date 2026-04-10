@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -39,14 +39,14 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="lang-selector__dropdown">
-            <button data-lang="ES" class="active">Español</button>
-            <button data-lang="CA">Català</button>
+            <button data-lang="ES" class="active">Espa&ntilde;ol</button>
+            <button data-lang="CA">Catal&agrave;</button>
             <button data-lang="EU">Euskara</button>
             <button data-lang="GL">Galego</button>
             <button data-lang="EN">English</button>
-            <button data-lang="PT">Português</button>
+            <button data-lang="PT">Portugu&ecirc;s</button>
             <button data-lang="DE">Deutsch</button>
-            <button data-lang="FR">Français</button>
+            <button data-lang="FR">Fran&ccedil;ais</button>
             <button data-lang="IT">Italiano</button>
           </div>
         </div>
@@ -62,61 +62,81 @@
 
   <!-- ===== Hero ===== -->
   <section class="hero">
-    <div class="hero__bg" aria-hidden="true"></div>
-    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__blobs" aria-hidden="true">
+      <div class="blob blob--1"></div>
+      <div class="blob blob--2"></div>
+      <div class="blob blob--3"></div>
+    </div>
     <div class="container hero__content">
-      <h1 class="hero__title" data-i18n="hero.title">
-        Descubre los mejores <span>menus del dia</span>
-      </h1>
-      <p class="hero__subtitle" data-i18n="hero.subtitle">
-        Zampa conecta a comensales con restaurantes que publican sus ofertas diarias. Encuentra platos cerca de ti, filtra por tus preferencias y disfruta.
-      </p>
-      <div class="store-buttons">
-        <a href="https://apps.apple.com/app/idTODO" class="store-btn" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <div class="store-btn__text">
-            <small data-i18n="hero.appstore.label">Disponible en</small>
-            <strong>App Store</strong>
-          </div>
-        </a>
-        <a href="https://play.google.com/store/apps/details?id=com.sozolab.zampa" class="store-btn" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
-          <div class="store-btn__text">
-            <small data-i18n="hero.playstore.label">Disponible en</small>
-            <strong>Google Play</strong>
-          </div>
-        </a>
+      <div class="hero__text">
+        <h1 class="hero__title" data-i18n="hero.title">
+          Descubre los mejores <span>menus del dia</span>
+        </h1>
+        <p class="hero__subtitle" data-i18n="hero.subtitle">
+          Zampa conecta a comensales con restaurantes que publican sus ofertas diarias. Encuentra platos cerca de ti, filtra por tus preferencias y disfruta.
+        </p>
+        <div class="store-buttons">
+          <a href="https://apps.apple.com/app/idTODO" class="store-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            <div class="store-btn__text">
+              <small data-i18n="hero.appstore.label">Disponible en</small>
+              <strong>App Store</strong>
+            </div>
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.sozolab.zampa" class="store-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
+            <div class="store-btn__text">
+              <small data-i18n="hero.playstore.label">Disponible en</small>
+              <strong>Google Play</strong>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="hero__image-wrap">
+        <div class="hero__image-container">
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" alt="Plato de comida delicioso" loading="eager">
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Wave: hero -> customers -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#FFFFFF"/>
+    </svg>
+  </div>
+
   <!-- ===== How It Works — Customers ===== -->
-  <section id="customers" class="section">
+  <section id="customers" class="section section--white">
     <div class="container">
       <div class="split fade-up">
-        <div class="split__image">
+        <div class="split__image split__image--teal">
           <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Platos de restaurante" loading="lazy">
+          <div class="decorative-dots decorative-dots--teal" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
         </div>
         <div class="split__text">
           <h2 class="section__title section__title--left" data-i18n="customers.title">Como funciona para ti?</h2>
           <p class="section__subtitle section__subtitle--left" data-i18n="customers.subtitle">Encontrar tu proximo menu del dia es asi de facil.</p>
           <ol class="numbered-steps">
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">1</span>
+              <span class="numbered-steps__number numbered-steps__number--teal">1</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="customers.step1.title">Abre Zampa</h3>
                 <p class="numbered-steps__desc" data-i18n="customers.step1.desc">Explora ofertas de restaurantes cerca de ti, actualizadas cada dia.</p>
               </div>
             </li>
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">2</span>
+              <span class="numbered-steps__number numbered-steps__number--teal">2</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="customers.step2.title">Filtra y elige</h3>
                 <p class="numbered-steps__desc" data-i18n="customers.step2.desc">Por precio, cercania o preferencias dieteticas. Tu decides.</p>
               </div>
             </li>
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">3</span>
+              <span class="numbered-steps__number numbered-steps__number--teal">3</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="customers.step3.title">Llama o ve directo</h3>
                 <p class="numbered-steps__desc" data-i18n="customers.step3.desc">Sin intermediarios, sin comisiones. Contacta directamente con el restaurante.</p>
@@ -128,33 +148,43 @@
     </div>
   </section>
 
+  <!-- Wave: customers -> merchants -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,60 C480,0 960,100 1440,40 L1440,100 L0,100 Z" fill="#FFF7E0"/>
+    </svg>
+  </div>
+
   <!-- ===== How It Works — Merchants ===== -->
-  <section id="merchants" class="section section--alt">
+  <section id="merchants" class="section section--cream">
     <div class="container">
       <div class="split split--reverse fade-up">
-        <div class="split__image">
+        <div class="split__image split__image--coral">
           <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80" alt="Exterior de restaurante" loading="lazy">
+          <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
         </div>
         <div class="split__text">
           <h2 class="section__title section__title--left" data-i18n="merchants.title">Tienes un restaurante o bar?</h2>
           <p class="section__subtitle section__subtitle--left" data-i18n="merchants.subtitle">Publica tu menu del dia y llega a nuevos clientes cada dia.</p>
           <ol class="numbered-steps">
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">1</span>
+              <span class="numbered-steps__number numbered-steps__number--coral">1</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="merchants.step1.title">Registrate gratis</h3>
                 <p class="numbered-steps__desc" data-i18n="merchants.step1.desc">Crea tu perfil de negocio en menos de dos minutos.</p>
               </div>
             </li>
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">2</span>
+              <span class="numbered-steps__number numbered-steps__number--coral">2</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="merchants.step2.title">Publica tu menu</h3>
                 <p class="numbered-steps__desc" data-i18n="merchants.step2.desc">Sube foto, precio y descripcion. Listo para que te descubran.</p>
               </div>
             </li>
             <li class="numbered-steps__item">
-              <span class="numbered-steps__number">3</span>
+              <span class="numbered-steps__number numbered-steps__number--coral">3</span>
               <div>
                 <h3 class="numbered-steps__title" data-i18n="merchants.step3.title">Atrae clientes</h3>
                 <p class="numbered-steps__desc" data-i18n="merchants.step3.desc">Aparece en el feed de usuarios hambrientos cerca de tu local.</p>
@@ -166,60 +196,65 @@
     </div>
   </section>
 
+  <!-- Wave: merchants -> benefits -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#E0F7F5"/>
+    </svg>
+  </div>
+
   <!-- ===== Benefits ===== -->
-  <section id="benefits" class="section section--benefits">
-    <div class="section--benefits__bg" aria-hidden="true"></div>
-    <div class="section--benefits__overlay" aria-hidden="true"></div>
+  <section id="benefits" class="section section--teal-light">
     <div class="container">
-      <h2 class="section__title section__title--light fade-up" data-i18n="benefits.title">Por que Zampa?</h2>
-      <p class="section__subtitle section__subtitle--light fade-up" data-i18n="benefits.subtitle">Ventajas para todos los que aman comer bien.</p>
+      <h2 class="section__title fade-up" data-i18n="benefits.title">Por que Zampa?</h2>
+      <p class="section__subtitle fade-up" data-i18n="benefits.subtitle">Ventajas para todos los que aman comer bien.</p>
       <div class="benefits-grid fade-up">
-        <div class="benefit-col glass-card">
+        <div class="benefit-col benefit-col--clients">
           <h3 class="benefit-col__title" data-i18n="benefits.clients.title">Para Clientes</h3>
           <ul class="benefit-col__list">
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b1">Descubre ofertas diarias de restaurantes cercanos</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b2">Filtra por preferencias dieteticas: vegetariano, sin gluten y mas</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b3">Guarda tus restaurantes favoritos y recibe notificaciones</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b4">Ve distancia y precio de un vistazo</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b5">Totalmente gratis para explorar</span>
             </li>
           </ul>
         </div>
-        <div class="benefit-col benefit-col--merchants glass-card">
+        <div class="benefit-col benefit-col--merchants">
           <h3 class="benefit-col__title" data-i18n="benefits.merchants.title">Para Comercios</h3>
           <ul class="benefit-col__list">
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b1">Publica tu menu en menos de un minuto</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b2">Plan gratuito para empezar sin compromiso</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b3">Plan Pro: notificaciones push a tus seguidores</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b4">Estadisticas de impresiones y clics</span>
             </li>
             <li>
-              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b5">Sin comisiones: el cliente contacta directamente contigo</span>
             </li>
           </ul>
@@ -228,8 +263,15 @@
     </div>
   </section>
 
+  <!-- Wave: benefits -> faq -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,60 C480,0 960,100 1440,40 L1440,100 L0,100 Z" fill="#FFFFFF"/>
+    </svg>
+  </div>
+
   <!-- ===== FAQ ===== -->
-  <section id="faq" class="section section--alt">
+  <section id="faq" class="section section--white">
     <div class="container">
       <h2 class="section__title fade-up" data-i18n="faq.title">Preguntas frecuentes</h2>
       <p class="section__subtitle fade-up" data-i18n="faq.subtitle">Todo lo que necesitas saber sobre Zampa.</p>
@@ -308,6 +350,13 @@
       </div>
     </div>
   </section>
+
+  <!-- Wave: faq -> footer -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#2D3436"/>
+    </svg>
+  </div>
 
   <!-- ===== Footer ===== -->
   <footer class="footer">
