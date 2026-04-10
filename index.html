@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zampa - Descubre los mejores menus del dia cerca de ti. Conectamos clientes con restaurantes que publican ofertas diarias.">
+  <meta name="theme-color" content="#FAAF32">
+  <meta property="og:title" content="Zampa - Los mejores menus del dia">
+  <meta property="og:description" content="Descubre ofertas diarias de restaurantes cerca de ti. Filtra por precio, distancia y preferencias dieteticas.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.getzampa.com">
+  <title>Zampa - Descubre los mejores menus del dia</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="header__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </a>
+
+      <nav class="header__nav">
+        <a href="#customers" data-i18n="nav.customers">Clientes</a>
+        <a href="#merchants" data-i18n="nav.merchants">Comercios</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      </nav>
+
+      <div class="header__right">
+        <div class="lang-selector">
+          <button class="lang-selector__btn" aria-label="Seleccionar idioma">
+            <span class="lang-selector__label">ES</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="lang-selector__dropdown">
+            <button data-lang="ES" class="active">Espanol</button>
+            <button data-lang="CA">Catala</button>
+            <button data-lang="EU">Euskara</button>
+            <button data-lang="GL">Galego</button>
+            <button data-lang="EN">English</button>
+            <button data-lang="PT">Portugues</button>
+            <button data-lang="DE">Deutsch</button>
+            <button data-lang="FR">Francais</button>
+            <button data-lang="IT">Italiano</button>
+          </div>
+        </div>
+
+        <button class="burger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="container hero__content">
+      <h1 class="hero__title" data-i18n="hero.title">
+        Descubre los mejores <span>menus del dia</span>
+      </h1>
+      <p class="hero__subtitle" data-i18n="hero.subtitle">
+        Zampa conecta a los amantes de la buena comida con restaurantes que publican sus ofertas diarias. Encuentra, filtra y disfruta.
+      </p>
+      <div class="store-buttons">
+        <a href="https://apps.apple.com/app/idTODO" class="store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div class="store-btn__text">
+            <small data-i18n="hero.appstore.label">Disponible en</small>
+            <strong>App Store</strong>
+          </div>
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.sozolab.zampa" class="store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
+          <div class="store-btn__text">
+            <small data-i18n="hero.playstore.label">Disponible en</small>
+            <strong>Google Play</strong>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How It Works — Customers ===== -->
+  <section id="customers" class="section">
+    <div class="container">
+      <h2 class="section__title" data-i18n="customers.title">Como funciona para ti?</h2>
+      <p class="section__subtitle" data-i18n="customers.subtitle">Encontrar tu proximo menu del dia es asi de facil.</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x1F4F1;</span>
+          <span class="step-card__number">1</span>
+          <h3 class="step-card__title" data-i18n="customers.step1.title">Abre Zampa</h3>
+          <p class="step-card__desc" data-i18n="customers.step1.desc">Explora ofertas de restaurantes cerca de ti, actualizadas cada dia.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x1F50D;</span>
+          <span class="step-card__number">2</span>
+          <h3 class="step-card__title" data-i18n="customers.step2.title">Filtra y elige</h3>
+          <p class="step-card__desc" data-i18n="customers.step2.desc">Por precio, cercania o preferencias dieteticas. Tu decides.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x1F37D;&#xFE0F;</span>
+          <span class="step-card__number">3</span>
+          <h3 class="step-card__title" data-i18n="customers.step3.title">Llama o ve directo</h3>
+          <p class="step-card__desc" data-i18n="customers.step3.desc">Sin intermediarios, sin comisiones. Contacta directamente con el restaurante.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How It Works — Merchants ===== -->
+  <section id="merchants" class="section section--alt">
+    <div class="container">
+      <h2 class="section__title" data-i18n="merchants.title">Tienes un restaurante o bar?</h2>
+      <p class="section__subtitle" data-i18n="merchants.subtitle">Publica tu menu del dia y llega a nuevos clientes cada dia.</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x270F;&#xFE0F;</span>
+          <span class="step-card__number">1</span>
+          <h3 class="step-card__title" data-i18n="merchants.step1.title">Registrate gratis</h3>
+          <p class="step-card__desc" data-i18n="merchants.step1.desc">Crea tu perfil de negocio en menos de dos minutos.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x1F4F8;</span>
+          <span class="step-card__number">2</span>
+          <h3 class="step-card__title" data-i18n="merchants.step2.title">Publica tu menu</h3>
+          <p class="step-card__desc" data-i18n="merchants.step2.desc">Sube foto, precio y descripcion. Listo para que te descubran.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-card__icon" aria-hidden="true">&#x1F4C8;</span>
+          <span class="step-card__number">3</span>
+          <h3 class="step-card__title" data-i18n="merchants.step3.title">Atrae clientes</h3>
+          <p class="step-card__desc" data-i18n="merchants.step3.desc">Aparece en el feed de usuarios hambrientos cerca de tu local.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Benefits ===== -->
+  <section id="benefits" class="section">
+    <div class="container">
+      <h2 class="section__title" data-i18n="benefits.title">Por que Zampa?</h2>
+      <p class="section__subtitle" data-i18n="benefits.subtitle">Ventajas para todos los que aman comer bien.</p>
+      <div class="benefits-grid">
+        <div class="benefit-col">
+          <h3 class="benefit-col__title" data-i18n="benefits.clients.title">Para Clientes</h3>
+          <ul class="benefit-col__list">
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.clients.b1">Descubre ofertas diarias de restaurantes cercanos</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.clients.b2">Filtra por preferencias dieteticas: vegetariano, sin gluten y mas</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.clients.b3">Guarda tus restaurantes favoritos y recibe notificaciones</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.clients.b4">Ve distancia y precio de un vistazo</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.clients.b5">Totalmente gratis para explorar</span>
+            </li>
+          </ul>
+        </div>
+        <div class="benefit-col benefit-col--merchants">
+          <h3 class="benefit-col__title" data-i18n="benefits.merchants.title">Para Comercios</h3>
+          <ul class="benefit-col__list">
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.merchants.b1">Publica tu menu en menos de un minuto</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.merchants.b2">Plan gratuito para empezar sin compromiso</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.merchants.b3">Plan Pro: notificaciones push a tus seguidores</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.merchants.b4">Estadisticas de impresiones y clics</span>
+            </li>
+            <li>
+              <span class="benefit-col__check" aria-hidden="true">&#10003;</span>
+              <span data-i18n="benefits.merchants.b5">Sin comisiones: el cliente contacta directamente contigo</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="section section--alt">
+    <div class="container">
+      <h2 class="section__title" data-i18n="faq.title">Preguntas frecuentes</h2>
+      <p class="section__subtitle" data-i18n="faq.subtitle">Todo lo que necesitas saber sobre Zampa.</p>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q1">Es gratis usar Zampa?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a1">
+            Si. Para los clientes, Zampa es completamente gratuita. Los comercios pueden empezar con un plan gratuito y, si lo desean, pasarse al Plan Pro para acceder a funciones avanzadas como notificaciones push a sus seguidores.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q2">En que ciudades esta disponible?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a2">
+            Zampa esta disponible en toda Espana. Puedes encontrar ofertas en Madrid, Barcelona, Valencia, Sevilla, Bilbao, Palma y muchas mas ciudades. Estamos creciendo cada dia.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q3">Como publico mi menu del dia?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a3">
+            Registrate como comercio, completa tu perfil con direccion y telefono, y ya puedes publicar tu primer menu. Solo necesitas una foto, el precio y una breve descripcion. En menos de un minuto esta listo.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q4">Que incluye el Plan Pro?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a4">
+            El Plan Pro permite enviar notificaciones push a todos los usuarios que te hayan marcado como favorito cada vez que publiques un nuevo menu. Ademas, accedes a estadisticas detalladas de impresiones, clics y alcance.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q5">Necesito hacer reservas por la app?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a5">
+            No. Zampa no gestiona reservas ni pedidos. Simplemente te conecta con el restaurante: puedes llamar directamente o ir al local. Sin intermediarios.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q6">Puedo filtrar por preferencias dieteticas?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a6">
+            Si. Puedes configurar filtros como vegetariano, vegano, sin gluten, sin lactosa, sin frutos secos y mas. El feed se adapta automaticamente a tus preferencias.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span data-i18n="faq.q7">Como contacto con soporte?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-item__answer" data-i18n="faq.a7">
+            Puedes escribirnos a <a href="mailto:soporte@getzampa.com">soporte@getzampa.com</a>. Respondemos en menos de 24 horas.
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </div>
+      <p class="footer__tagline" data-i18n="footer.tagline">Descubre los mejores menus del dia</p>
+
+      <div class="store-buttons">
+        <a href="https://apps.apple.com/app/idTODO" class="store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div class="store-btn__text">
+            <small data-i18n="footer.appstore.label">Disponible en</small>
+            <strong>App Store</strong>
+          </div>
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.sozolab.zampa" class="store-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
+          <div class="store-btn__text">
+            <small data-i18n="footer.playstore.label">Disponible en</small>
+            <strong>Google Play</strong>
+          </div>
+        </a>
+      </div>
+
+      <nav class="footer__links">
+        <a href="mailto:soporte@getzampa.com" data-i18n="footer.contact">Contacto</a>
+        <a href="#" data-i18n="footer.privacy">Politica de privacidad</a>
+        <a href="#" data-i18n="footer.terms">Terminos de uso</a>
+      </nav>
+
+      <p class="footer__copy" data-i18n="footer.copyright">&copy; 2026 Sozo Labs. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
