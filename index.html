@@ -70,13 +70,13 @@
     </div>
     <div class="container hero__content">
       <div class="hero__text">
-        <h1 class="hero__title" data-i18n="hero.title">
+        <h1 class="hero__title fade-up" data-i18n="hero.title">
           <span>¿Dónde</span> comemos hoy?
         </h1>
-        <p class="hero__subtitle" data-i18n="hero.subtitle">
+        <p class="hero__subtitle fade-up" style="--reveal-delay: 120ms" data-i18n="hero.subtitle">
           Zampa conecta a comensales con restaurantes que publican sus ofertas diarias. Encuentra platos cerca de ti, filtra por tus preferencias y disfruta.
         </p>
-        <div class="store-wrap">
+        <div class="store-wrap fade-up" style="--reveal-delay: 240ms">
           <div class="store-buttons">
             <a href="#" class="store-btn" aria-disabled="true">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
@@ -99,7 +99,7 @@
         </div>
       </div>
       <div class="hero__gallery">
-        <div class="hero__gallery-grid">
+        <div class="hero__gallery-grid fade-zoom" style="--reveal-delay: 360ms">
           <div class="gallery-item">
             <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80" alt="Costillas a la brasa" loading="eager">
           </div>
@@ -133,17 +133,17 @@
   <!-- ===== How It Works — Customers ===== -->
   <section id="customers" class="section section--white section--bg-terrace">
     <div class="container">
-      <div class="split fade-up">
-        <div class="split__image split__image--teal">
+      <div class="split">
+        <div class="split__image split__image--teal fade-left">
           <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Platos de restaurante" loading="lazy">
           <div class="decorative-dots decorative-dots--teal" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
-        <div class="split__text">
+        <div class="split__text fade-right">
           <h2 class="section__title section__title--left" data-i18n="customers.title">Como funciona para ti?</h2>
           <p class="section__subtitle section__subtitle--left" data-i18n="customers.subtitle">Encontrar tu proximo menu del dia es asi de facil.</p>
-          <ol class="numbered-steps">
+          <ol class="numbered-steps" data-stagger>
             <li class="numbered-steps__item">
               <span class="numbered-steps__number numbered-steps__number--teal">1</span>
               <div>
@@ -181,17 +181,17 @@
   <!-- ===== How It Works — Merchants ===== -->
   <section id="merchants" class="section section--cream section--bg-kitchen">
     <div class="container">
-      <div class="split split--reverse fade-up">
-        <div class="split__image split__image--coral">
+      <div class="split split--reverse">
+        <div class="split__image split__image--coral fade-right">
           <img src="assets/bar-owner.png" alt="Restauradora con pizarra de menú del día" loading="lazy">
           <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
-        <div class="split__text">
+        <div class="split__text fade-left">
           <h2 class="section__title section__title--left" data-i18n="merchants.title">Tienes un restaurante o bar?</h2>
           <p class="section__subtitle section__subtitle--left" data-i18n="merchants.subtitle">Publica tu menu del dia y llega a nuevos clientes cada dia.</p>
-          <ol class="numbered-steps">
+          <ol class="numbered-steps" data-stagger>
             <li class="numbered-steps__item">
               <span class="numbered-steps__number numbered-steps__number--coral">1</span>
               <div>
@@ -231,10 +231,10 @@
     <div class="container">
       <h2 class="section__title fade-up" data-i18n="benefits.title">Por que Zampa?</h2>
       <p class="section__subtitle fade-up" data-i18n="benefits.subtitle">Ventajas para todos los que aman comer bien.</p>
-      <div class="benefits-grid fade-up">
+      <div class="benefits-grid" data-stagger>
         <div class="benefit-col benefit-col--clients">
           <h3 class="benefit-col__title" data-i18n="benefits.clients.title">Para Clientes</h3>
-          <ul class="benefit-col__list">
+          <ul class="benefit-col__list" data-stagger>
             <li>
               <span class="benefit-col__check benefit-col__check--teal" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.clients.b1">Descubre ofertas diarias de restaurantes cercanos</span>
@@ -259,7 +259,7 @@
         </div>
         <div class="benefit-col benefit-col--merchants">
           <h3 class="benefit-col__title" data-i18n="benefits.merchants.title">Para Comercios</h3>
-          <ul class="benefit-col__list">
+          <ul class="benefit-col__list" data-stagger>
             <li>
               <span class="benefit-col__check benefit-col__check--coral" aria-hidden="true">&#10003;</span>
               <span data-i18n="benefits.merchants.b1">Publica tu menu en menos de un minuto</span>
@@ -298,7 +298,7 @@
     <div class="container">
       <h2 class="section__title fade-up" data-i18n="faq.title">Preguntas frecuentes</h2>
       <p class="section__subtitle fade-up" data-i18n="faq.subtitle">Todo lo que necesitas saber sobre Zampa.</p>
-      <div class="faq-list fade-up">
+      <div class="faq-list" data-stagger>
 
         <details class="faq-item">
           <summary>

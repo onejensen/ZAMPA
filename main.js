@@ -93,9 +93,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ----- Scroll Animations (IntersectionObserver) -----
-  const fadeElements = document.querySelectorAll('.fade-up');
+  const revealElements = document.querySelectorAll(
+    '.fade-up, .fade-left, .fade-right, .fade-zoom, [data-stagger]'
+  );
 
-  if (fadeElements.length > 0 && 'IntersectionObserver' in window) {
+  document.querySelectorAll('[data-stagger]').forEach(container => {
+    Array.from(container.children).forEach((child, i) => {
+      child.style.setProperty('--reveal-index', i);
+    });
+  });
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    revealElements.forEach(el => el.classList.add('visible'));
+  } else {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -104,14 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.12,
+      rootMargin: '0px 0px -60px 0px'
     });
 
-    fadeElements.forEach(el => observer.observe(el));
-  } else {
-    // Fallback: show everything if IntersectionObserver is not supported
-    fadeElements.forEach(el => el.classList.add('visible'));
+    revealElements.forEach(el => observer.observe(el));
   }
 
   // ===== i18n System =====

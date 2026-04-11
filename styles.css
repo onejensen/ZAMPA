@@ -191,15 +191,57 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 /* ===== Scroll Animations ===== */
-.fade-up {
+.fade-up,
+.fade-left,
+.fade-right,
+.fade-zoom {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
-.fade-up.visible {
+.fade-up    { transform: translate3d(0, 36px, 0); }
+.fade-left  { transform: translate3d(-40px, 0, 0); }
+.fade-right { transform: translate3d(40px, 0, 0); }
+.fade-zoom  { transform: scale(0.92); }
+
+.fade-up.visible,
+.fade-left.visible,
+.fade-right.visible,
+.fade-zoom.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Stagger: children of a [data-stagger] container cascade in */
+[data-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  will-change: opacity, transform;
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--reveal-index, 0) * 90ms);
+}
+
+[data-stagger].visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .fade-left,
+  .fade-right,
+  .fade-zoom,
+  [data-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* ===== Header ===== */
