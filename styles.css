@@ -618,6 +618,65 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Store wrap with "Coming soon" construction sign */
+.store-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.store-wrap .store-btn {
+  pointer-events: none;
+  opacity: 0.55;
+  filter: grayscale(0.3);
+}
+
+.coming-soon-sign {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  background: repeating-linear-gradient(
+    45deg,
+    #1a1a1a 0 18px,
+    #FAAF32 18px 36px
+  );
+  padding: 4px;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.coming-soon-sign__text {
+  display: block;
+  background: var(--white);
+  color: #1a1a1a;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 10px 24px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.coming-soon-sign--small .coming-soon-sign__text {
+  font-size: 1rem;
+  padding: 8px 18px;
+}
+
+@media (max-width: 767px) {
+  .coming-soon-sign__text {
+    font-size: 1.05rem;
+    padding: 8px 16px;
+  }
+  .coming-soon-sign--small .coming-soon-sign__text {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+  }
+}
+
 /* Store buttons — pill style */
 .store-buttons {
   display: flex;
