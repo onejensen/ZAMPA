@@ -1206,6 +1206,73 @@ summary,
   text-decoration: underline;
 }
 
+/* ===== Download Page ===== */
+.download-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--white);
+}
+
+.download-page__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.download-page__logo img {
+  width: 52px;
+  height: 52px;
+}
+
+.download-page__logo span {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.download-page__tagline {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 380px;
+  margin-bottom: 40px;
+  line-height: 1.5;
+}
+
+.download-page__store {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.download-page__store .store-buttons {
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 480px) {
+  .download-page__store .store-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.download-page__copy {
+  margin-top: 48px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
 /* ===== Footer ===== */
 .footer {
   background: var(--text);
