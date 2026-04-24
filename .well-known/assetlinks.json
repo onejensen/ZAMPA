@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.sozolab.zampa",
+      "sha256_cert_fingerprints": [
+        "59:10:03:75:83:BD:B1:EB:8F:74:94:79:D3:EF:B3:A2:15:2D:A5:59:DB:A2:3C:49:6D:32:08:EE:B5:41:CE:39",
+        "8C:34:EB:18:43:ED:98:F4:1E:61:7D:0B:5C:31:A6:5A:BE:59:43:01:FA:32:16:E1:F8:12:32:EE:F7:48:89:38"
+      ]
+    }
+  }
+]

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zampa</title>
+<meta name="theme-color" content="#FFAA1C">
+<link rel="icon" type="image/png" href="/assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', system-ui, sans-serif;
+    background: #FFF8EB;
+    color: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    text-align: center;
+  }
+  .logo {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    background: #FFAA1C;
+    display: grid; place-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(255, 170, 28, 0.35);
+  }
+  .logo img { width: 48px; height: 48px; filter: brightness(0) invert(1); }
+  h1 {
+    font-size: 24px; font-weight: 700;
+    margin-bottom: 10px;
+  }
+  p { color: #555; line-height: 1.55; margin-bottom: 10px; }
+  .cta-row {
+    display: flex; gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    color: #fff;
+    background: #1A1A2E;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: #FFAA1C; color: #1A1A2E; }
+  .back {
+    margin-top: 28px;
+    color: #777;
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .back:hover { color: #1A1A2E; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+  <div class="logo"><img src="/assets/logo.png" alt="Zampa"></div>
+
+  <!-- Caso 1: oferta compartida (path /o/{id}) — intenta abrir la app -->
+  <div id="offer-view" class="hidden">
+    <h1>Abre esta oferta en Zampa</h1>
+    <p>Instala la app para ver los menús del día cerca de ti.</p>
+    <div class="cta-row">
+      <a id="ios-store" class="btn btn-primary" href="https://apps.apple.com/app/zampa">
+        📱 App Store
+      </a>
+      <a id="android-store" class="btn" href="https://play.google.com/store/apps/details?id=com.sozolab.zampa">
+        🤖 Google Play
+      </a>
+    </div>
+    <a href="/" class="back">← Volver a getzampa.com</a>
+  </div>
+
+  <!-- Caso 2: 404 normal -->
+  <div id="notfound-view" class="hidden">
+    <h1>Página no encontrada</h1>
+    <p>La página que buscas no existe o fue movida.</p>
+    <div class="cta-row">
+      <a href="/" class="btn btn-primary">Volver al inicio</a>
+    </div>
+  </div>
+
+<script>
+(function () {
+  const path = window.location.pathname;
+  const offerMatch = path.match(/^\/o\/([a-zA-Z0-9-]+)/);
+
+  if (offerMatch) {
+    // Es una oferta — intenta abrir la app nativa
+    const offerId = offerMatch[1];
+    document.getElementById("offer-view").classList.remove("hidden");
+    document.title = "Oferta Zampa · getzampa.com";
+
+    // En iOS y Android con app instalada, el sistema ya habrá interceptado el URL
+    // ANTES de cargar esta página (Universal Link / App Link verificado).
+    // Si llegaste aquí es porque no tienes la app instalada.
+    // Fallback: intenta custom scheme por si AASA/assetlinks no se verificó a tiempo.
+    const ua = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const isAndroid = /android/.test(ua);
+    if (isIOS || isAndroid) {
+      // Custom scheme — si la app está instalada abre, si no no pasa nada.
+      setTimeout(() => {
+        window.location.href = "zampa://offer/" + offerId;
+      }, 50);
+    }
+  } else {
+    // 404 normal
+    document.getElementById("notfound-view").classList.remove("hidden");
+  }
+})();
+</script>
+</body>
+</html>

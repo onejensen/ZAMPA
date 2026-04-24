@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["N8P74R8894.com.Sozolab.zampa"],
+        "components": [
+          {
+            "/": "/o/*",
+            "comment": "Matches /o/{offerId} — abre la oferta en Zampa iOS"
+          }
+        ]
+      }
+    ]
+  }
+}
