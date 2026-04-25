@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zampa · QR & UTM tools (interno)</title>
+<meta name="robots" content="noindex">
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C3R5JP0BHZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-C3R5JP0BHZ');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', system-ui, sans-serif;
+    background: #FFF8EB;
+    color: #1A1A2E;
+    min-height: 100vh;
+    padding: 40px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 26px; margin-bottom: 8px; }
+  .sub { color: #666; margin-bottom: 32px; }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #666;
+    margin: 18px 0 6px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    background: #fff;
+  }
+  input:focus, select:focus { outline: none; border-color: #FFAA1C; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .url-out {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 24px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 13px;
+    word-break: break-all;
+    border: 1.5px solid #FFAA1C;
+  }
+  .qr-box {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  #qr canvas, #qr img { display: inline-block; }
+  .btn-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  button {
+    background: #1A1A2E;
+    color: #fff;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  button.primary { background: #FFAA1C; color: #1A1A2E; }
+  button:hover { opacity: 0.85; }
+  .tip {
+    background: rgba(255, 170, 28, 0.12);
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-top: 24px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+  }
+  .preset-btn {
+    padding: 8px 12px;
+    background: #fff;
+    color: #1A1A2E;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 0 6px 6px 0;
+    cursor: pointer;
+  }
+  .preset-btn:hover { border-color: #FFAA1C; }
+</style>
+</head>
+<body>
+<h1>QR & UTM tools</h1>
+<p class="sub">Genera URLs con tracking + QR para flyers Zampa.</p>
+
+<div>
+  <label>Plantillas rápidas</label>
+  <div>
+    <button class="preset-btn" data-preset="valencia_centro">Valencia centro</button>
+    <button class="preset-btn" data-preset="valencia_ruzafa">Valencia Ruzafa</button>
+    <button class="preset-btn" data-preset="mallorca_palma">Mallorca Palma</button>
+    <button class="preset-btn" data-preset="mallorca_pollensa">Mallorca Pollença</button>
+    <button class="preset-btn" data-preset="madrid_centro">Madrid centro</button>
+    <button class="preset-btn" data-preset="generico">Genérico</button>
+  </div>
+</div>
+
+<label>URL base</label>
+<select id="base">
+  <option value="https://www.getzampa.com">Inicio (getzampa.com)</option>
+  <option value="https://www.getzampa.com/download.html">Página de descarga</option>
+</select>
+
+<div class="row">
+  <div>
+    <label>utm_source</label>
+    <input id="source" value="flyer" placeholder="flyer / instagram / cartel">
+  </div>
+  <div>
+    <label>utm_medium</label>
+    <input id="medium" value="qr" placeholder="qr / poster / paid">
+  </div>
+</div>
+
+<label>utm_campaign</label>
+<input id="campaign" value="generico" placeholder="ej: valencia_centro">
+
+<label>utm_content (opcional)</label>
+<input id="content" placeholder="ej: v1, naranja, A4">
+
+<div class="url-out" id="urlOut">—</div>
+
+<div class="btn-row">
+  <button class="primary" onclick="copyUrl()">📋 Copiar URL</button>
+  <button onclick="generateQR()">🔄 Regenerar QR</button>
+  <button onclick="downloadQR()">⬇️ Descargar QR (PNG)</button>
+</div>
+
+<div class="qr-box" id="qrBox">
+  <div id="qr"></div>
+  <p style="margin-top:12px; font-size:12px; color:#888">Escanea desde un móvil con la app Zampa instalada para probar.</p>
+</div>
+
+<div class="tip">
+  💡 <strong>Tip</strong>: usa nombres de campaña <code>en_minusculas_con_guiones_bajos</code>. Sin espacios ni acentos.
+  En Google Analytics verás las visitas agrupadas por <code>utm_source</code> / <code>utm_medium</code> / <code>utm_campaign</code>.
+</div>
+
+<!-- QR generator: librería local pequeña -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+const PRESETS = {
+  valencia_centro: { source: 'flyer', medium: 'qr', campaign: 'valencia_centro' },
+  valencia_ruzafa: { source: 'flyer', medium: 'qr', campaign: 'valencia_ruzafa' },
+  mallorca_palma: { source: 'flyer', medium: 'qr', campaign: 'mallorca_palma' },
+  mallorca_pollensa: { source: 'flyer', medium: 'qr', campaign: 'mallorca_pollensa' },
+  madrid_centro: { source: 'flyer', medium: 'qr', campaign: 'madrid_centro' },
+  generico: { source: 'flyer', medium: 'qr', campaign: 'generico' },
+};
+
+const inputs = ['base', 'source', 'medium', 'campaign', 'content'];
+inputs.forEach(id => document.getElementById(id).addEventListener('input', update));
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = PRESETS[btn.dataset.preset];
+    document.getElementById('source').value = p.source;
+    document.getElementById('medium').value = p.medium;
+    document.getElementById('campaign').value = p.campaign;
+    document.getElementById('content').value = '';
+    update();
+  });
+});
+
+function buildUrl() {
+  const base = document.getElementById('base').value;
+  const params = new URLSearchParams();
+  ['source', 'medium', 'campaign', 'content'].forEach(p => {
+    const val = document.getElementById(p).value.trim();
+    if (val) params.set('utm_' + p, val);
+  });
+  const qs = params.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
+function update() {
+  const url = buildUrl();
+  document.getElementById('urlOut').textContent = url;
+  generateQR();
+}
+
+function generateQR() {
+  const url = buildUrl();
+  const qr = document.getElementById('qr');
+  qr.innerHTML = '';
+  QRCode.toCanvas(url, { width: 280, margin: 2, color: { dark: '#1A1A2E', light: '#FFFFFF' } }, (err, canvas) => {
+    if (err) { qr.textContent = 'Error: ' + err.message; return; }
+    qr.appendChild(canvas);
+  });
+}
+
+function copyUrl() {
+  const url = buildUrl();
+  navigator.clipboard.writeText(url);
+  alert('URL copiada:\n' + url);
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qr canvas');
+  if (!canvas) return alert('Genera el QR primero');
+  const campaign = document.getElementById('campaign').value || 'qr';
+  const link = document.createElement('a');
+  link.download = `zampa-qr-${campaign}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+update();
+</script>
+</body>
+</html>
