@@ -887,6 +887,15 @@ summary,
   filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.35));
 }
 
+.split__image--photo::before {
+  display: none;
+}
+
+.split__image--photo img {
+  height: auto;
+  object-fit: contain;
+}
+
 /* Colored shadow behind images */
 .split__image--teal::before {
   content: '';
