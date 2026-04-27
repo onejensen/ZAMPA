@@ -157,7 +157,30 @@
     <div class="container">
       <div class="split">
         <div class="split__image split__image--teal fade-left">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Platos de restaurante" loading="lazy">
+          <svg class="phone-mockup" viewBox="0 0 300 608" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <clipPath id="screen-clip-customers">
+                <rect x="18" y="12" width="264" height="584" rx="34"/>
+              </clipPath>
+            </defs>
+            <!-- Phone body -->
+            <rect x="10" y="4" width="280" height="600" rx="40" fill="#1C1C1E"/>
+            <!-- Screenshot -->
+            <image href="assets/screenshots/01-feed.png"
+                   x="18" y="12" width="264" height="584"
+                   clip-path="url(#screen-clip-customers)"
+                   preserveAspectRatio="xMidYMid slice"/>
+            <!-- Dynamic Island -->
+            <rect x="102" y="24" width="96" height="30" rx="15" fill="#000000"/>
+            <!-- Frame highlight -->
+            <rect x="10" y="4" width="280" height="600" rx="40" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.5"/>
+            <!-- Side buttons: mute, vol+, vol- -->
+            <rect x="3" y="112" width="10" height="22" rx="3" fill="#2C2C2E"/>
+            <rect x="3" y="144" width="10" height="38" rx="3" fill="#2C2C2E"/>
+            <rect x="3" y="192" width="10" height="38" rx="3" fill="#2C2C2E"/>
+            <!-- Power button -->
+            <rect x="287" y="162" width="10" height="52" rx="3" fill="#2C2C2E"/>
+          </svg>
           <div class="decorative-dots decorative-dots--teal" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
           </div>
