@@ -890,6 +890,7 @@ summary,
 .split__image--photo {
   overflow: hidden;
   border-radius: var(--radius-xl);
+  align-self: stretch;
 }
 
 .split__image--photo::before {
@@ -897,9 +898,13 @@ summary,
 }
 
 .split__image--photo img {
-  height: auto;
-  object-fit: contain;
-  border-radius: var(--radius-xl);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
 }
 
 /* Colored shadow behind images */
@@ -1046,6 +1051,10 @@ summary,
 
   .split__image img {
     height: 280px;
+  }
+
+  .split__image--photo {
+    aspect-ratio: 4 / 3;
   }
 
   .section__title--left {
