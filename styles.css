@@ -887,6 +887,11 @@ summary,
   filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.35));
 }
 
+.split__image--photo {
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
 .split__image--photo::before {
   display: none;
 }
@@ -894,6 +899,7 @@ summary,
 .split__image--photo img {
   height: auto;
   object-fit: contain;
+  border-radius: var(--radius-xl);
 }
 
 /* Colored shadow behind images */
