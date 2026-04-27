@@ -1,0 +1,15 @@
+wing: zampa
+rooms:
+- name: i18n
+  description: Files from i18n/
+  keywords:
+  - i18n
+  - i18n
+- name: design
+  description: Files from assets/
+  keywords:
+  - design
+  - assets
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []
