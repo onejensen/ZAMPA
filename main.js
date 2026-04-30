@@ -179,7 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (currentTranslations[key] != null) {
-        el.textContent = currentTranslations[key];
+        if (el.hasAttribute('data-i18n-html')) {
+          el.innerHTML = currentTranslations[key];
+        } else {
+          el.textContent = currentTranslations[key];
+        }
       }
     });
   }

@@ -51,7 +51,7 @@
   "faq.q6": "¿Puedo filtrar por preferencias dietéticas?",
   "faq.a6": "Sí. Puedes filtrar ofertas por vegetariano, vegano, sin gluten, sin lactosa, sin frutos secos, sin carne y sin pescado.",
   "faq.q7": "¿Cómo contacto con soporte?",
-  "faq.a7": "Escríbenos a soporte@getzampa.com y te responderemos lo antes posible.",
+  "faq.a7": "Escríbenos a <a href=\"mailto:soporte@getzampa.com\">soporte@getzampa.com</a> y te responderemos lo antes posible.",
   "footer.tagline": "Descubre los mejores menús del día",
   "footer.appstore.label": "Disponible en",
   "footer.playstore.label": "Disponible en",

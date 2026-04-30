@@ -51,7 +51,7 @@
   "faq.q6": "Lehentasun dietetikoen arabera iragazi dezaket?",
   "faq.a6": "Bai. Eskaintzak iragazi ditzakezu begetariano, begano, glutenik gabe, laktosarik gabe, fruitu lehorrik gabe, haragirik gabe eta arrainarik gabe.",
   "faq.q7": "Nola jarri naiteke laguntza-zerbitzuarekin harremanetan?",
-  "faq.a7": "Idatzi iezaguzu soporte@getzampa.com helbidera eta ahalik eta lasterren erantzungo dizugu.",
+  "faq.a7": "Idatzi iezaguzu <a href=\"mailto:soporte@getzampa.com\">soporte@getzampa.com</a> helbidera eta ahalik eta lasterren erantzungo dizugu.",
   "footer.tagline": "Aurkitu eguneko menu onenak",
   "footer.appstore.label": "Eskuragarri hemen",
   "footer.playstore.label": "Eskuragarri hemen",

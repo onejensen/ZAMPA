@@ -51,7 +51,7 @@
   "faq.q6": "Can I filter by dietary preferences?",
   "faq.a6": "Yes. You can filter offers by vegetarian, vegan, gluten-free, lactose-free, nut-free, meat-free, and fish-free.",
   "faq.q7": "How do I contact support?",
-  "faq.a7": "Write to us at soporte@getzampa.com and we will get back to you as soon as possible.",
+  "faq.a7": "Write to us at <a href=\"mailto:soporte@getzampa.com\">soporte@getzampa.com</a> and we will get back to you as soon as possible.",
   "footer.tagline": "Discover the best daily menus",
   "footer.appstore.label": "Available on",
   "footer.playstore.label": "Available on",
