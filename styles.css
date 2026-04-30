@@ -17,7 +17,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  background: var(--white);
+  background: var(--text);
 }
 
 img { max-width: 100%; display: block; }
@@ -184,19 +184,7 @@ summary,
   margin-right: 0;
 }
 
-/* ===== Wave Dividers ===== */
-.wave-divider {
-  margin-top: -2px;
-  line-height: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.wave-divider svg {
-  width: 100%;
-  height: 80px;
-  display: block;
-}
+/* ===== Wave Dividers ===== (defined fully in the theme block below) */
 
 /* ===== Scroll Animations ===== */
 .fade-up,
@@ -1067,9 +1055,6 @@ summary,
     margin-right: auto;
   }
 
-  .wave-divider svg {
-    height: 50px;
-  }
 }
 
 /* ===== Benefits Section ===== */
@@ -1460,8 +1445,10 @@ summary,
 
 /* ===== Responsive ===== */
 @media (max-width: 767px) {
+  /* Extra top/bottom padding so content stays clear of the wavy
+     clip-path edges (which clip up to ~9% of section height). */
   .section {
-    padding: 64px 0;
+    padding: 100px 0 96px;
   }
 
   .store-btn {
@@ -1478,5 +1465,172 @@ summary,
 
   .legal__title {
     font-size: 1.6rem;
+  }
+}
+
+/* ============================================================
+   ZAMPA — Corporate Orange Theme
+   Body sits on the dark brand color (matching header & footer);
+   sections float as warm orange panels separated by subtle dark
+   gaps. White cards inside provide content focus.
+   ============================================================ */
+
+/* Section panels share the corporate orange with a soft top
+   highlight gradient that gives depth instead of a flat slab. */
+.section--white,
+.section--cream,
+.section--teal-light {
+  background:
+    linear-gradient(180deg,
+      rgba(255, 209, 130, 0.18) 0%,
+      rgba(255, 209, 130, 0.00) 220px),
+    #FAAF31;
+}
+
+/* The Hero gets a richer warmth — a radial highlight in the upper
+   left adds focus to the headline without harming legibility. */
+.hero {
+  background:
+    radial-gradient(1200px 600px at 12% 8%,
+      rgba(255, 230, 180, 0.32) 0%,
+      rgba(255, 230, 180, 0.00) 60%),
+    linear-gradient(180deg,
+      rgba(255, 209, 130, 0.20) 0%,
+      rgba(255, 209, 130, 0.00) 280px),
+    #FAAF31;
+}
+
+/* Lift decorative photo backgrounds slightly so they read as
+   texture under the orange instead of disappearing. */
+.section--bg-terrace::before,
+.section--bg-table::before,
+.section--bg-kitchen::before,
+.section--bg-market::before {
+  opacity: 0.10;
+  mix-blend-mode: multiply;
+}
+.section--bg-hero::before {
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
+
+/* Default text on orange panels is white. Body stays dark
+   (matches header/footer) and shows in the gaps between sections. */
+.hero,
+.section--white,
+.section--cream,
+.section--teal-light {
+  color: var(--white);
+}
+
+/* Titles — full white for impact */
+.hero .section__title,
+.hero .hero__title,
+.section--white .section__title,
+.section--cream .section__title,
+.section--teal-light .section__title,
+.hero .numbered-steps__title,
+.section--white .numbered-steps__title,
+.section--cream .numbered-steps__title,
+.section--teal-light .numbered-steps__title {
+  color: var(--white);
+}
+
+/* Hero accent (the underlined word) — keep dark for contrast. */
+.hero .hero__title span {
+  color: var(--text);
+}
+.hero .hero__title span::after {
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 1;
+}
+
+/* Subtitles & body copy on orange — soft white for hierarchy */
+.hero .hero__subtitle,
+.hero .section__subtitle,
+.section--white .section__subtitle,
+.section--cream .section__subtitle,
+.section--teal-light .section__subtitle,
+.hero .numbered-steps__desc,
+.section--white .numbered-steps__desc,
+.section--cream .numbered-steps__desc,
+.section--teal-light .numbered-steps__desc {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Restore dark text inside white-background cards. */
+.benefit-col,
+.benefit-col__title,
+.benefit-col__list li,
+.faq-item,
+.faq-item summary,
+.faq-item__answer,
+.faq-item__answer p,
+.faq-item__answer li {
+  color: var(--text);
+}
+
+/* Premium elevation for white cards on orange */
+.benefit-col {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 14px 36px rgba(45, 52, 54, 0.20),
+    0 2px 6px rgba(45, 52, 54, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+.faq-item {
+  box-shadow:
+    0 8px 22px rgba(45, 52, 54, 0.14),
+    0 1px 3px rgba(45, 52, 54, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.faq-item:hover {
+  box-shadow:
+    0 12px 28px rgba(45, 52, 54, 0.18),
+    0 2px 4px rgba(45, 52, 54, 0.08);
+}
+
+/* ============================================================
+   Section shape — wavy top + wavy bottom via SVG clip-path.
+   Each orange section is clipped to an organic island shape, so
+   its background image extends naturally to the curved borders.
+   The dark body shows in the gaps between sections (above each
+   wavy top and below each wavy bottom).
+   ============================================================ */
+.section--white,
+.section--cream,
+.section--teal-light {
+  clip-path: url(#section-wave-a);
+}
+/* Alternate the wave shape on every other section for visual rhythm */
+#merchants {
+  clip-path: url(#section-wave-b);
+}
+#faq {
+  clip-path: url(#faq-wave);
+}
+.hero {
+  clip-path: url(#hero-wave);
+}
+
+/* Pull adjacent sections closer so the dark gap between them is
+   formed by their CLIPPED edges (not by extra empty whitespace). */
+.hero,
+.section--white,
+.section--cream,
+.section--teal-light {
+  margin-bottom: -40px;
+}
+.footer {
+  margin-top: -40px;
+  padding-top: 100px; /* compensate for the negative margin */
+}
+
+@media (max-width: 767px) {
+  .hero,
+  .section--white,
+  .section--cream,
+  .section--teal-light {
+    margin-bottom: -24px;
   }
 }

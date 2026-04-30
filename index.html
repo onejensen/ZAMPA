@@ -14,7 +14,8 @@
   </script>
 
   <meta name="description" content="Zampa - Descubre los mejores menús del día cerca de ti. Conectamos clientes con restaurantes que publican ofertas diarias.">
-  <meta name="theme-color" content="#FAAF32">
+  <meta name="theme-color" content="#2D3436">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta property="og:title" content="Zampa - ¿Dónde comemos hoy?">
   <meta property="og:description" content="Descubre ofertas diarias de restaurantes cerca de ti. Filtra por precio, distancia y preferencias dietéticas.">
   <meta property="og:type" content="website">
@@ -40,6 +41,26 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- SVG defs: section clip-paths (wavy top + wavy bottom). Using
+       clipPathUnits=objectBoundingBox so each section is clipped in
+       its own 0-1 coordinate space — the wave scales with the section. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <clipPath id="section-wave-a" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.04 C 0.25,0.09 0.75,0 1,0.05 L 1,0.95 C 0.75,1 0.25,0.91 0,0.96 Z"/>
+      </clipPath>
+      <clipPath id="section-wave-b" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.05 C 0.33,0 0.66,0.09 1,0.04 L 1,0.96 C 0.66,0.91 0.33,1 0,0.95 Z"/>
+      </clipPath>
+      <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0 L 1,0 L 1,0.96 C 0.75,0.90 0.25,1.02 0,0.96 Z"/>
+      </clipPath>
+      <clipPath id="faq-wave" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.03 C 0.25,0 0.75,0.06 1,0.02 L 1,0.97 C 0.75,1 0.25,0.94 0,0.98 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
+
 
   <!-- ===== Header ===== -->
   <header class="header">
@@ -145,13 +166,6 @@
     </div>
   </section>
 
-  <!-- Wave: hero -> customers -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#FFFFFF"/>
-    </svg>
-  </div>
-
   <!-- ===== How It Works — Customers ===== -->
   <section id="customers" class="section section--white section--bg-terrace">
     <div class="container">
@@ -160,7 +174,7 @@
           <img src="assets/mockup-clientes.jpg" alt="Mano sosteniendo un iPhone con la app Zampa mostrando ofertas cercanas" loading="lazy">
         </div>
         <div class="split__text fade-right">
-          <h2 class="section__title section__title--left" data-i18n="customers.title">Como funciona para ti?</h2>
+          <h2 class="section__title section__title--left" data-i18n="customers.title">¿Tienes hambre?</h2>
           <p class="section__subtitle section__subtitle--left" data-i18n="customers.subtitle">Encontrar tu proximo menu del dia es asi de facil.</p>
           <ol class="numbered-steps" data-stagger>
             <li class="numbered-steps__item">
@@ -189,13 +203,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Wave: customers -> merchants -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,60 C480,0 960,100 1440,40 L1440,100 L0,100 Z" fill="#FFF7E0"/>
-    </svg>
-  </div>
 
   <!-- ===== How It Works — Merchants ===== -->
   <section id="merchants" class="section section--cream section--bg-kitchen">
@@ -234,13 +241,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Wave: merchants -> benefits -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#E0F7F5"/>
-    </svg>
-  </div>
 
   <!-- ===== Benefits ===== -->
   <section id="benefits" class="section section--teal-light section--bg-market">
@@ -305,13 +305,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Wave: benefits -> faq -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,60 C480,0 960,100 1440,40 L1440,100 L0,100 Z" fill="#FFFFFF"/>
-    </svg>
-  </div>
 
   <!-- ===== FAQ ===== -->
   <section id="faq" class="section section--white section--bg-table">
@@ -383,13 +376,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Wave: faq -> footer -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" fill="#2D3436"/>
-    </svg>
-  </div>
 
   <!-- ===== Footer ===== -->
   <footer class="footer">
