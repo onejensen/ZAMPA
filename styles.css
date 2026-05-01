@@ -513,6 +513,21 @@ summary,
   opacity: 0.08;
 }
 
+.hero__mascot {
+  position: absolute;
+  left: -10%;
+  bottom: -4%;
+  height: 90%;
+  width: auto;
+  max-width: 55%;
+  object-fit: contain;
+  object-position: left bottom;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
 .hero__content {
   position: relative;
   z-index: 2;
@@ -782,6 +797,16 @@ summary,
 
   .hero__text {
     max-width: 100%;
+  }
+
+  .hero__mascot {
+    left: -25%;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70%;
+    max-width: 80%;
+    opacity: 0.10;
   }
 
   .store-buttons {
