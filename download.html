@@ -13,8 +13,13 @@
     gtag('config', 'G-C3R5JP0BHZ');
   </script>
 
-  <meta name="description" content="Descarga Zampa en iOS y Android">
+  <meta name="description" content="Descarga Zampa en iOS y Android. Descubre menús del día cerca de ti.">
   <meta name="theme-color" content="#2D3436">
+  <meta property="og:title" content="Zampa - Descarga la app">
+  <meta property="og:description" content="Descarga Zampa y descubre menús del día cerca de ti.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.getzampa.com/download.html">
+  <meta property="og:image" content="https://www.getzampa.com/assets/og-image-v2.png">
   <title>Zampa - Descarga la app</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,46 +28,156 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- SVG defs: section clip-paths -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0 L 1,0 L 1,0.96 C 0.75,0.90 0.25,1.02 0,0.96 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
 
-  <main class="download-page">
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="header__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </a>
 
-    <a href="/" class="download-page__logo">
-      <img src="assets/logo.png" alt="Zampa logo">
-      <span>Zampa</span>
-    </a>
+      <nav class="header__nav">
+        <a href="/#customers" data-i18n="nav.customers">Clientes</a>
+        <a href="/#merchants" data-i18n="nav.merchants">Comercios</a>
+        <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="download.html" class="header__nav-active" data-i18n="nav.download">Descargas</a>
+      </nav>
 
-    <p class="download-page__tagline" data-i18n="download.tagline">
-      Descarga Zampa y descubre menús del día cerca de ti
-    </p>
+      <div class="header__right">
+        <div class="lang-selector">
+          <button class="lang-selector__btn" aria-label="Seleccionar idioma">
+            <span class="lang-selector__label">ES</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="lang-selector__dropdown">
+            <button data-lang="ES" class="active">Espa&ntilde;ol</button>
+            <button data-lang="CA">Catal&agrave;</button>
+            <button data-lang="EU">Euskara</button>
+            <button data-lang="GL">Galego</button>
+            <button data-lang="EN">English</button>
+            <button data-lang="PT">Portugu&ecirc;s</button>
+            <button data-lang="DE">Deutsch</button>
+            <button data-lang="FR">Fran&ccedil;ais</button>
+            <button data-lang="IT">Italiano</button>
+          </div>
+        </div>
 
-    <div class="download-page__store">
-      <div class="store-wrap">
+        <button class="burger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero / Download ===== -->
+  <section class="hero section--bg-hero">
+    <div class="hero__blobs" aria-hidden="true">
+      <div class="blob blob--1"></div>
+      <div class="blob blob--2"></div>
+      <div class="blob blob--3"></div>
+    </div>
+    <img class="hero__mascot" src="assets/zampa-mascot.png" alt="" aria-hidden="true">
+
+    <div class="container hero__content hero__content--centered">
+      <div class="hero__text hero__text--centered">
+        <h1 class="hero__title fade-up" data-i18n="download.title">
+          Descarga <span>Zampa</span>
+        </h1>
+        <p class="hero__subtitle fade-up" style="--reveal-delay: 120ms" data-i18n="download.tagline">
+          Descarga Zampa y descubre menús del día cerca de ti
+        </p>
+
+        <div class="store-wrap fade-up" style="--reveal-delay: 240ms">
+          <div class="store-buttons">
+            <a href="#" class="store-btn" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              <div class="store-btn__text">
+                <small data-i18n="hero.appstore.label">Disponible en</small>
+                <strong>App Store</strong>
+              </div>
+            </a>
+            <a href="#" class="store-btn" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
+              <div class="store-btn__text">
+                <small data-i18n="hero.playstore.label">Disponible en</small>
+                <strong>Google Play</strong>
+              </div>
+            </a>
+          </div>
+          <div class="coming-soon-sign" aria-label="Próximamente">
+            <span class="coming-soon-sign__text" data-i18n="common.coming_soon">PRÓXIMAMENTE</span>
+          </div>
+        </div>
+
+        <a href="/" class="btn-home fade-up" style="--reveal-delay: 360ms" data-i18n="download.back_home">
+          ← Volver al inicio
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </div>
+      <p class="footer__tagline" data-i18n="footer.tagline">Descubre los mejores menus del dia</p>
+
+      <div class="store-wrap store-wrap--footer">
         <div class="store-buttons">
           <a href="#" class="store-btn" aria-disabled="true">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             <div class="store-btn__text">
-              <small data-i18n="hero.appstore.label">Disponible en</small>
+              <small data-i18n="footer.appstore.label">Disponible en</small>
               <strong>App Store</strong>
             </div>
           </a>
           <a href="#" class="store-btn" aria-disabled="true">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c-.36-.17-.68-.52-.68-1.09V1.36c0-.57.32-.92.68-1.09l11.2 11.73L3.18 23.73zM15.74 15.37l-2.56-2.67L15.74 10l3.64 2.04c.82.46.82 1.2 0 1.66l-3.64 2.04-.01-.01.01-.36zM13.18 12.7L5.11 21.2l10.63-5.96-2.56-2.54zM5.11 2.8l8.07 8.5 2.56-2.54L5.11 2.8z"/></svg>
             <div class="store-btn__text">
-              <small data-i18n="hero.playstore.label">Disponible en</small>
+              <small data-i18n="footer.playstore.label">Disponible en</small>
               <strong>Google Play</strong>
             </div>
           </a>
         </div>
-        <div class="coming-soon-sign" aria-label="Próximamente">
+        <div class="coming-soon-sign coming-soon-sign--small" aria-label="Próximamente">
           <span class="coming-soon-sign__text" data-i18n="common.coming_soon">PRÓXIMAMENTE</span>
         </div>
       </div>
+
+      <a href="https://www.instagram.com/zampa_app" target="_blank" rel="noopener" class="instagram-btn">
+        <svg class="instagram-btn__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        <div class="instagram-btn__text">
+          <span class="instagram-btn__handle">@zampa_app</span>
+          <span class="instagram-btn__cta" data-i18n="footer.instagram">Síguenos para enterarte de todas las novedades</span>
+        </div>
+      </a>
+
+      <nav class="footer__links">
+        <a href="download.html" data-i18n="footer.download">Descarga la app</a>
+        <a href="mailto:soporte@getzampa.com" data-i18n="footer.contact">Contacto</a>
+        <a href="privacy.html" data-i18n="footer.privacy">Politica de privacidad</a>
+        <a href="terms.html" data-i18n="footer.terms">Terminos de uso</a>
+        <a href="delete-account.html" data-i18n="footer.delete">Eliminar cuenta</a>
+      </nav>
+
+      <p class="footer__copy" data-i18n="footer.copyright">&copy; 2026 Sozo Labs. Todos los derechos reservados.</p>
     </div>
+  </footer>
 
-    <p class="download-page__copy" data-i18n="footer.copyright">&copy; 2026 Sozo Labs. Todos los derechos reservados.</p>
-
-  </main>
-
-  <script src="main.js"></script>
+  <script src="main.js?v=2"></script>
 </body>
 </html>
