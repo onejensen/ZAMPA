@@ -192,6 +192,11 @@
       margin-bottom: 18px;
     }
 
+    .toolbar-main {
+      display: grid;
+      gap: 4px;
+    }
+
     .toolbar h2 {
       margin: 0;
       font-size: 1.25rem;
@@ -200,6 +205,56 @@
     .toolbar p {
       margin: 4px 0 0;
       color: var(--muted);
+    }
+
+    .control-strip {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-btn {
+      background: rgba(29, 42, 47, 0.06);
+      color: var(--muted);
+      border: 1px solid transparent;
+    }
+
+    .filter-btn.active {
+      background: rgba(239, 108, 47, 0.12);
+      color: var(--accent-dark);
+      border-color: rgba(239, 108, 47, 0.2);
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .summary-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(29, 42, 47, 0.06);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
     }
 
     .cards {
@@ -212,6 +267,18 @@
       border: 1px solid rgba(29, 42, 47, 0.08);
       border-radius: 20px;
       padding: 18px;
+    }
+
+    .card.status-pending {
+      box-shadow: inset 0 0 0 1px rgba(239, 108, 47, 0.08);
+    }
+
+    .card.status-approved {
+      box-shadow: inset 0 0 0 1px rgba(31, 143, 95, 0.12);
+    }
+
+    .card.status-rejected {
+      box-shadow: inset 0 0 0 1px rgba(182, 58, 58, 0.12);
     }
 
     .card-head {
@@ -238,9 +305,22 @@
       border-radius: 999px;
       font-size: 0.8rem;
       font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-pending .status {
       background: rgba(239, 108, 47, 0.12);
       color: var(--accent-dark);
-      white-space: nowrap;
+    }
+
+    .status-approved .status {
+      background: rgba(31, 143, 95, 0.12);
+      color: var(--success);
+    }
+
+    .status-rejected .status {
+      background: rgba(182, 58, 58, 0.12);
+      color: var(--danger);
     }
 
     .detail-grid {
@@ -317,6 +397,10 @@
 
       .grid,
       .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-row {
         grid-template-columns: 1fr;
       }
 
@@ -413,6 +497,9 @@
     const loading = document.getElementById("loading");
     const empty = document.getElementById("empty");
     const sessionLabel = document.getElementById("sessionLabel");
+    let allItems = [];
+    let activeFilter = "pending";
+    let searchTerm = "";
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -460,6 +547,30 @@
       }).format(new Date(ms));
     }
 
+    function normalizeStatus(status) {
+      return ["pending", "approved", "rejected"].includes(status) ? status : "pending";
+    }
+
+    function statusText(status) {
+      switch (normalizeStatus(status)) {
+        case "approved": return "Aprobado";
+        case "rejected": return "Rechazado";
+        default: return "Pendiente";
+      }
+    }
+
+    function matchesSearch(item, term) {
+      if (!term) return true;
+      const haystack = [
+        item.name,
+        item.taxId,
+        item.phone,
+        item.addressText,
+        item.merchantId
+      ].join(" ").toLowerCase();
+      return haystack.includes(term);
+    }
+
     async function authedFetch(path, options = {}) {
       const user = auth.currentUser;
       if (!user) {
@@ -490,18 +601,154 @@
       return div;
     }
 
+    function ensureControls() {
+      if (document.getElementById("searchInput")) return;
+
+      const toolbar = workspace.querySelector(".toolbar");
+      const controlStrip = document.createElement("div");
+      controlStrip.className = "control-strip";
+      controlStrip.innerHTML = `
+        <div class="search-row">
+          <input id="searchInput" class="search-input" type="search" placeholder="Buscar por nombre, CIF, teléfono o dirección">
+          <div class="summary" id="summary"></div>
+        </div>
+        <div class="filters" id="filters">
+          <button class="filter-btn active" data-filter="pending">Pendientes</button>
+          <button class="filter-btn" data-filter="approved">Aprobados</button>
+          <button class="filter-btn" data-filter="rejected">Rechazados</button>
+          <button class="filter-btn" data-filter="all">Todos</button>
+        </div>
+      `;
+      toolbar.insertAdjacentElement("afterend", controlStrip);
+
+      const searchInput = document.getElementById("searchInput");
+      searchInput.addEventListener("input", () => {
+        searchTerm = searchInput.value.trim().toLowerCase();
+        renderItems();
+      });
+
+      document.getElementById("filters").querySelectorAll("[data-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeFilter = button.dataset.filter;
+          document.getElementById("filters").querySelectorAll("[data-filter]").forEach((btn) => {
+            btn.classList.toggle("active", btn === button);
+          });
+          renderItems();
+        });
+      });
+    }
+
+    function renderSummary(items) {
+      const summary = document.getElementById("summary");
+      if (!summary) return;
+      const counts = {
+        pending: 0,
+        approved: 0,
+        rejected: 0
+      };
+      items.forEach((item) => {
+        counts[normalizeStatus(item.status)] += 1;
+      });
+      summary.innerHTML = `
+        <span class="summary-pill">Pendientes: ${counts.pending}</span>
+        <span class="summary-pill">Aprobados: ${counts.approved}</span>
+        <span class="summary-pill">Rechazados: ${counts.rejected}</span>
+      `;
+    }
+
+    function renderItems() {
+      cards.innerHTML = "";
+      empty.hidden = true;
+      renderSummary(allItems);
+
+      const filtered = allItems
+        .filter((item) => activeFilter === "all" || normalizeStatus(item.status) === activeFilter)
+        .filter((item) => matchesSearch(item, searchTerm));
+
+      if (!filtered.length) {
+        empty.hidden = false;
+        empty.textContent = searchTerm || activeFilter !== "all"
+          ? "No hay resultados para ese filtro."
+          : "No hay comercios pendientes ahora mismo.";
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const status = normalizeStatus(item.status);
+        const article = document.createElement("article");
+        article.className = `card status-${status}`;
+        article.innerHTML = `
+          <div class="card-head">
+            <div>
+              <h3 class="card-title">${item.name || "Sin nombre"}</h3>
+              <p class="card-meta">ID: ${item.merchantId}</p>
+            </div>
+            <div class="status">${statusText(status)}</div>
+          </div>
+        `;
+
+        const detailGrid = document.createElement("div");
+        detailGrid.className = "detail-grid";
+        detailGrid.append(
+          createDetail("Teléfono", item.phone),
+          createDetail("CIF/NIF", item.taxId),
+          createDetail("Dirección", item.addressText),
+          createDetail("Alta", formatDate(item.createdAt)),
+          createDetail("Revisado", formatDate(item.reviewedAt)),
+          createDetail("Por", item.reviewedBy || (item.isVerified ? "Verificado" : "Pendiente"))
+        );
+
+        const stack = document.createElement("div");
+        stack.className = "stack";
+        const notes = document.createElement("textarea");
+        notes.placeholder = "Notas internas para aprobación o rechazo";
+        notes.value = item.verificationNotes || "";
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const approveBtn = document.createElement("button");
+        approveBtn.className = "btn-success";
+        approveBtn.dataset.actionBtn = "true";
+        approveBtn.dataset.locked = status === "approved" ? "true" : "false";
+        approveBtn.textContent = status === "approved" ? "Aprobado" : "Aprobar";
+        approveBtn.disabled = status === "approved";
+        approveBtn.addEventListener("click", async () => {
+          if (!confirm(`¿Aprobar a ${item.name || item.merchantId}?`)) return;
+          await handleReview("adminApproveVerification", item.merchantId, notes.value, `Comercio aprobado: ${item.name || item.merchantId}`);
+        });
+
+        const rejectBtn = document.createElement("button");
+        rejectBtn.className = "btn-danger";
+        rejectBtn.dataset.actionBtn = "true";
+        rejectBtn.dataset.locked = status === "rejected" ? "true" : "false";
+        rejectBtn.textContent = status === "rejected" ? "Rechazado" : "Rechazar";
+        rejectBtn.disabled = status === "rejected";
+        rejectBtn.addEventListener("click", async () => {
+          if (!confirm(`¿Rechazar a ${item.name || item.merchantId}?`)) return;
+          await handleReview("adminRejectVerification", item.merchantId, notes.value, `Comercio rechazado: ${item.name || item.merchantId}`);
+        });
+
+        actions.append(approveBtn, rejectBtn);
+        stack.append(notes, actions);
+        article.append(detailGrid, stack);
+        cards.append(article);
+      });
+    }
+
     function setBusy(isBusy) {
       loginBtn.disabled = isBusy;
       googleBtn.disabled = isBusy;
       refreshBtn.disabled = isBusy;
       logoutBtn.disabled = isBusy;
       document.querySelectorAll("[data-action-btn]").forEach((btn) => {
-        btn.disabled = isBusy;
+        btn.disabled = isBusy || btn.dataset.locked === "true";
       });
     }
 
     async function loadPending() {
       hideMessage(workspaceMessage);
+      ensureControls();
       cards.innerHTML = "";
       empty.hidden = true;
       loading.hidden = false;
@@ -510,68 +757,8 @@
       try {
         const { items = [] } = await authedFetch("adminListPendingVerifications");
         loading.hidden = true;
-
-        if (!items.length) {
-          empty.hidden = false;
-          return;
-        }
-
-        items.forEach((item) => {
-          const article = document.createElement("article");
-          article.className = "card";
-          article.innerHTML = `
-            <div class="card-head">
-              <div>
-                <h3 class="card-title">${item.name || "Sin nombre"}</h3>
-                <p class="card-meta">ID: ${item.merchantId}</p>
-              </div>
-              <div class="status">${item.status || "pending"}</div>
-            </div>
-          `;
-
-          const detailGrid = document.createElement("div");
-          detailGrid.className = "detail-grid";
-          detailGrid.append(
-            createDetail("Teléfono", item.phone),
-            createDetail("CIF/NIF", item.taxId),
-            createDetail("Dirección", item.addressText),
-            createDetail("Alta", formatDate(item.createdAt)),
-            createDetail("Trial hasta", formatDate(item.trialEndsAt)),
-            createDetail("Estado negocio", item.isVerified ? "Verificado" : "Pendiente")
-          );
-
-          const stack = document.createElement("div");
-          stack.className = "stack";
-          const notes = document.createElement("textarea");
-          notes.placeholder = "Notas internas para aprobación o rechazo";
-          notes.value = item.verificationNotes || "";
-
-          const actions = document.createElement("div");
-          actions.className = "actions";
-
-          const approveBtn = document.createElement("button");
-          approveBtn.className = "btn-success";
-          approveBtn.dataset.actionBtn = "true";
-          approveBtn.textContent = "Aprobar";
-          approveBtn.addEventListener("click", async () => {
-            if (!confirm(`¿Aprobar a ${item.name || item.merchantId}?`)) return;
-            await handleReview("adminApproveVerification", item.merchantId, notes.value, `Comercio aprobado: ${item.name || item.merchantId}`);
-          });
-
-          const rejectBtn = document.createElement("button");
-          rejectBtn.className = "btn-danger";
-          rejectBtn.dataset.actionBtn = "true";
-          rejectBtn.textContent = "Rechazar";
-          rejectBtn.addEventListener("click", async () => {
-            if (!confirm(`¿Rechazar a ${item.name || item.merchantId}?`)) return;
-            await handleReview("adminRejectVerification", item.merchantId, notes.value, `Comercio rechazado: ${item.name || item.merchantId}`);
-          });
-
-          actions.append(approveBtn, rejectBtn);
-          stack.append(notes, actions);
-          article.append(detailGrid, stack);
-          cards.append(article);
-        });
+        allItems = items;
+        renderItems();
       } catch (error) {
         loading.hidden = true;
         showMessage(workspaceMessage, error.message || "No se pudieron cargar los pendientes.");
