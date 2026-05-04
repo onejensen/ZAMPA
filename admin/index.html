@@ -387,6 +387,125 @@
       line-height: 1.5;
     }
 
+    .link-btn {
+      background: transparent;
+      color: var(--accent-dark);
+      padding: 0;
+      border-radius: 0;
+      font-weight: 800;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .thumb {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #efe7db;
+      border: 1px solid rgba(29, 42, 47, 0.08);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(29, 42, 47, 0.06);
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .schedule-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .schedule-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8f7f4;
+      font-size: 0.9rem;
+    }
+
+    .modal[hidden] {
+      display: none !important;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(17, 22, 25, 0.45);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-card {
+      width: min(920px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: #fffdfa;
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(17, 22, 25, 0.28);
+      padding: 22px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .close-btn {
+      background: rgba(29, 42, 47, 0.08);
+      color: var(--text);
+      min-width: 42px;
+      min-height: 42px;
+      padding: 0;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .map-frame {
+      width: 100%;
+      min-height: 240px;
+      border: 0;
+      border-radius: 18px;
+      background: #ece8e0;
+    }
+
     @media (max-width: 760px) {
       .hero,
       .toolbar,
@@ -401,6 +520,11 @@
       }
 
       .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .thumbs,
+      .modal-grid {
         grid-template-columns: 1fr;
       }
 
@@ -467,6 +591,19 @@
     </section>
   </main>
 
+  <div id="detailModal" class="modal" hidden>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="detailTitle">Detalle del comercio</h3>
+          <p id="detailSubtitle" class="card-meta"></p>
+        </div>
+        <button id="closeDetailBtn" class="close-btn">×</button>
+      </div>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -497,9 +634,14 @@
     const loading = document.getElementById("loading");
     const empty = document.getElementById("empty");
     const sessionLabel = document.getElementById("sessionLabel");
+    const detailModal = document.getElementById("detailModal");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailSubtitle = document.getElementById("detailSubtitle");
+    const detailContent = document.getElementById("detailContent");
+    const closeDetailBtn = document.getElementById("closeDetailBtn");
     let allItems = [];
-    let activeFilter = "pending";
-    let searchTerm = "";
+    let activeFilter = new URLSearchParams(window.location.search).get("status") || "pending";
+    let searchTerm = (new URLSearchParams(window.location.search).get("q") || "").trim().toLowerCase();
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -571,6 +713,17 @@
       return haystack.includes(term);
     }
 
+    function syncUrlState() {
+      const params = new URLSearchParams(window.location.search);
+      if (activeFilter && activeFilter !== "pending") params.set("status", activeFilter);
+      else params.delete("status");
+      if (searchTerm) params.set("q", searchTerm);
+      else params.delete("q");
+      const query = params.toString();
+      const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+      window.history.replaceState({}, "", nextUrl);
+    }
+
     async function authedFetch(path, options = {}) {
       const user = auth.currentUser;
       if (!user) {
@@ -622,14 +775,18 @@
       toolbar.insertAdjacentElement("afterend", controlStrip);
 
       const searchInput = document.getElementById("searchInput");
+      searchInput.value = searchTerm;
       searchInput.addEventListener("input", () => {
         searchTerm = searchInput.value.trim().toLowerCase();
+        syncUrlState();
         renderItems();
       });
 
       document.getElementById("filters").querySelectorAll("[data-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === activeFilter);
         button.addEventListener("click", () => {
           activeFilter = button.dataset.filter;
+          syncUrlState();
           document.getElementById("filters").querySelectorAll("[data-filter]").forEach((btn) => {
             btn.classList.toggle("active", btn === button);
           });
@@ -682,10 +839,12 @@
             <div>
               <h3 class="card-title">${item.name || "Sin nombre"}</h3>
               <p class="card-meta">ID: ${item.merchantId}</p>
+              <button class="link-btn" data-open-detail="true">Ver detalle</button>
             </div>
             <div class="status">${statusText(status)}</div>
           </div>
         `;
+        article.querySelector("[data-open-detail]").addEventListener("click", () => openDetail(item));
 
         const detailGrid = document.createElement("div");
         detailGrid.className = "detail-grid";
@@ -734,6 +893,59 @@
         article.append(detailGrid, stack);
         cards.append(article);
       });
+    }
+
+    function openDetail(item) {
+      detailTitle.textContent = item.name || "Sin nombre";
+      detailSubtitle.textContent = `${statusText(item.status)} · ${item.merchantId}`;
+      const lat = item.address?.lat;
+      const lng = item.address?.lng;
+      const mapHtml = (typeof lat === "number" && typeof lng === "number")
+        ? `<iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed"></iframe>`
+        : `<div class="detail"><span>Mapa</span><strong>Sin coordenadas verificadas</strong></div>`;
+
+      const cuisine = (item.cuisineTypes || []).length
+        ? `<div class="chips">${item.cuisineTypes.map((type) => `<span class="chip">${type}</span>`).join("")}</div>`
+        : `<div class="detail"><span>Cocina</span><strong>Sin categorías</strong></div>`;
+
+      const schedule = (item.schedule || []).length
+        ? `<div class="schedule-list">${item.schedule.map((row) => `<div class="schedule-item"><strong>${row.day || "—"}</strong><span>${row.open || "—"} - ${row.close || "—"}</span></div>`).join("")}</div>`
+        : `<div class="detail"><span>Horario</span><strong>Sin horario cargado</strong></div>`;
+
+      const photos = (item.coverPhotoUrl || item.profilePhotoUrl)
+        ? `<div class="thumbs">
+            ${item.coverPhotoUrl ? `<div class="thumb"><img src="${item.coverPhotoUrl}" alt="Portada"></div>` : ""}
+            ${item.profilePhotoUrl ? `<div class="thumb"><img src="${item.profilePhotoUrl}" alt="Perfil"></div>` : ""}
+          </div>`
+        : `<div class="detail"><span>Fotos</span><strong>Sin imágenes</strong></div>`;
+
+      detailContent.innerHTML = `
+        <div class="modal-grid">
+          <div class="stack">
+            ${photos}
+            ${mapHtml}
+          </div>
+          <div class="stack">
+            <div class="detail-grid">
+              <div class="detail"><span>Teléfono</span><strong>${item.phone || "—"}</strong></div>
+              <div class="detail"><span>CIF/NIF</span><strong>${item.taxId || "—"}</strong></div>
+              <div class="detail"><span>Dirección</span><strong>${item.addressText || item.address?.formatted || "—"}</strong></div>
+              <div class="detail"><span>Reservas</span><strong>${item.acceptsReservations ? "Sí" : "No"}</strong></div>
+              <div class="detail"><span>Trial hasta</span><strong>${formatDate(item.trialEndsAt)}</strong></div>
+              <div class="detail"><span>Suscripción</span><strong>${item.subscriptionStatus || "—"}</strong></div>
+            </div>
+            <div class="detail"><span>Descripción</span><strong>${item.shortDescription || "Sin descripción"}</strong></div>
+            ${cuisine}
+            ${schedule}
+          </div>
+        </div>
+      `;
+      detailModal.hidden = false;
+    }
+
+    function closeDetail() {
+      detailModal.hidden = true;
+      detailContent.innerHTML = "";
     }
 
     function setBusy(isBusy) {
@@ -811,6 +1023,14 @@
 
     refreshBtn.addEventListener("click", () => {
       loadPending();
+    });
+
+    closeDetailBtn.addEventListener("click", closeDetail);
+    detailModal.addEventListener("click", (event) => {
+      if (event.target === detailModal) closeDetail();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !detailModal.hidden) closeDetail();
     });
 
     logoutBtn.addEventListener("click", async () => {
