@@ -218,8 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RkikY4', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'revision': '2024-10-15'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             data: {
