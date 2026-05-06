@@ -246,7 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
           newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Suscrito! Revisa tu bandeja de entrada.';
           newsletterForm.reset();
         } else {
-          newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+          const errBody = await res.text();
+          console.error('Klaviyo error', res.status, errBody);
+          newsletterStatus.textContent = `[DEBUG] ${res.status}: ${errBody.substring(0, 120)}`;
           submitBtn.disabled = false;
         }
       } catch {
