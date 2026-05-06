@@ -127,6 +127,6 @@
   "newsletter.email_placeholder": "you@email.com",
   "newsletter.submit": "Send me updates",
   "newsletter.note": "No spam. Unsubscribe at any time.",
-  "newsletter.success": "Subscribed! Check your inbox.",
+  "newsletter.success": "Thanks for subscribing! Welcome to Zampa",
   "newsletter.error": "Something went wrong. Please try again."
 }

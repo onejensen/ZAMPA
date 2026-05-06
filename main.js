@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const json = await res.json();
         if (json.success) {
-          newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Suscrito! Revisa tu bandeja de entrada.';
+          newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Gracias por suscribirte! Bienvenido a Zampa';
           newsletterForm.reset();
         } else {
           newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
