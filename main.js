@@ -250,8 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
           newsletterStatus.textContent = `[DEBUG] ${res.status}: ${errBody.substring(0, 120)}`;
           submitBtn.disabled = false;
         }
-      } catch {
-        newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+      } catch (err) {
+        console.error('Klaviyo fetch error:', err);
+        newsletterStatus.textContent = `[DEBUG catch] ${err.message}`;
         submitBtn.disabled = false;
       }
     });
