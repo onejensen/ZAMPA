@@ -219,19 +219,18 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'revision': '2023-12-15'
+            'revision': '2024-10-15'
           },
           body: JSON.stringify({
             data: {
               type: 'subscription',
               attributes: {
-                profile: {
-                  data: {
-                    type: 'profile',
-                    attributes: { email }
+                email,
+                subscriptions: {
+                  email: {
+                    marketing: { consent: 'SUBSCRIBED' }
                   }
-                },
-                custom_source: 'Newsletter Zampa'
+                }
               },
               relationships: {
                 list: {
