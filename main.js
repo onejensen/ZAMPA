@@ -215,38 +215,24 @@ document.addEventListener('DOMContentLoaded', () => {
       newsletterStatus.textContent = '';
 
       try {
-        const res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RkikY4', {
+        const params = new URLSearchParams({
+          g: 'TeiJTc',
+          email,
+          $fields: '$email'
+        });
+        const res = await fetch('https://manage.kmail-lists.com/ajax/subscriptions/subscribe', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            data: {
-              type: 'subscription',
-              attributes: {
-                email,
-                subscriptions: {
-                  email: {
-                    marketing: { consent: 'SUBSCRIBED' }
-                  }
-                }
-              },
-              relationships: {
-                list: {
-                  data: { type: 'list', id: 'TeiJTc' }
-                }
-              }
-            }
-          })
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
         });
 
-        if (res.ok || res.status === 202) {
+        const json = await res.json();
+        if (res.ok && !json.errors) {
           newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Suscrito! Revisa tu bandeja de entrada.';
           newsletterForm.reset();
         } else {
-          const errBody = await res.text();
-          console.error('Klaviyo error', res.status, errBody);
-          newsletterStatus.textContent = `[DEBUG] ${res.status}: ${errBody.substring(0, 120)}`;
+          console.error('Klaviyo error', res.status, json);
+          newsletterStatus.textContent = `[DEBUG] ${res.status}: ${JSON.stringify(json).substring(0, 120)}`;
           submitBtn.disabled = false;
         }
       } catch (err) {
