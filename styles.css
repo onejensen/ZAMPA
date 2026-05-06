@@ -1515,8 +1515,6 @@ summary,
 /* ===== Hero Newsletter Inline Form ===== */
 .hero-newsletter {
   margin-top: 32px;
-  padding-top: 28px;
-  border-top: 1px solid rgba(45, 52, 54, 0.1);
 }
 
 .hero-newsletter__intro {
