@@ -115,5 +115,17 @@
   "terms.s9.body": "Estes termos são regidos pela legislação espanhola. Qualquer litígio será submetido aos tribunais competentes.",
   "terms.s10.title": "10. Contacto",
   "terms.s10.body": "Para qualquer questão sobre estes termos, contacte-nos em soporte@getzampa.com.",
-  "benefits.merchants.b6": "Chega a centenas de clientes potenciais que procuram onde comer perto deles todos os dias"
+  "benefits.merchants.b6": "Chega a centenas de clientes potenciais que procuram onde comer perto deles todos os dias",
+  "nav.newsletter": "Novidades",
+  "newsletter.eyebrow": "Newsletter Zampa",
+  "newsletter.title": "Sabe antes de todos",
+  "newsletter.subtitle": "Subscreve para receber novidades sobre a data de lançamento, novas funcionalidades, cidades disponíveis e atualizações importantes da Zampa.",
+  "newsletter.b1": "Avisos de lançamento e disponibilidade",
+  "newsletter.b2": "Atualizações de produto e novas funcionalidades",
+  "newsletter.b3": "Notícias para restaurantes, bares e clientes",
+  "newsletter.email_label": "O teu email",
+  "newsletter.email_placeholder": "tu@email.com",
+  "newsletter.submit": "Quero receber novidades",
+  "newsletter.note": "O teu email será aberto para confirmar a subscrição. Sem spam.",
+  "newsletter.success": "A abrir o teu email para confirmar a subscrição."
 }

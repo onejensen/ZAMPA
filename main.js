@@ -186,6 +186,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (currentTranslations[key] != null) {
+        el.setAttribute('placeholder', currentTranslations[key]);
+      }
+    });
+  }
+
+  // ----- Newsletter signup -----
+  const newsletterForm = document.getElementById('newsletterForm');
+  const newsletterEmail = document.getElementById('newsletterEmail');
+  const newsletterStatus = document.getElementById('newsletterStatus');
+
+  if (newsletterForm && newsletterEmail && newsletterStatus) {
+    newsletterForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if (!newsletterEmail.checkValidity()) {
+        newsletterEmail.reportValidity();
+        return;
+      }
+
+      const email = newsletterEmail.value.trim();
+      const subject = encodeURIComponent('Suscripción newsletter Zampa');
+      const body = encodeURIComponent(`Hola Zampa,\n\nQuiero suscribirme a la newsletter para recibir novedades sobre lanzamiento y actualizaciones.\n\nEmail: ${email}`);
+      window.location.href = `mailto:soporte@getzampa.com?subject=${subject}&body=${body}`;
+      newsletterStatus.textContent = currentTranslations['newsletter.success'] || 'Abriendo tu correo para confirmar la suscripción.';
+    });
   }
 
   /**

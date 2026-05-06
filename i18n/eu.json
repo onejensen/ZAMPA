@@ -115,5 +115,17 @@
   "terms.s9.body": "Baldintza hauek Espainiako legeriaren arabera arautzen dira. Edozein eztabaida auzitegi eta epaitegi eskudunei aurkeztuko zaie.",
   "terms.s10.title": "10. Kontaktua",
   "terms.s10.body": "Baldintza hauei buruzko edozein kontsultarako, idatzi iezaguzu soporte@getzampa.com helbidera.",
-  "benefits.merchants.b6": "Heldu egunero zure inguruan jateko leku bila dabiltzan ehunka bezero potentzialera"
+  "benefits.merchants.b6": "Heldu egunero zure inguruan jateko leku bila dabiltzan ehunka bezero potentzialera",
+  "nav.newsletter": "Berriak",
+  "newsletter.eyebrow": "Zampa buletina",
+  "newsletter.title": "Jakin ezazu lehenengo",
+  "newsletter.subtitle": "Harpidetu zaitez Zampako abiarazte datari, funtzio berriei, hiri erabilgarriei eta eguneraketa garrantzitsuei buruzko berriak jasotzeko.",
+  "newsletter.b1": "Abiarazte eta erabilgarritasun abisuak",
+  "newsletter.b2": "Produktu eguneraketak eta funtzio berriak",
+  "newsletter.b3": "Jatetxe, taberna eta bezeroentzako berriak",
+  "newsletter.email_label": "Zure emaila",
+  "newsletter.email_placeholder": "zu@email.com",
+  "newsletter.submit": "Berriak jaso nahi ditut",
+  "newsletter.note": "Zure posta irekiko da harpidetza berresteko. Spamik ez.",
+  "newsletter.success": "Zure posta irekitzen harpidetza berresteko."
 }

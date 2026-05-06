@@ -73,6 +73,7 @@
       <nav class="header__nav">
         <a href="#customers" data-i18n="nav.customers">Clientes</a>
         <a href="#merchants" data-i18n="nav.merchants">Comercios</a>
+        <a href="#newsletter" data-i18n="nav.newsletter">Novedades</a>
         <a href="#faq" data-i18n="nav.faq">FAQ</a>
         <a href="download.html" data-i18n="nav.download">Descargas</a>
       </nav>
@@ -305,6 +306,44 @@
             </li>
           </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Newsletter ===== -->
+  <section id="newsletter" class="section section--cream newsletter-section">
+    <div class="container">
+      <div class="newsletter-card fade-up">
+        <div class="newsletter-card__content">
+          <span class="newsletter-card__eyebrow" data-i18n="newsletter.eyebrow">Newsletter Zampa</span>
+          <h2 class="newsletter-card__title" data-i18n="newsletter.title">Entérate antes que nadie</h2>
+          <p class="newsletter-card__text" data-i18n="newsletter.subtitle">
+            Suscríbete para recibir novedades sobre la fecha de lanzamiento, nuevas funciones, ciudades disponibles y actualizaciones importantes de Zampa.
+          </p>
+          <ul class="newsletter-card__bullets" data-stagger>
+            <li data-i18n="newsletter.b1">Avisos de lanzamiento y disponibilidad</li>
+            <li data-i18n="newsletter.b2">Actualizaciones de producto y nuevas funciones</li>
+            <li data-i18n="newsletter.b3">Noticias para restaurantes, bares y clientes</li>
+          </ul>
+        </div>
+
+        <form id="newsletterForm" class="newsletter-form" novalidate>
+          <label for="newsletterEmail" data-i18n="newsletter.email_label">Tu email</label>
+          <div class="newsletter-form__row">
+            <input
+              id="newsletterEmail"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="tu@email.com"
+              data-i18n-placeholder="newsletter.email_placeholder"
+            >
+            <button type="submit" data-i18n="newsletter.submit">Quiero recibir novedades</button>
+          </div>
+          <p class="newsletter-form__note" data-i18n="newsletter.note">Se abrirá tu correo para confirmar la suscripción. Sin spam.</p>
+          <p id="newsletterStatus" class="newsletter-form__status" role="status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>

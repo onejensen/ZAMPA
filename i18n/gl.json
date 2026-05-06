@@ -115,5 +115,17 @@
   "terms.s9.body": "Estes termos réxense pola lexislación española. Calquera disputa someterase aos xulgados e tribunais competentes.",
   "terms.s10.title": "10. Contacto",
   "terms.s10.body": "Para calquera consulta sobre estes termos, escríbenos a soporte@getzampa.com.",
-  "benefits.merchants.b6": "Chega a centos de clientes potenciais que buscan onde comer preto deles cada día"
+  "benefits.merchants.b6": "Chega a centos de clientes potenciais que buscan onde comer preto deles cada día",
+  "nav.newsletter": "Novidades",
+  "newsletter.eyebrow": "Newsletter Zampa",
+  "newsletter.title": "Infórmate antes ca ninguén",
+  "newsletter.subtitle": "Subscríbete para recibir novidades sobre a data de lanzamento, novas funcións, cidades dispoñibles e actualizacións importantes de Zampa.",
+  "newsletter.b1": "Avisos de lanzamento e dispoñibilidade",
+  "newsletter.b2": "Actualizacións de produto e novas funcións",
+  "newsletter.b3": "Novas para restaurantes, bares e clientes",
+  "newsletter.email_label": "O teu email",
+  "newsletter.email_placeholder": "ti@email.com",
+  "newsletter.submit": "Quero recibir novidades",
+  "newsletter.note": "Abrirase o teu correo para confirmar a subscrición. Sen spam.",
+  "newsletter.success": "Abrindo o teu correo para confirmar a subscrición."
 }
