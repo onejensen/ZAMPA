@@ -95,6 +95,26 @@
       overflow: hidden;
     }
 
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .brand-mark img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      border-radius: 14px;
+      background: #fffdf7;
+      box-shadow: 0 8px 20px rgba(67, 51, 31, 0.12);
+    }
+
+    .brand-mark .eyebrow {
+      margin: 0;
+    }
+
     .hero::after {
       content: "";
       position: absolute;
@@ -368,6 +388,36 @@
       box-shadow: 0 8px 20px rgba(67, 51, 31, 0.09);
     }
 
+    .control-footer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .view-switch {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      padding: 6px;
+      border-radius: 18px;
+      background: rgba(42, 48, 41, 0.06);
+    }
+
+    .view-btn {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 10px 13px;
+    }
+
+    .view-btn.active {
+      background: var(--paper);
+      color: var(--brand-dark);
+      border-color: rgba(243, 111, 47, 0.18);
+      box-shadow: 0 8px 20px rgba(67, 51, 31, 0.09);
+    }
+
     .summary {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -388,6 +438,11 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 18px;
+    }
+
+    .cards.view-list {
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
     .card {
@@ -434,6 +489,75 @@
 
     .card.status-rejected::before {
       background: var(--danger);
+    }
+
+    .list-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(220px, 1.15fr) minmax(180px, 0.8fr) minmax(220px, 1.05fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px 14px 22px;
+      border: 1px solid rgba(42, 48, 41, 0.1);
+      border-radius: 18px;
+      background: var(--panel-strong);
+      box-shadow: 0 8px 22px rgba(67, 51, 31, 0.08);
+      overflow: hidden;
+    }
+
+    .list-row::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--warning);
+    }
+
+    .list-row.status-approved::before {
+      background: var(--success);
+    }
+
+    .list-row.status-rejected::before {
+      background: var(--danger);
+    }
+
+    .list-main,
+    .list-meta,
+    .list-address {
+      min-width: 0;
+    }
+
+    .list-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .list-sub,
+    .list-address {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .list-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .list-actions button {
+      padding: 9px 12px;
+      font-size: 0.86rem;
     }
 
     .card-head {
@@ -750,8 +874,16 @@
 
       .search-row,
       .summary,
-      .filters {
+      .filters,
+      .control-footer,
+      .view-switch,
+      .list-row {
         grid-template-columns: 1fr;
+      }
+
+      .list-actions {
+        justify-content: stretch;
+        flex-wrap: wrap;
       }
 
       .thumbs,
@@ -778,7 +910,10 @@
   <main class="shell">
     <section class="hero">
       <div>
-        <p class="eyebrow">Operaciones internas</p>
+        <div class="brand-mark">
+          <img src="/assets/logo.png" alt="Zampa">
+          <p class="eyebrow">Operaciones internas</p>
+        </div>
         <h1 class="title">Control de comercios <strong>Zampa Admin</strong></h1>
         <p class="subtitle">Revisa restaurantes pendientes, aprueba comercios y sincroniza automáticamente la visibilidad de sus ofertas en el feed.</p>
       </div>
@@ -884,6 +1019,8 @@
     let allItems = [];
     let activeFilter = new URLSearchParams(window.location.search).get("status") || "pending";
     let searchTerm = (new URLSearchParams(window.location.search).get("q") || "").trim().toLowerCase();
+    let activeView = new URLSearchParams(window.location.search).get("view") || localStorage.getItem("adminView") || "cards";
+    if (!["cards", "list"].includes(activeView)) activeView = "cards";
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -961,6 +1098,8 @@
       else params.delete("status");
       if (searchTerm) params.set("q", searchTerm);
       else params.delete("q");
+      if (activeView === "list") params.set("view", activeView);
+      else params.delete("view");
       const query = params.toString();
       const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
       window.history.replaceState({}, "", nextUrl);
@@ -1013,6 +1152,13 @@
           <button class="filter-btn" data-filter="rejected">Rechazados</button>
           <button class="filter-btn" data-filter="all">Todos</button>
         </div>
+        <div class="control-footer">
+          <span class="card-meta">Cambia a lista cuando necesites revisar muchos comercios rápido.</span>
+          <div class="view-switch" id="viewSwitch" aria-label="Modo de visualización">
+            <button class="view-btn" data-view="cards">Tarjetas</button>
+            <button class="view-btn" data-view="list">Lista</button>
+          </div>
+        </div>
       `;
       toolbar.insertAdjacentElement("afterend", controlStrip);
 
@@ -1030,6 +1176,19 @@
           activeFilter = button.dataset.filter;
           syncUrlState();
           document.getElementById("filters").querySelectorAll("[data-filter]").forEach((btn) => {
+            btn.classList.toggle("active", btn === button);
+          });
+          renderItems();
+        });
+      });
+
+      document.getElementById("viewSwitch").querySelectorAll("[data-view]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.view === activeView);
+        button.addEventListener("click", () => {
+          activeView = button.dataset.view === "list" ? "list" : "cards";
+          localStorage.setItem("adminView", activeView);
+          syncUrlState();
+          document.getElementById("viewSwitch").querySelectorAll("[data-view]").forEach((btn) => {
             btn.classList.toggle("active", btn === button);
           });
           renderItems();
@@ -1055,8 +1214,35 @@
       `;
     }
 
+    function createReviewButtons(item, status, getNotes = () => "") {
+      const approveBtn = document.createElement("button");
+      approveBtn.className = "btn-success";
+      approveBtn.dataset.actionBtn = "true";
+      approveBtn.dataset.locked = status === "approved" ? "true" : "false";
+      approveBtn.textContent = status === "approved" ? "Aprobado" : "Aprobar";
+      approveBtn.disabled = status === "approved";
+      approveBtn.addEventListener("click", async () => {
+        if (!confirm(`¿Aprobar a ${item.name || item.merchantId}?`)) return;
+        await handleReview("adminApproveVerification", item.merchantId, getNotes(), `Comercio aprobado: ${item.name || item.merchantId}`);
+      });
+
+      const rejectBtn = document.createElement("button");
+      rejectBtn.className = "btn-danger";
+      rejectBtn.dataset.actionBtn = "true";
+      rejectBtn.dataset.locked = status === "rejected" ? "true" : "false";
+      rejectBtn.textContent = status === "rejected" ? "Rechazado" : "Rechazar";
+      rejectBtn.disabled = status === "rejected";
+      rejectBtn.addEventListener("click", async () => {
+        if (!confirm(`¿Rechazar a ${item.name || item.merchantId}?`)) return;
+        await handleReview("adminRejectVerification", item.merchantId, getNotes(), `Comercio rechazado: ${item.name || item.merchantId}`);
+      });
+
+      return [approveBtn, rejectBtn];
+    }
+
     function renderItems() {
       cards.innerHTML = "";
+      cards.className = `cards view-${activeView}`;
       empty.hidden = true;
       renderSummary(allItems);
 
@@ -1074,6 +1260,30 @@
 
       filtered.forEach((item) => {
         const status = normalizeStatus(item.status);
+
+        if (activeView === "list") {
+          const row = document.createElement("article");
+          row.className = `list-row status-${status}`;
+          row.innerHTML = `
+            <div class="list-main">
+              <h3 class="list-title">${item.name || "Sin nombre"}</h3>
+              <p class="list-sub">${item.merchantId}</p>
+            </div>
+            <div class="list-meta">
+              <div class="status">${statusText(status)}</div>
+              <p class="list-sub">${item.phone || "Sin teléfono"} · Alta ${formatDate(item.createdAt)}</p>
+            </div>
+            <p class="list-address">${item.addressText || "Sin dirección"} · ${item.taxId || "Sin CIF/NIF"}</p>
+            <div class="list-actions">
+              <button class="link-btn" data-open-detail="true">Detalle</button>
+            </div>
+          `;
+          row.querySelector("[data-open-detail]").addEventListener("click", () => openDetail(item));
+          row.querySelector(".list-actions").append(...createReviewButtons(item, status, () => item.verificationNotes || ""));
+          cards.append(row);
+          return;
+        }
+
         const article = document.createElement("article");
         article.className = `card status-${status}`;
         article.innerHTML = `
@@ -1111,29 +1321,7 @@
         const actions = document.createElement("div");
         actions.className = "actions";
 
-        const approveBtn = document.createElement("button");
-        approveBtn.className = "btn-success";
-        approveBtn.dataset.actionBtn = "true";
-        approveBtn.dataset.locked = status === "approved" ? "true" : "false";
-        approveBtn.textContent = status === "approved" ? "Aprobado" : "Aprobar";
-        approveBtn.disabled = status === "approved";
-        approveBtn.addEventListener("click", async () => {
-          if (!confirm(`¿Aprobar a ${item.name || item.merchantId}?`)) return;
-          await handleReview("adminApproveVerification", item.merchantId, notes.value, `Comercio aprobado: ${item.name || item.merchantId}`);
-        });
-
-        const rejectBtn = document.createElement("button");
-        rejectBtn.className = "btn-danger";
-        rejectBtn.dataset.actionBtn = "true";
-        rejectBtn.dataset.locked = status === "rejected" ? "true" : "false";
-        rejectBtn.textContent = status === "rejected" ? "Rechazado" : "Rechazar";
-        rejectBtn.disabled = status === "rejected";
-        rejectBtn.addEventListener("click", async () => {
-          if (!confirm(`¿Rechazar a ${item.name || item.merchantId}?`)) return;
-          await handleReview("adminRejectVerification", item.merchantId, notes.value, `Comercio rechazado: ${item.name || item.merchantId}`);
-        });
-
-        actions.append(approveBtn, rejectBtn);
+        actions.append(...createReviewButtons(item, status, () => notes.value));
         stack.append(notesLabel, notes, actions);
         article.append(detailGrid, stack);
         cards.append(article);
