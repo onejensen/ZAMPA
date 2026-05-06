@@ -196,30 +196,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ----- Newsletter signup -----
-  const newsletterForm = document.getElementById('newsletterForm');
-  const newsletterEmail = document.getElementById('newsletterEmail');
-  const newsletterStatus = document.getElementById('newsletterStatus');
+  function setupNewsletterForm(formId, emailId, statusId) {
+    const form = document.getElementById(formId);
+    const emailInput = document.getElementById(emailId);
+    const statusEl = document.getElementById(statusId);
+    if (!form || !emailInput || !statusEl) return;
 
-  if (newsletterForm && newsletterEmail && newsletterStatus) {
-    newsletterForm.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      if (!newsletterEmail.checkValidity()) {
-        newsletterEmail.reportValidity();
+      if (!emailInput.checkValidity()) {
+        emailInput.reportValidity();
         return;
       }
 
-      const email = newsletterEmail.value.trim();
-      const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+      const email = emailInput.value.trim();
+      const submitBtn = form.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
-      newsletterStatus.textContent = '';
+      statusEl.textContent = '';
 
       try {
-        const params = new URLSearchParams({
-          g: 'TeiJTc',
-          email,
-          $fields: '$email'
-        });
+        const params = new URLSearchParams({ g: 'TeiJTc', email, $fields: '$email' });
         const res = await fetch('https://manage.kmail-lists.com/ajax/subscriptions/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -228,18 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const json = await res.json();
         if (json.success) {
-          newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Gracias por suscribirte! Bienvenido a Zampa';
-          newsletterForm.reset();
+          statusEl.textContent = currentTranslations['newsletter.success'] || '¡Gracias por suscribirte! Bienvenido a Zampa';
+          form.reset();
         } else {
-          newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+          statusEl.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
           submitBtn.disabled = false;
         }
       } catch {
-        newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+        statusEl.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
         submitBtn.disabled = false;
       }
     });
   }
+
+  setupNewsletterForm('newsletterFormHero', 'heroNewsletterEmail', 'heroNewsletterStatus');
+  setupNewsletterForm('newsletterForm', 'newsletterEmail', 'newsletterStatus');
 
   /**
    * Update UI state to reflect the active language.

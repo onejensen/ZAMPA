@@ -148,6 +148,25 @@
           </div>
         </div>
       </div>
+
+      <div class="hero-newsletter fade-up" style="--reveal-delay: 360ms">
+        <p class="hero-newsletter__label" data-i18n="newsletter.eyebrow">Newsletter Zampa</p>
+        <form id="newsletterFormHero" class="hero-newsletter__form" novalidate>
+          <div class="hero-newsletter__row">
+            <input
+              id="heroNewsletterEmail"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="tu@email.com"
+              data-i18n-placeholder="newsletter.email_placeholder"
+            >
+            <button type="submit" data-i18n="newsletter.submit">Quiero recibir novedades</button>
+          </div>
+          <p id="heroNewsletterStatus" class="hero-newsletter__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
       <div class="hero__gallery">
         <div class="hero__gallery-grid fade-zoom" style="--reveal-delay: 360ms">
           <div class="gallery-item">
