@@ -225,8 +225,18 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
               type: 'subscription',
               attributes: {
-                list_id: 'TeiJTc',
-                email
+                profile: {
+                  data: {
+                    type: 'profile',
+                    attributes: { email }
+                  }
+                },
+                custom_source: 'Newsletter Zampa'
+              },
+              relationships: {
+                list: {
+                  data: { type: 'list', id: 'TeiJTc' }
+                }
               }
             }
           })
