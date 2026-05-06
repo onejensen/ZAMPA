@@ -856,12 +856,21 @@ summary,
     height: 250px;
   }
 
-  .hero-newsletter__row {
+  .hero-newsletter__pill {
     flex-direction: column;
+    border-radius: 16px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .hero-newsletter input {
+    width: 100%;
+    padding: 0 10px;
   }
 
   .hero-newsletter button {
     width: 100%;
+    border-radius: 12px;
   }
 }
 
@@ -1505,71 +1514,117 @@ summary,
 
 /* ===== Hero Newsletter Inline Form ===== */
 .hero-newsletter {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(45, 52, 54, 0.12);
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(45, 52, 54, 0.1);
 }
 
-.hero-newsletter__label {
-  margin-bottom: 10px;
-  font-size: 0.78rem;
+.hero-newsletter__intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.hero-newsletter__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(250, 175, 50, 0.13);
+  border: 1px solid rgba(250, 175, 50, 0.38);
+  color: #b87b00;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.hero-newsletter__tagline {
+  font-size: 0.84rem;
   color: var(--muted);
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .hero-newsletter__form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
-.hero-newsletter__row {
+.hero-newsletter__pill {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1.5px solid rgba(45, 52, 54, 0.13);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 2px 12px rgba(45, 52, 54, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hero-newsletter__pill:focus-within {
+  border-color: rgba(250, 175, 50, 0.55);
+  box-shadow:
+    0 4px 20px rgba(45, 52, 54, 0.08),
+    0 0 0 4px rgba(250, 175, 50, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .hero-newsletter input {
   flex: 1;
   min-width: 0;
-  min-height: 50px;
-  border: 1.5px solid rgba(45, 52, 54, 0.18);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.85);
+  min-height: 44px;
+  border: none;
+  background: transparent;
   color: var(--text);
   font: inherit;
   font-weight: 700;
+  font-size: 0.95rem;
   outline: none;
-  padding: 0 16px;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  padding: 0 12px;
 }
 
-.hero-newsletter input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(250, 175, 50, 0.18);
+.hero-newsletter input::placeholder {
+  color: rgba(45, 52, 54, 0.35);
+  font-weight: 400;
 }
 
 .hero-newsletter button {
-  min-height: 50px;
-  border-radius: 14px;
+  flex-shrink: 0;
+  min-height: 44px;
+  border-radius: 15px;
   background: var(--primary);
   color: var(--text);
   font-weight: 900;
-  padding: 0 20px;
+  font-size: 0.88rem;
+  padding: 0 18px;
   white-space: nowrap;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
 }
 
 .hero-newsletter button:hover {
   background: var(--primary-dark);
-  box-shadow: 0 8px 24px rgba(250, 175, 50, 0.3);
+  box-shadow: 0 6px 20px rgba(250, 175, 50, 0.4);
   transform: translateY(-1px);
+}
+
+.hero-newsletter button:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .hero-newsletter__status {
   min-height: 1.2em;
-  font-size: 0.88rem;
+  margin-top: 10px;
+  font-size: 0.86rem;
   font-weight: 800;
   color: var(--secondary);
 }
