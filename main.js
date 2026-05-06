@@ -227,17 +227,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const json = await res.json();
-        if (res.ok && !json.errors) {
+        if (json.success) {
           newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Suscrito! Revisa tu bandeja de entrada.';
           newsletterForm.reset();
         } else {
-          console.error('Klaviyo error', res.status, json);
-          newsletterStatus.textContent = `[DEBUG] ${res.status}: ${JSON.stringify(json).substring(0, 120)}`;
+          newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
           submitBtn.disabled = false;
         }
-      } catch (err) {
-        console.error('Klaviyo fetch error:', err);
-        newsletterStatus.textContent = `[DEBUG catch] ${err.message}`;
+      } catch {
+        newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
         submitBtn.disabled = false;
       }
     });
