@@ -126,6 +126,7 @@
   "newsletter.email_label": "Zure emaila",
   "newsletter.email_placeholder": "zu@email.com",
   "newsletter.submit": "Berriak jaso nahi ditut",
-  "newsletter.note": "Zure posta irekiko da harpidetza berresteko. Spamik ez.",
-  "newsletter.success": "Zure posta irekitzen harpidetza berresteko."
+  "newsletter.note": "Spamik ez. Edozein unetan harpidetu.",
+  "newsletter.success": "Harpidetuta! Egiaztatu zure sarrerako posta.",
+  "newsletter.error": "Zerbait gaizki joan da. Saiatu berriro."
 }

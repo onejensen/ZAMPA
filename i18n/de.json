@@ -126,6 +126,7 @@
   "newsletter.email_label": "Deine E-Mail",
   "newsletter.email_placeholder": "du@email.com",
   "newsletter.submit": "Updates erhalten",
-  "newsletter.note": "Dein E-Mail-Programm öffnet sich zur Bestätigung. Kein Spam.",
-  "newsletter.success": "Dein E-Mail-Programm wird zur Bestätigung geöffnet."
+  "newsletter.note": "Kein Spam. Jederzeit abmelden.",
+  "newsletter.success": "Angemeldet! Überprüfe deinen Posteingang.",
+  "newsletter.error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
 }

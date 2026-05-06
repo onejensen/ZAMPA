@@ -126,6 +126,7 @@
   "newsletter.email_label": "Votre email",
   "newsletter.email_placeholder": "vous@email.com",
   "newsletter.submit": "Recevoir les nouveautés",
-  "newsletter.note": "Votre messagerie s’ouvrira pour confirmer l’abonnement. Pas de spam.",
-  "newsletter.success": "Ouverture de votre messagerie pour confirmer l’abonnement."
+  "newsletter.note": "Pas de spam. Désabonnez-vous à tout moment.",
+  "newsletter.success": "Abonné ! Vérifiez votre boîte de réception.",
+  "newsletter.error": "Une erreur s’est produite. Veuillez réessayer."
 }

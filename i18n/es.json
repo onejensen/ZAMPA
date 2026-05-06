@@ -129,6 +129,7 @@
   "newsletter.email_label": "Tu email",
   "newsletter.email_placeholder": "tu@email.com",
   "newsletter.submit": "Quiero recibir novedades",
-  "newsletter.note": "Se abrirá tu correo para confirmar la suscripción. Sin spam.",
-  "newsletter.success": "Abriendo tu correo para confirmar la suscripción."
+  "newsletter.note": "Sin spam. Puedes darte de baja en cualquier momento.",
+  "newsletter.success": "¡Suscrito! Revisa tu bandeja de entrada.",
+  "newsletter.error": "Algo salió mal. Inténtalo de nuevo."
 }

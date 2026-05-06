@@ -126,6 +126,7 @@
   "newsletter.email_label": "O teu email",
   "newsletter.email_placeholder": "ti@email.com",
   "newsletter.submit": "Quero recibir novidades",
-  "newsletter.note": "Abrirase o teu correo para confirmar a subscrición. Sen spam.",
-  "newsletter.success": "Abrindo o teu correo para confirmar a subscrición."
+  "newsletter.note": "Sen spam. Podes darte de baixa en calquera momento.",
+  "newsletter.success": "Subscrito! Comproba a túa caixa de entrada.",
+  "newsletter.error": "Algo saíu mal. Inténtao de novo."
 }

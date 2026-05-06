@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const newsletterStatus = document.getElementById('newsletterStatus');
 
   if (newsletterForm && newsletterEmail && newsletterStatus) {
-    newsletterForm.addEventListener('submit', (event) => {
+    newsletterForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       if (!newsletterEmail.checkValidity()) {
@@ -210,10 +210,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const email = newsletterEmail.value.trim();
-      const subject = encodeURIComponent('Suscripción newsletter Zampa');
-      const body = encodeURIComponent(`Hola Zampa,\n\nQuiero suscribirme a la newsletter para recibir novedades sobre lanzamiento y actualizaciones.\n\nEmail: ${email}`);
-      window.location.href = `mailto:soporte@getzampa.com?subject=${subject}&body=${body}`;
-      newsletterStatus.textContent = currentTranslations['newsletter.success'] || 'Abriendo tu correo para confirmar la suscripción.';
+      const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      newsletterStatus.textContent = '';
+
+      try {
+        const res = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RkikY4', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'revision': '2023-12-15'
+          },
+          body: JSON.stringify({
+            data: {
+              type: 'subscription',
+              attributes: {
+                list_id: 'TeiJTc',
+                email
+              }
+            }
+          })
+        });
+
+        if (res.ok || res.status === 202) {
+          newsletterStatus.textContent = currentTranslations['newsletter.success'] || '¡Suscrito! Revisa tu bandeja de entrada.';
+          newsletterForm.reset();
+        } else {
+          newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+          submitBtn.disabled = false;
+        }
+      } catch {
+        newsletterStatus.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
+        submitBtn.disabled = false;
+      }
     });
   }
 

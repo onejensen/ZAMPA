@@ -126,6 +126,7 @@
   "newsletter.email_label": "Your email",
   "newsletter.email_placeholder": "you@email.com",
   "newsletter.submit": "Send me updates",
-  "newsletter.note": "Your email app will open to confirm the subscription. No spam.",
-  "newsletter.success": "Opening your email app to confirm the subscription."
+  "newsletter.note": "No spam. Unsubscribe at any time.",
+  "newsletter.success": "Subscribed! Check your inbox.",
+  "newsletter.error": "Something went wrong. Please try again."
 }

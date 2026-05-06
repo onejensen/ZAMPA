@@ -126,6 +126,7 @@
   "newsletter.email_label": "La tua email",
   "newsletter.email_placeholder": "tu@email.com",
   "newsletter.submit": "Voglio ricevere novità",
-  "newsletter.note": "Si aprirà la tua email per confermare l’iscrizione. Niente spam.",
-  "newsletter.success": "Apertura della tua email per confermare l’iscrizione."
+  "newsletter.note": "Niente spam. Cancellati in qualsiasi momento.",
+  "newsletter.success": "Iscritto! Controlla la tua casella di posta.",
+  "newsletter.error": "Qualcosa è andato storto. Riprova."
 }
