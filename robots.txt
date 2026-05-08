@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /qr-tools.html
+
+Sitemap: https://www.getzampa.com/sitemap.xml
