@@ -677,11 +677,6 @@ summary,
   display: inline-block;
 }
 
-.store-wrap .store-btn {
-  pointer-events: none;
-  opacity: 0.55;
-  filter: grayscale(0.3);
-}
 
 .coming-soon-sign {
   position: absolute;
