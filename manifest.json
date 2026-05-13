@@ -1,7 +1,7 @@
 {
   "name": "Zampa",
   "short_name": "Zampa",
-  "description": "Descubre los mejores menús del día cerca de ti",
+  "description": "Descubre las mejores ofertas y menús del día cerca de ti",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
