@@ -1078,6 +1078,16 @@
       target.textContent = "";
     }
 
+    function esc(str) {
+      if (str == null || str === "") return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     function formatDate(ms) {
       if (!ms) return "—";
       return new Intl.DateTimeFormat("es-ES", {
@@ -1149,7 +1159,7 @@
     function createDetail(label, value) {
       const div = document.createElement("div");
       div.className = "detail";
-      div.innerHTML = `<span>${label}</span><strong>${value || "—"}</strong>`;
+      div.innerHTML = `<span>${label}</span><strong>${esc(value) || "—"}</strong>`;
       return div;
     }
 
@@ -1284,14 +1294,14 @@
           row.className = `list-row status-${status}`;
           row.innerHTML = `
             <div class="list-main">
-              <h3 class="list-title">${item.name || "Sin nombre"}</h3>
-              <p class="list-sub">${item.merchantId}</p>
+              <h3 class="list-title">${esc(item.name) || "Sin nombre"}</h3>
+              <p class="list-sub">${esc(item.merchantId)}</p>
             </div>
             <div class="list-meta">
               <div class="status">${statusText(status)}</div>
-              <p class="list-sub">${item.phone || "Sin teléfono"} · Alta ${formatDate(item.createdAt)}</p>
+              <p class="list-sub">${esc(item.phone) || "Sin teléfono"} · Alta ${formatDate(item.createdAt)}</p>
             </div>
-            <p class="list-address">${item.addressText || "Sin dirección"} · ${item.taxId || "Sin CIF/NIF"}</p>
+            <p class="list-address">${esc(item.addressText) || "Sin dirección"} · ${esc(item.taxId) || "Sin CIF/NIF"}</p>
             <div class="list-actions">
               <button class="link-btn" data-open-detail="true">Detalle</button>
             </div>
@@ -1307,8 +1317,8 @@
         article.innerHTML = `
           <div class="card-head">
             <div>
-              <h3 class="card-title">${item.name || "Sin nombre"}</h3>
-              <div class="card-id">ID ${item.merchantId}</div>
+              <h3 class="card-title">${esc(item.name) || "Sin nombre"}</h3>
+              <div class="card-id">ID ${esc(item.merchantId)}</div>
               <button class="link-btn" data-open-detail="true">Ver detalle</button>
             </div>
             <div class="status">${statusText(status)}</div>
@@ -1356,17 +1366,17 @@
         : `<div class="detail"><span>Mapa</span><strong>Sin coordenadas verificadas</strong></div>`;
 
       const cuisine = (item.cuisineTypes || []).length
-        ? `<div class="chips">${item.cuisineTypes.map((type) => `<span class="chip">${type}</span>`).join("")}</div>`
+        ? `<div class="chips">${item.cuisineTypes.map((type) => `<span class="chip">${esc(type)}</span>`).join("")}</div>`
         : `<div class="detail"><span>Cocina</span><strong>Sin categorías</strong></div>`;
 
       const schedule = (item.schedule || []).length
-        ? `<div class="schedule-list">${item.schedule.map((row) => `<div class="schedule-item"><strong>${row.day || "—"}</strong><span>${row.open || "—"} - ${row.close || "—"}</span></div>`).join("")}</div>`
+        ? `<div class="schedule-list">${item.schedule.map((row) => `<div class="schedule-item"><strong>${esc(row.day) || "—"}</strong><span>${esc(row.open) || "—"} - ${esc(row.close) || "—"}</span></div>`).join("")}</div>`
         : `<div class="detail"><span>Horario</span><strong>Sin horario cargado</strong></div>`;
 
       const photos = (item.coverPhotoUrl || item.profilePhotoUrl)
         ? `<div class="thumbs">
-            ${item.coverPhotoUrl ? `<div class="thumb"><img src="${item.coverPhotoUrl}" alt="Portada"></div>` : ""}
-            ${item.profilePhotoUrl ? `<div class="thumb"><img src="${item.profilePhotoUrl}" alt="Perfil"></div>` : ""}
+            ${item.coverPhotoUrl ? `<div class="thumb"><img src="${esc(item.coverPhotoUrl)}" alt="Portada"></div>` : ""}
+            ${item.profilePhotoUrl ? `<div class="thumb"><img src="${esc(item.profilePhotoUrl)}" alt="Perfil"></div>` : ""}
           </div>`
         : `<div class="detail"><span>Fotos</span><strong>Sin imágenes</strong></div>`;
 
@@ -1378,14 +1388,14 @@
           </div>
           <div class="stack">
             <div class="detail-grid">
-              <div class="detail"><span>Teléfono</span><strong>${item.phone || "—"}</strong></div>
-              <div class="detail"><span>CIF/NIF</span><strong>${item.taxId || "—"}</strong></div>
-              <div class="detail"><span>Dirección</span><strong>${item.addressText || item.address?.formatted || "—"}</strong></div>
+              <div class="detail"><span>Teléfono</span><strong>${esc(item.phone) || "—"}</strong></div>
+              <div class="detail"><span>CIF/NIF</span><strong>${esc(item.taxId) || "—"}</strong></div>
+              <div class="detail"><span>Dirección</span><strong>${esc(item.addressText || item.address?.formatted) || "—"}</strong></div>
               <div class="detail"><span>Reservas</span><strong>${item.acceptsReservations ? "Sí" : "No"}</strong></div>
               <div class="detail"><span>Trial hasta</span><strong>${formatDate(item.trialEndsAt)}</strong></div>
-              <div class="detail"><span>Suscripción</span><strong>${item.subscriptionStatus || "—"}</strong></div>
+              <div class="detail"><span>Suscripción</span><strong>${esc(item.subscriptionStatus) || "—"}</strong></div>
             </div>
-            <div class="detail"><span>Descripción</span><strong>${item.shortDescription || "Sin descripción"}</strong></div>
+            <div class="detail"><span>Descripción</span><strong>${esc(item.shortDescription) || "Sin descripción"}</strong></div>
             ${cuisine}
             ${schedule}
           </div>
