@@ -543,6 +543,174 @@
       font-size: 0.86rem;
     }
 
+    .tabs {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+    }
+
+    .tab-btn.active {
+      background: var(--paper);
+      color: var(--brand-dark);
+      border-color: rgba(243, 111, 47, 0.18);
+      box-shadow: 0 8px 20px rgba(67, 51, 31, 0.09);
+    }
+
+    .tab-pane[hidden] {
+      display: none !important;
+    }
+
+    .plan-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(220px, 1.1fr) minmax(160px, 0.7fr) minmax(360px, auto);
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px 14px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      background: var(--panel-strong);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .plan-row::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--brand);
+    }
+
+    .plan-row.plan-active::before {
+      background: var(--success);
+    }
+
+    .plan-row.plan-expired::before {
+      background: var(--danger);
+    }
+
+    .plan-main {
+      min-width: 0;
+    }
+
+    .plan-name {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.015em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .plan-sub {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .plan-state {
+      display: grid;
+      gap: 4px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .plan-state strong {
+      color: var(--ink);
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+
+    .plan-state .badge-status {
+      display: inline-flex;
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .plan-state .badge-status.ok {
+      background: rgba(33, 122, 83, 0.15);
+      color: var(--success);
+    }
+
+    .plan-state .badge-status.warn {
+      background: rgba(168, 59, 52, 0.14);
+      color: var(--danger);
+    }
+
+    .plan-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .plan-actions button {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+
+    .plan-custom {
+      grid-column: 1 / -1;
+      display: none;
+      gap: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      grid-template-columns: minmax(140px, 1fr) minmax(180px, 1fr) auto;
+      align-items: end;
+    }
+
+    .plan-row.expanded .plan-custom {
+      display: grid;
+    }
+
+    .plan-custom label {
+      margin-bottom: 4px;
+    }
+
+    .plan-custom input {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 760px) {
+      .plan-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .plan-actions {
+        justify-content: flex-start;
+      }
+
+      .plan-custom {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .card-head {
       display: flex;
       align-items: flex-start;
@@ -938,9 +1106,13 @@
 
     <section id="workspace" class="panel workspace" hidden>
       <div class="toolbar">
-        <div>
-          <p class="eyebrow">Bandeja de revisión</p>
-          <h2>Verificaciones de comercios</h2>
+        <div class="toolbar-main">
+          <div class="tabs" role="tablist">
+            <button class="tab-btn active" role="tab" data-tab="verifications">Verificaciones</button>
+            <button class="tab-btn" role="tab" data-tab="plans">Planes</button>
+          </div>
+          <p class="eyebrow" id="tabEyebrow">Bandeja de revisión</p>
+          <h2 id="tabTitle">Verificaciones de comercios</h2>
           <p id="sessionLabel">Sesión iniciada</p>
         </div>
         <div class="actions" style="margin-top:0;">
@@ -949,14 +1121,33 @@
         </div>
       </div>
 
-      <div id="workspaceMessage" class="message ok" hidden></div>
-      <div id="loading" class="loading" hidden>Cargando pendientes...</div>
-      <div id="empty" class="empty" hidden>No hay comercios pendientes ahora mismo.</div>
-      <div id="cards" class="cards"></div>
+      <div id="verificationsPane" class="tab-pane">
+        <div id="workspaceMessage" class="message ok" hidden></div>
+        <div id="loading" class="loading" hidden>Cargando pendientes...</div>
+        <div id="empty" class="empty" hidden>No hay comercios pendientes ahora mismo.</div>
+        <div id="cards" class="cards"></div>
 
-      <p class="footer-note">
-        Al aprobar, el backend marca <code>businesses/{uid}.isVerified = true</code> y hace backfill de <code>dailyOffers</code> para que los menús ya publicados aparezcan en el feed sin republicar.
-      </p>
+        <p class="footer-note">
+          Al aprobar, el backend marca <code>businesses/{uid}.isVerified = true</code> y hace backfill de <code>dailyOffers</code> para que los menús ya publicados aparezcan en el feed sin republicar.
+        </p>
+      </div>
+
+      <div id="plansPane" class="tab-pane" hidden>
+        <div id="plansMessage" class="message ok" hidden></div>
+        <div class="control-strip">
+          <div class="search-row">
+            <input id="plansSearch" class="search-input" type="search" placeholder="Buscar por nombre, teléfono, CIF, dirección o UID — vacío = primeros 50">
+          </div>
+          <p class="card-meta">Acciones rápidas (+7/+30/+60/+90 días) suman desde el final actual. <strong>Personalizar</strong> permite días exactos o fecha límite. <strong>Caducar</strong> deja el plan vencido al instante.</p>
+        </div>
+        <div id="plansLoading" class="loading" hidden>Buscando comercios...</div>
+        <div id="plansEmpty" class="empty" hidden>Sin resultados.</div>
+        <div id="plansResults" class="cards view-list"></div>
+
+        <p class="footer-note">
+          Al extender, el backend setea <code>businesses/{uid}.trialEndsAt</code> y normaliza <code>subscriptionStatus = "trial"</code>. Si el comercio luego compra suscripción real (App Store / Play Billing), el callback del store reescribe estos campos.
+        </p>
+      </div>
     </section>
   </main>
 
@@ -1008,11 +1199,29 @@
     const detailSubtitle = document.getElementById("detailSubtitle");
     const detailContent = document.getElementById("detailContent");
     const closeDetailBtn = document.getElementById("closeDetailBtn");
+
+    const verificationsPane = document.getElementById("verificationsPane");
+    const plansPane = document.getElementById("plansPane");
+    const plansSearch = document.getElementById("plansSearch");
+    const plansResults = document.getElementById("plansResults");
+    const plansLoading = document.getElementById("plansLoading");
+    const plansEmpty = document.getElementById("plansEmpty");
+    const plansMessage = document.getElementById("plansMessage");
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabTitle = document.getElementById("tabTitle");
+    const tabEyebrow = document.getElementById("tabEyebrow");
+
     let allItems = [];
     let activeFilter = new URLSearchParams(window.location.search).get("status") || "pending";
     let searchTerm = (new URLSearchParams(window.location.search).get("q") || "").trim().toLowerCase();
     let activeView = new URLSearchParams(window.location.search).get("view") || localStorage.getItem("adminView") || "cards";
     if (!["cards", "list"].includes(activeView)) activeView = "cards";
+
+    const allowedTabs = ["verifications", "plans"];
+    let activeTab = new URLSearchParams(window.location.search).get("tab") || "verifications";
+    if (!allowedTabs.includes(activeTab)) activeTab = "verifications";
+    let plansLoaded = false;
+    let plansSearchDebounce = null;
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -1102,6 +1311,8 @@
       else params.delete("q");
       if (activeView === "list") params.set("view", activeView);
       else params.delete("view");
+      if (activeTab && activeTab !== "verifications") params.set("tab", activeTab);
+      else params.delete("tab");
       const query = params.toString();
       const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
       window.history.replaceState({}, "", nextUrl);
@@ -1431,6 +1642,208 @@
       }
     }
 
+    // ── Plans tab ────────────────────────────────────────────────────────────
+
+    function computePlanState(item) {
+      const now = Date.now();
+      const trialEnd = item.trialEndsAt || 0;
+      const subEnd = item.subscriptionActiveUntil || 0;
+      const status = (item.subscriptionStatus || "").toLowerCase();
+
+      const isActive = (status === "trial" && trialEnd > now) ||
+                       (status === "active" && subEnd > now);
+
+      let primaryEnd = 0;
+      let primaryLabel = "Sin fecha";
+      if (status === "active" && subEnd) {
+        primaryEnd = subEnd;
+        primaryLabel = `Suscrito hasta ${formatDate(subEnd)}`;
+      } else if (trialEnd) {
+        primaryEnd = trialEnd;
+        primaryLabel = `Trial hasta ${formatDate(trialEnd)}`;
+      } else if (status === "active" && !subEnd) {
+        primaryLabel = "Suscripción (sin fecha)";
+      }
+
+      let daysLeft = null;
+      if (primaryEnd > now) {
+        daysLeft = Math.ceil((primaryEnd - now) / (24 * 60 * 60 * 1000));
+      }
+
+      return {
+        isActive,
+        primaryLabel,
+        daysLeft,
+        status: status || "(legacy)",
+      };
+    }
+
+    function renderPlanResults(items) {
+      plansResults.innerHTML = "";
+      plansEmpty.hidden = items.length > 0;
+      if (!items.length) {
+        plansEmpty.textContent = plansSearch.value.trim()
+          ? "Sin resultados para esa búsqueda."
+          : "No hay comercios para mostrar.";
+        return;
+      }
+
+      items.forEach((item) => {
+        const state = computePlanState(item);
+        const row = document.createElement("article");
+        row.className = `plan-row ${state.isActive ? "plan-active" : "plan-expired"}`;
+        row.innerHTML = `
+          <div class="plan-main">
+            <h3 class="plan-name">${esc(item.name) || "(sin nombre)"}</h3>
+            <p class="plan-sub">${esc(item.merchantId)}</p>
+            <p class="plan-sub">${esc(item.phone) || "Sin teléfono"} · ${esc(item.addressText) || "Sin dirección"}</p>
+          </div>
+          <div class="plan-state">
+            <span class="badge-status ${state.isActive ? "ok" : "warn"}">${state.isActive ? "Activo" : "Expirado"}</span>
+            <strong>${esc(state.primaryLabel)}</strong>
+            <span>${state.daysLeft != null ? `${state.daysLeft} día${state.daysLeft === 1 ? "" : "s"} restantes` : "—"} · status="${esc(state.status)}"</span>
+          </div>
+          <div class="plan-actions">
+            <button class="btn-secondary" data-plan-days="7">+7d</button>
+            <button class="btn-secondary" data-plan-days="30">+30d</button>
+            <button class="btn-secondary" data-plan-days="60">+60d</button>
+            <button class="btn-secondary" data-plan-days="90">+90d</button>
+            <button class="btn-secondary" data-plan-custom>Personalizar…</button>
+            <button class="btn-danger" data-plan-off>Caducar</button>
+          </div>
+          <div class="plan-custom">
+            <div>
+              <label>Días</label>
+              <input type="number" min="1" max="3650" step="1" placeholder="Ej. 45" data-custom-days>
+            </div>
+            <div>
+              <label>O fecha (YYYY-MM-DD)</label>
+              <input type="date" data-custom-date>
+            </div>
+            <button class="btn-primary" data-plan-apply>Aplicar</button>
+          </div>
+        `;
+
+        row.querySelectorAll("[data-plan-days]").forEach((btn) => {
+          btn.addEventListener("click", () => extendMerchant(item, { days: Number(btn.dataset.planDays) }, btn));
+        });
+
+        row.querySelector("[data-plan-off]").addEventListener("click", () => {
+          if (!confirm(`¿Caducar el plan de ${item.name || item.merchantId} inmediatamente?`)) return;
+          extendMerchant(item, { off: true }, row.querySelector("[data-plan-off]"));
+        });
+
+        const customBtn = row.querySelector("[data-plan-custom]");
+        customBtn.addEventListener("click", () => {
+          row.classList.toggle("expanded");
+        });
+
+        const applyBtn = row.querySelector("[data-plan-apply]");
+        applyBtn.addEventListener("click", () => {
+          const daysInput = row.querySelector("[data-custom-days]");
+          const dateInput = row.querySelector("[data-custom-date]");
+          const daysVal = daysInput.value.trim();
+          const dateVal = dateInput.value.trim();
+          if (dateVal) {
+            const parsed = new Date(dateVal + "T23:59:59");
+            if (isNaN(parsed.getTime()) || parsed.getTime() <= Date.now()) {
+              showMessage(plansMessage, "La fecha debe ser futura.");
+              return;
+            }
+            extendMerchant(item, { untilMs: parsed.getTime() }, applyBtn);
+            return;
+          }
+          if (daysVal) {
+            const n = Number(daysVal);
+            if (!Number.isFinite(n) || n <= 0 || n > 3650) {
+              showMessage(plansMessage, "Días debe ser un entero entre 1 y 3650.");
+              return;
+            }
+            extendMerchant(item, { days: n }, applyBtn);
+            return;
+          }
+          showMessage(plansMessage, "Indica días o una fecha.");
+        });
+
+        plansResults.append(row);
+      });
+    }
+
+    async function loadPlans(force = false) {
+      if (plansLoaded && !force) return;
+      hideMessage(plansMessage);
+      plansResults.innerHTML = "";
+      plansEmpty.hidden = true;
+      plansLoading.hidden = false;
+      setBusy(true);
+      try {
+        const q = plansSearch.value.trim();
+        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
+        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        plansLoading.hidden = true;
+        renderPlanResults(items);
+        plansLoaded = true;
+      } catch (error) {
+        plansLoading.hidden = true;
+        showMessage(plansMessage, error.message || "No se pudieron cargar los comercios.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function extendMerchant(item, payload, triggerBtn) {
+      hideMessage(plansMessage);
+      const originalText = triggerBtn?.textContent;
+      if (triggerBtn) { triggerBtn.disabled = true; triggerBtn.textContent = "..."; }
+      setBusy(true);
+      try {
+        const result = await authedFetch("adminExtendMerchantPlan", {
+          method: "POST",
+          body: JSON.stringify({ merchantId: item.merchantId, ...payload }),
+        });
+        const what = payload.off
+          ? "caducado"
+          : payload.untilMs
+            ? `fijado al ${formatDate(payload.untilMs)}`
+            : `+${payload.days} días aplicados`;
+        showMessage(plansMessage, `${item.name || item.merchantId}: ${what}. Nuevo final: ${formatDate(result.trialEndsAt)}.`, "ok");
+        await loadPlans(true);
+      } catch (error) {
+        showMessage(plansMessage, error.message || "No se pudo aplicar la acción.");
+      } finally {
+        if (triggerBtn) { triggerBtn.disabled = false; if (originalText) triggerBtn.textContent = originalText; }
+        setBusy(false);
+      }
+    }
+
+    function switchTab(tab) {
+      if (!allowedTabs.includes(tab)) tab = "verifications";
+      activeTab = tab;
+      tabButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tab);
+      });
+      verificationsPane.hidden = tab !== "verifications";
+      plansPane.hidden = tab !== "plans";
+      if (tab === "plans") {
+        tabEyebrow.textContent = "Gestión de planes";
+        tabTitle.textContent = "Extender plan gratuito";
+        loadPlans();
+      } else {
+        tabEyebrow.textContent = "Bandeja de revisión";
+        tabTitle.textContent = "Verificaciones de comercios";
+      }
+      syncUrlState();
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
+
+    plansSearch.addEventListener("input", () => {
+      if (plansSearchDebounce) clearTimeout(plansSearchDebounce);
+      plansSearchDebounce = setTimeout(() => { loadPlans(true); }, 280);
+    });
+
     loginBtn.addEventListener("click", async () => {
       hideMessage(loginMessage);
       setBusy(true);
@@ -1457,7 +1870,11 @@
     });
 
     refreshBtn.addEventListener("click", () => {
-      loadPending();
+      if (activeTab === "plans") {
+        loadPlans(true);
+      } else {
+        loadPending();
+      }
     });
 
     closeDetailBtn.addEventListener("click", closeDetail);
@@ -1475,18 +1892,24 @@
     onAuthStateChanged(auth, async (user) => {
       hideMessage(loginMessage);
       hideMessage(workspaceMessage);
+      hideMessage(plansMessage);
 
       if (!user) {
         loginCard.hidden = false;
         workspace.hidden = true;
         cards.innerHTML = "";
+        plansResults.innerHTML = "";
+        plansLoaded = false;
         return;
       }
 
       loginCard.hidden = true;
       workspace.hidden = false;
       sessionLabel.textContent = `Sesión: ${user.email || user.uid}`;
-      await loadPending();
+      switchTab(activeTab);
+      if (activeTab === "verifications") {
+        await loadPending();
+      }
     });
   </script>
 </body>
