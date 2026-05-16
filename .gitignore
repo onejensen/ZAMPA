@@ -8,3 +8,7 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# Internal planning docs (never deploy)
+zampa-*.md
+docs/internal/
