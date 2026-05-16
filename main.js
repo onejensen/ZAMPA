@@ -1,6 +1,23 @@
 // ===== Zampa Landing Page — main.js =====
 
 document.addEventListener('DOMContentLoaded', () => {
+  const LANG_OPTIONS = [
+    { code: 'es', label: 'Español' },
+    { code: 'ca', label: 'Català' },
+    { code: 'eu', label: 'Euskara' },
+    { code: 'gl', label: 'Galego' },
+    { code: 'en', label: 'English' },
+    { code: 'pt', label: 'Português' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'fr', label: 'Français' },
+    { code: 'it', label: 'Italiano' },
+    { code: 'fi', label: 'Suomi' },
+    { code: 'sv', label: 'Svenska' },
+    { code: 'no', label: 'Norsk' }
+  ];
+  const SUPPORTED_LANGS = LANG_OPTIONS.map(lang => lang.code);
+  const LANGUAGE_ALIASES = { nb: 'no', nn: 'no' };
+
   // ----- Burger Menu Toggle -----
   const burger = document.querySelector('.burger');
   const nav = document.querySelector('.header__nav');
@@ -45,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const langDropdown = document.querySelector('.lang-selector__dropdown');
 
   if (langBtn && langSelector) {
+    if (langDropdown) {
+      langDropdown.innerHTML = LANG_OPTIONS.map(({ code, label }) => `
+        <button data-lang="${code.toUpperCase()}">${label}</button>
+      `).join('');
+    }
+
     langBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       langSelector.classList.toggle('open');
@@ -124,11 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== i18n System =====
-  const SUPPORTED_LANGS = ['es', 'en', 'ca', 'eu', 'gl', 'pt', 'de', 'fr', 'it'];
   const DEFAULT_LANG = 'es';
   const STORAGE_KEY = 'zampa-lang';
 
   let currentTranslations = {};
+
+  function normalizeLanguage(lang) {
+    const normalized = (lang || '').toLowerCase();
+    return LANGUAGE_ALIASES[normalized] || normalized;
+  }
 
   /**
    * Map a browser language code (e.g. "en-US", "ca", "pt-BR") to a supported lang.
@@ -140,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
 
     // Prefix match (e.g. "en-US" -> "en", "pt-BR" -> "pt")
-    const prefix = browserLang.split('-')[0];
+    const prefix = normalizeLanguage(browserLang.split('-')[0]);
     if (SUPPORTED_LANGS.includes(prefix)) return prefix;
 
     return DEFAULT_LANG;
@@ -150,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Resolve the initial language: saved preference > browser detection > fallback.
    */
   function getInitialLanguage() {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = normalizeLanguage(localStorage.getItem(STORAGE_KEY));
     if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
     return detectLanguage();
   }
@@ -266,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Public: switch language, persist, and re-render.
    */
   async function setLanguage(lang) {
+    lang = normalizeLanguage(lang);
     if (!SUPPORTED_LANGS.includes(lang)) lang = DEFAULT_LANG;
     localStorage.setItem(STORAGE_KEY, lang);
     updateLangUI(lang);
