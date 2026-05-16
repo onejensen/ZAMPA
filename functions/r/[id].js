@@ -4,6 +4,7 @@ import { fetchRestaurant } from '../_lib/apiClient.js';
 import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js';
 import { cacheControlForRestaurant } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
+import { renderShell } from '../_lib/pageShell.js';
 
 export async function onRequestGet({ request, params }) {
   const id = (params.id || '').trim();
@@ -16,8 +17,7 @@ export async function onRequestGet({ request, params }) {
     return renderBotResponse({ canonicalUrl, ogLocale, data });
   }
 
-  // TODO(sub-commit 2): replace this stub with the full minimalist browser landing.
-  return renderBrowserStub();
+  return renderBrowserResponse({ canonicalUrl, id, data });
 }
 
 function renderBotResponse({ canonicalUrl, ogLocale, data }) {
@@ -102,30 +102,78 @@ function formatCuisines(types) {
   return cleaned.length ? cleaned.join(' · ') : null;
 }
 
-function renderBrowserStub() {
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-  <title>Zampa</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-  <style>
-    body { font-family: system-ui, -apple-system, sans-serif; padding: 2rem; max-width: 480px; margin: 0 auto; text-align: center; color: #2D3436; }
-    a { color: #FAAF32; font-weight: 600; text-decoration: none; }
-  </style>
-</head>
-<body>
-  <p>Esta página se está construyendo.</p>
-  <p><a href="/download.html">Descarga la app de Zampa</a></p>
-</body>
-</html>`;
+function renderBrowserResponse({ canonicalUrl, id, data }) {
+  const exists = Boolean(data?.exists);
+  const restaurant = data?.restaurant || null;
+
+  let title;
+  let mainContent;
+
+  if (exists && restaurant?.name) {
+    title = `${restaurant.name} · Zampa`;
+    mainContent = renderRestaurantExistsMain({ id, restaurant });
+  } else {
+    title = 'Restaurante no encontrado · Zampa';
+    mainContent = renderRestaurantMissingMain();
+  }
+
+  const html = renderShell({ title, canonicalUrl, mainContent });
 
   return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=60',
+      'Cache-Control': cacheControlForRestaurant({ exists }),
     },
   });
+}
+
+function renderRestaurantExistsMain({ id, restaurant }) {
+  // Visible hero uses raw image URLs (cover then logo then static fallback),
+  // following the same pattern as /o/[id]'s body images. The polish commit
+  // may revisit this to route hero images through the /i/m/{id} resizer for
+  // 1200×630 normalization + 24h cache.
+  const heroImage =
+    restaurant.coverImageUrl ||
+    restaurant.logoUrl ||
+    '/assets/og-image-v2.png';
+
+  const subtitleText = buildSubtitle(restaurant);
+  const subtitleBlock = subtitleText
+    ? `<p class="share-restaurant">${escapeHtml(subtitleText)}</p>`
+    : '';
+
+  const descriptionBlock = restaurant.description
+    ? `<p class="share-description">${escapeHtml(restaurant.description)}</p>`
+    : '';
+
+  return `
+    <img class="share-hero" src="${escapeHtml(heroImage)}" alt="${escapeHtml(restaurant.name)}" loading="eager">
+    <h1 class="share-title">${escapeHtml(restaurant.name)}</h1>
+    ${subtitleBlock}
+    ${descriptionBlock}
+    <div class="share-ctas">
+      <a class="share-cta share-cta--primary" href="zampa://r/${escapeHtml(id)}">Abrir en Zampa</a>
+      <a class="share-cta share-cta--secondary" href="/download.html">Descargar app</a>
+    </div>
+  `;
+}
+
+function renderRestaurantMissingMain() {
+  return `
+    <h1 class="share-title">No hemos encontrado este restaurante</h1>
+    <p class="share-description">El enlace puede haber caducado o el restaurante ya no está disponible. Descubre más restaurantes y ofertas en Zampa.</p>
+    <div class="share-ctas">
+      <a class="share-cta share-cta--primary" href="/download.html">Explorar restaurantes en Zampa</a>
+    </div>
+  `;
+}
+
+// "City · Cuisine1 · Cuisine2" — degrades gracefully if either is missing.
+// Returns null when nothing usable is present so callers can omit the line.
+function buildSubtitle(restaurant) {
+  const parts = [];
+  if (restaurant.city) parts.push(restaurant.city);
+  const cuisines = formatCuisines(restaurant.cuisineTypes);
+  if (cuisines) parts.push(cuisines);
+  return parts.length ? parts.join(' · ') : null;
 }
