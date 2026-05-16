@@ -33,6 +33,16 @@ export function pickOgImage({ offerId, offerHasImage, merchantId } = {}) {
   return FALLBACK_IMAGE;
 }
 
+// Caps description length for og:description / twitter:description. Scrapers
+// clip these aggressively (WhatsApp ~160, Twitter ~200, Facebook ~300); 200
+// is a safe upper bound that survives all major platforms. Returns the input
+// unchanged when shorter than max or not a string.
+export function truncateDescription(text, max = 200) {
+  if (typeof text !== 'string') return text;
+  if (text.length <= max) return text;
+  return text.slice(0, max - 1).trimEnd() + '…';
+}
+
 export function buildMetaTags({ url, title, description, imageUrl, imageAlt, ogLocale }) {
   const safeTitle = escapeHtml(title);
   const safeDesc = escapeHtml(description);

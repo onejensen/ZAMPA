@@ -1,7 +1,7 @@
 import { isBot } from '../_lib/botDetect.js';
 import { resolveLocale, toOgLocale } from '../_lib/locale.js';
 import { fetchOffer } from '../_lib/apiClient.js';
-import { buildMetaTags, pickOgImage } from '../_lib/meta.js';
+import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js';
 import { cacheControlForOffer } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
@@ -32,7 +32,9 @@ function renderBotResponse({ canonicalUrl, ogLocale, data, id }) {
   if (offerExists && offer) {
     const rName = restaurant?.name || '';
     title = rName ? `${offer.title} · ${rName}` : offer.title;
-    description = offer.description || 'Descubre ofertas y menús del día cerca de ti en Zampa.';
+    description = offer.description
+      ? truncateDescription(offer.description, 200)
+      : 'Descubre ofertas y menús del día cerca de ti en Zampa.';
     imageAlt = rName ? `${offer.title} en ${rName}` : offer.title;
   } else if (restaurant) {
     title = `${restaurant.name} en Zampa`;
