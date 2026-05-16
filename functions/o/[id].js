@@ -14,13 +14,13 @@ export async function onRequestGet({ request, params }) {
 
   if (isBot(userAgent)) {
     const ogLocale = toOgLocale(resolveLocale(request));
-    return renderBotResponse({ canonicalUrl, ogLocale, data });
+    return renderBotResponse({ canonicalUrl, ogLocale, data, id });
   }
 
   return renderBrowserResponse({ canonicalUrl, id, data });
 }
 
-function renderBotResponse({ canonicalUrl, ogLocale, data }) {
+function renderBotResponse({ canonicalUrl, ogLocale, data, id }) {
   const offerExists = Boolean(data?.exists);
   const offer = data?.offer || null;
   const restaurant = data?.restaurant || null;
@@ -45,9 +45,9 @@ function renderBotResponse({ canonicalUrl, ogLocale, data }) {
   }
 
   const imageUrl = pickOgImage({
-    offerImage: offer?.imageUrl,
-    restaurantCover: restaurant?.coverImageUrl,
-    restaurantLogo: restaurant?.logoUrl,
+    offerId: id,
+    offerHasImage: Boolean(offerExists && offer?.imageUrl),
+    merchantId: restaurant?.id,
   });
 
   const metaTags = buildMetaTags({
@@ -176,10 +176,18 @@ function renderOfferMissingMain() {
   `;
 }
 
-const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', GBP: '£' };
-
+// Hardcoded 'es-ES' for now. The end-of-session i18n pass will replace this
+// with the dynamic locale resolved from the request.
 function formatPrice(price, currency) {
   if (price === null || price === undefined || price === '') return null;
-  const symbol = CURRENCY_SYMBOLS[currency] || currency || '';
-  return symbol ? `${price} ${symbol}`.trim() : String(price);
+  const numeric = parseFloat(price);
+  if (!Number.isFinite(numeric)) return null;
+  try {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: currency || 'EUR',
+    }).format(numeric);
+  } catch {
+    return null;
+  }
 }

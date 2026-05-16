@@ -8,9 +8,9 @@ const SHARE_CSS = `
   :root {
     --share-primary: #FAAF32;
     --share-primary-dark: #E89B1C;
-    --share-surface: #FFF8EB;
-    --share-text: #1A1A2E;
-    --share-text-muted: #6c757d;
+    --share-surface: #FFF7E0;
+    --share-text: #2D3436;
+    --share-text-muted: #636E72;
     --share-card: #ffffff;
     --share-border: rgba(0, 0, 0, 0.08);
     --share-radius: 14px;

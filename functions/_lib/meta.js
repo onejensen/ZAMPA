@@ -4,6 +4,7 @@ const SITE_NAME = 'Zampa';
 const TWITTER_HANDLE = '@getzampa';
 const THEME_COLOR = '#FAAF32';
 const FALLBACK_IMAGE = 'https://www.getzampa.com/assets/og-image-v2.png';
+const RESIZER_BASE = 'https://share.getzampa.com/i';
 
 function inferImageType(url) {
   if (!url) return 'image/jpeg';
@@ -13,10 +14,23 @@ function inferImageType(url) {
   return 'image/jpeg';
 }
 
-// Picks the best available image following the chain from the brief (section C):
-// offer photo → restaurant cover → restaurant logo → branded fallback.
-export function pickOgImage({ offerImage, restaurantCover, restaurantLogo } = {}) {
-  return offerImage || restaurantCover || restaurantLogo || FALLBACK_IMAGE;
+// Returns a 1200×630 JPEG URL via the share.getzampa.com resizer when the
+// entity has a photo, otherwise the static branded fallback. The cover-photo
+// step of the original brief's fallback chain is skipped: the resizer only
+// exposes /i/o/{offerId} (offer photo) and /i/m/{merchantId} (merchant
+// profile photo) — there is no endpoint for businesses.coverPhotoUrl.
+//
+// The resizer itself 302-redirects to the same static fallback when the
+// offer/merchant has no photo or any internal step fails, so this function
+// only needs to decide which endpoint family to hit.
+export function pickOgImage({ offerId, offerHasImage, merchantId } = {}) {
+  if (offerHasImage && offerId) {
+    return `${RESIZER_BASE}/o/${encodeURIComponent(offerId)}`;
+  }
+  if (merchantId) {
+    return `${RESIZER_BASE}/m/${encodeURIComponent(merchantId)}`;
+  }
+  return FALLBACK_IMAGE;
 }
 
 export function buildMetaTags({ url, title, description, imageUrl, imageAlt, ogLocale }) {
