@@ -6,7 +6,7 @@ import { cacheControlForRestaurant } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
 
-export async function onRequestGet({ request, params }) {
+export async function onRequest({ request, params }) {
   const id = (params.id || '').trim();
   const userAgent = request.headers.get('User-Agent') || '';
   const canonicalUrl = `https://www.getzampa.com/r/${encodeURIComponent(id)}`;
@@ -128,14 +128,11 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
 }
 
 function renderRestaurantExistsMain({ id, restaurant }) {
-  // Visible hero uses raw image URLs (cover then logo then static fallback),
-  // following the same pattern as /o/[id]'s body images. The polish commit
-  // may revisit this to route hero images through the /i/m/{id} resizer for
-  // 1200×630 normalization + 24h cache.
-  const heroImage =
-    restaurant.coverImageUrl ||
-    restaurant.logoUrl ||
-    '/assets/og-image-v2.png';
+  // Route the visible hero through the same resizer used for og:image so
+  // scrapers and humans see byte-identical 1200×630 JPEGs and share the 24h
+  // resizer cache. The resizer 302-falls-back internally if the entity has
+  // no photo.
+  const heroImage = pickOgImage({ merchantId: restaurant.id });
 
   const subtitleText = buildSubtitle(restaurant);
   const subtitleBlock = subtitleText
@@ -163,7 +160,7 @@ function renderRestaurantMissingMain() {
     <h1 class="share-title">No hemos encontrado este restaurante</h1>
     <p class="share-description">El enlace puede haber caducado o el restaurante ya no está disponible. Descubre más restaurantes y ofertas en Zampa.</p>
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="/download.html">Explorar restaurantes en Zampa</a>
+      <a class="share-cta share-cta--primary" href="/download.html">Descargar Zampa</a>
     </div>
   `;
 }

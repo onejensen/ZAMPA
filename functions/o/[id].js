@@ -6,7 +6,7 @@ import { cacheControlForOffer } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
 
-export async function onRequestGet({ request, params }) {
+export async function onRequest({ request, params }) {
   const id = (params.id || '').trim();
   const userAgent = request.headers.get('User-Agent') || '';
   const canonicalUrl = `https://www.getzampa.com/o/${encodeURIComponent(id)}`;
@@ -112,11 +112,15 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
 }
 
 function renderOfferExistsMain({ id, offer, restaurant }) {
-  const imageUrl =
-    offer.imageUrl ||
-    restaurant?.coverImageUrl ||
-    restaurant?.logoUrl ||
-    '/assets/og-image-v2.png';
+  // Route the visible hero through the same resizer used for og:image so
+  // scrapers and humans see byte-identical 1200×630 JPEGs and share the 24h
+  // resizer cache. The resizer 302-falls-back internally if the entity has
+  // no photo.
+  const imageUrl = pickOgImage({
+    offerId: id,
+    offerHasImage: Boolean(offer.imageUrl),
+    merchantId: restaurant?.id,
+  });
   const priceText = formatPrice(offer.price, offer.currency);
 
   const priceBlock = priceText
@@ -145,8 +149,8 @@ function renderOfferExistsMain({ id, offer, restaurant }) {
 }
 
 function renderOfferExpiredMain({ restaurant }) {
-  const cardImage =
-    restaurant.coverImageUrl || restaurant.logoUrl || '/assets/og-image-v2.png';
+  // Same resizer rationale as renderOfferExistsMain.
+  const cardImage = pickOgImage({ merchantId: restaurant.id });
   const cityLine = restaurant.city
     ? `<span class="share-card-meta">${escapeHtml(restaurant.city)}</span>`
     : '';
@@ -173,7 +177,7 @@ function renderOfferMissingMain() {
     <h1 class="share-title">Esta oferta ya no está disponible</h1>
     <p class="share-description">El enlace puede haber caducado o la oferta ya no está activa. Descubre más ofertas en Zampa.</p>
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="/download.html">Explorar ofertas en Zampa</a>
+      <a class="share-cta share-cta--primary" href="/download.html">Descargar Zampa</a>
     </div>
   `;
 }
