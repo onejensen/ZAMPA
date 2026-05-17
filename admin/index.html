@@ -1511,7 +1511,7 @@
                 <button class="btn-secondary" data-stats-days="30">30d</button>
                 <button class="btn-secondary" data-stats-days="90">90d</button>
               </div>
-              <button id="statsClearBtn" class="btn-secondary" title="Cambiar de comercio">✕ Cambiar</button>
+              <button id="statsClearBtn" class="btn-secondary" title="Volver a la lista">← Volver a la lista</button>
             </div>
           </div>
 
@@ -1588,7 +1588,7 @@
               <label class="card-meta" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                 <input type="checkbox" id="postsIncludeExpired"> Incluir vencidas
               </label>
-              <button id="postsClearBtn" class="btn-secondary" title="Cambiar de comercio">✕ Cambiar</button>
+              <button id="postsClearBtn" class="btn-secondary" title="Volver a la lista">← Volver a la lista</button>
             </div>
           </div>
 
@@ -2752,20 +2752,32 @@
       });
     });
 
-    statsClearBtn.addEventListener("click", () => {
-      clearStatsSelection();
-      if (!statsPicker.children.length) searchMerchantsForStats();
-    });
+    // Vuelve del detalle a la lista de resultados del picker y scrollea
+    // al input de búsqueda para que el usuario vea de inmediato dónde está.
+    function returnToList(tab) {
+      if (tab === "posts") {
+        clearPostsSelection();
+        if (!postsPicker.children.length) searchMerchantsForPosts();
+        requestAnimationFrame(() => {
+          postsSearch.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      } else if (tab === "stats") {
+        clearStatsSelection();
+        if (!statsPicker.children.length) searchMerchantsForStats();
+        requestAnimationFrame(() => {
+          statsSearch.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    }
+
+    statsClearBtn.addEventListener("click", () => returnToList("stats"));
 
     postsSearch.addEventListener("input", () => {
       if (postsSearchDebounce) clearTimeout(postsSearchDebounce);
       postsSearchDebounce = setTimeout(() => { searchMerchantsForPosts(); }, 280);
     });
 
-    postsClearBtn.addEventListener("click", () => {
-      clearPostsSelection();
-      if (!postsPicker.children.length) searchMerchantsForPosts();
-    });
+    postsClearBtn.addEventListener("click", () => returnToList("posts"));
 
     postsIncludeExpired.addEventListener("change", () => {
       if (postsSelectedMerchant) loadMerchantPosts();
@@ -2815,7 +2827,26 @@
       if (event.target === detailModal) closeDetail();
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !detailModal.hidden) closeDetail();
+      if (event.key !== "Escape") return;
+      // 1. Si está abierta la modal de detalle de verificación, ciérrala.
+      if (!detailModal.hidden) {
+        closeDetail();
+        return;
+      }
+      // 2. Si el usuario está escribiendo en un input, solo le quitamos
+      //    el foco — no queremos sacarlo del detalle por accidente.
+      const tag = (event.target?.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea") {
+        event.target.blur();
+        return;
+      }
+      // 3. En Publicaciones o Stats, si hay un merchant seleccionado,
+      //    Esc vuelve a la lista.
+      if (activeTab === "posts" && postsSelectedMerchant) {
+        returnToList("posts");
+      } else if (activeTab === "stats" && statsSelectedMerchant) {
+        returnToList("stats");
+      }
     });
 
     logoutBtn.addEventListener("click", async () => {
