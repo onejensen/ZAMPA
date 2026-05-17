@@ -838,6 +838,10 @@
       gap: 8px;
     }
 
+    .stats-picker[hidden] {
+      display: none !important;
+    }
+
     .stats-picker .pick-row {
       display: flex;
       justify-content: space-between;
@@ -2362,27 +2366,12 @@
       loadMerchantStats();
     }
 
-    // Reposiciona el viewport tras colapsar un picker. El approach con
-    // anchor relativo al row clicado fallaba porque entre el hide del picker
-    // y el rAF, el navegador clampa scrollY (el doc se ha encogido) y las
-    // mediciones quedan inconsistentes. En su lugar: doble rAF + forced
-    // layout para esperar a que el reflow termine, luego scrollTo absoluto.
-    // El parámetro anchorTop se mantiene por compatibilidad de firma pero
-    // se ignora.
+    // Lleva el header del detalle al top del viewport tras colapsar el
+    // picker. requestAnimationFrame asegura que el reflow ya esté hecho.
     function alignDetailToAnchor(detailEl /* , anchorTop */) {
-      const doScroll = () => {
-        // Forzar layout síncrono para que getBoundingClientRect sea fiable.
-        void detailEl.offsetHeight;
-        const detailDocY = detailEl.getBoundingClientRect().top + window.pageYOffset;
-        // 16px de margen para que se vea limpio el header arriba.
-        const target = Math.max(0, detailDocY - 16);
-        // Salto instantáneo: el smooth es vulnerable a interrupciones por
-        // los renders que disparan loadMerchantPosts/loadMerchantStats.
-        window.scrollTo({ top: target, left: 0, behavior: "auto" });
-      };
-      // Doble rAF: el primero corre tras el hide del picker, el segundo
-      // tras el reflow + clamp automático del navegador.
-      requestAnimationFrame(() => requestAnimationFrame(doScroll));
+      requestAnimationFrame(() => {
+        detailEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
     }
 
     function clearStatsSelection() {
