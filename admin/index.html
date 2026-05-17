@@ -1046,6 +1046,135 @@
       font-weight: 800;
     }
 
+    .posts-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .post-row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel-strong);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .post-thumb {
+      width: 96px;
+      height: 96px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #3f3f46;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .post-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .post-main {
+      min-width: 0;
+    }
+
+    .post-title {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .post-meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .post-desc {
+      margin: 6px 0 0;
+      color: var(--ink);
+      font-size: 0.88rem;
+      opacity: 0.85;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .post-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .post-badge {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+    }
+
+    .post-badge.active {
+      background: rgba(33, 122, 83, 0.15);
+      color: var(--success);
+    }
+
+    .post-badge.expired {
+      background: rgba(168, 59, 52, 0.14);
+      color: var(--danger);
+    }
+
+    .post-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .post-actions .btn-secondary,
+    .post-actions .btn-danger {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-danger {
+      background: rgba(168, 59, 52, 0.18);
+      color: var(--danger);
+      border: 1px solid rgba(168, 59, 52, 0.32);
+    }
+
+    .btn-danger:hover {
+      background: rgba(168, 59, 52, 0.28);
+    }
+
+    @media (max-width: 760px) {
+      .post-row {
+        grid-template-columns: 80px minmax(0, 1fr);
+      }
+
+      .post-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
     .footer-note {
       margin: 22px 0 0;
       padding: 14px 16px;
@@ -1313,6 +1442,7 @@
             <button class="tab-btn active" role="tab" data-tab="verifications">Verificaciones</button>
             <button class="tab-btn" role="tab" data-tab="plans">Planes</button>
             <button class="tab-btn" role="tab" data-tab="stats">Stats</button>
+            <button class="tab-btn" role="tab" data-tab="posts">Publicaciones</button>
           </div>
           <p class="eyebrow" id="tabEyebrow">Bandeja de revisión</p>
           <h2 id="tabTitle">Verificaciones de comercios</h2>
@@ -1431,6 +1561,42 @@
           Origen: <code>metrics/{merchantId}/daily/{YYYY-MM-DD}</code> (pre-agregado por iOS/Android). Favoritos actuales se cuentan con aggregation query sobre <code>favorites</code>. <em>Usuarios únicos</em> proviene de <code>userHistory</code> y es histórico (lifetime), no filtrado por la ventana — solo cubre <code>call</code> y <code>directions</code>.
         </p>
       </div>
+
+      <div id="postsPane" class="tab-pane" hidden>
+        <div id="postsMessage" class="message ok" hidden></div>
+        <div class="control-strip">
+          <div class="search-row">
+            <input id="postsSearch" class="search-input" type="search" placeholder="Buscar comercio por nombre, teléfono, CIF, dirección o UID">
+          </div>
+          <p class="card-meta">Selecciona un comercio para revisar sus publicaciones. Usa <strong>Eliminar</strong> si una oferta infringe la política de Zampa (lenguaje ofensivo, spam, suplantación, contenido no relacionado con hostelería).</p>
+        </div>
+        <div id="postsPickerLoading" class="loading" hidden>Buscando comercios...</div>
+        <div id="postsPicker" class="stats-picker" hidden></div>
+
+        <div id="postsDetail" hidden>
+          <div class="stats-header">
+            <div>
+              <p class="card-meta">Comercio seleccionado</p>
+              <h3 id="postsMerchantName"></h3>
+              <p class="card-meta" id="postsMerchantId"></p>
+            </div>
+            <div class="stats-window">
+              <label class="card-meta" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                <input type="checkbox" id="postsIncludeExpired"> Incluir vencidas
+              </label>
+              <button id="postsClearBtn" class="btn-secondary" title="Cambiar de comercio">✕ Cambiar</button>
+            </div>
+          </div>
+
+          <div id="postsLoading" class="loading" hidden>Cargando publicaciones...</div>
+          <div id="postsEmpty" class="empty" hidden>Este comercio no tiene publicaciones.</div>
+          <div id="postsList" class="posts-list"></div>
+        </div>
+
+        <p class="footer-note">
+          Origen: <code>dailyOffers</code> filtrado por <code>merchantId</code>. La eliminación borra el documento y dispara el cleanup habitual (imagen, índices y métricas asociadas). Acción definitiva — solo recuperable desde backup de Firestore. Cada borrado queda registrado en logs con el motivo indicado.
+        </p>
+      </div>
     </section>
   </main>
 
@@ -1511,6 +1677,19 @@
     const kpiShares = document.getElementById("kpiShares");
     const kpiFavoritesCurrent = document.getElementById("kpiFavoritesCurrent");
     const kpiFavoritesNet = document.getElementById("kpiFavoritesNet");
+    const postsPane = document.getElementById("postsPane");
+    const postsMessage = document.getElementById("postsMessage");
+    const postsSearch = document.getElementById("postsSearch");
+    const postsPickerLoading = document.getElementById("postsPickerLoading");
+    const postsPicker = document.getElementById("postsPicker");
+    const postsDetail = document.getElementById("postsDetail");
+    const postsMerchantName = document.getElementById("postsMerchantName");
+    const postsMerchantIdEl = document.getElementById("postsMerchantId");
+    const postsClearBtn = document.getElementById("postsClearBtn");
+    const postsIncludeExpired = document.getElementById("postsIncludeExpired");
+    const postsLoading = document.getElementById("postsLoading");
+    const postsEmpty = document.getElementById("postsEmpty");
+    const postsList = document.getElementById("postsList");
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabTitle = document.getElementById("tabTitle");
     const tabEyebrow = document.getElementById("tabEyebrow");
@@ -1521,7 +1700,7 @@
     let activeView = new URLSearchParams(window.location.search).get("view") || localStorage.getItem("adminView") || "cards";
     if (!["cards", "list"].includes(activeView)) activeView = "cards";
 
-    const allowedTabs = ["verifications", "plans", "stats"];
+    const allowedTabs = ["verifications", "plans", "stats", "posts"];
     let activeTab = new URLSearchParams(window.location.search).get("tab") || "verifications";
     if (!allowedTabs.includes(activeTab)) activeTab = "verifications";
     let plansLoaded = false;
@@ -1529,6 +1708,8 @@
     let statsSearchDebounce = null;
     let statsSelectedMerchant = null;
     let statsDays = 30;
+    let postsSearchDebounce = null;
+    let postsSelectedMerchant = null;
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -2299,6 +2480,204 @@
       return new Intl.NumberFormat("es-ES").format(Math.trunc(n));
     }
 
+    function renderPostsPicker(items) {
+      postsPicker.innerHTML = "";
+      if (!items.length) {
+        postsPicker.hidden = false;
+        postsPicker.innerHTML = `<div class="empty" style="margin:0">Sin resultados.</div>`;
+        return;
+      }
+      postsPicker.hidden = false;
+      items.slice(0, 30).forEach((it) => {
+        const row = document.createElement("div");
+        row.className = "pick-row";
+        row.innerHTML = `
+          <div>
+            <strong>${esc(it.name) || "(sin nombre)"}</strong>
+            <div class="pick-sub">${esc(it.phone) || "Sin teléfono"} · ${esc(it.addressText) || "Sin dirección"}</div>
+            <div class="pick-id">${esc(it.merchantId)}</div>
+          </div>
+          <div class="pick-sub">${it.isVerified ? "Verificado" : "No verificado"}</div>
+        `;
+        row.addEventListener("click", () => selectMerchantForPosts({
+          merchantId: it.merchantId,
+          name: it.name || "",
+        }));
+        postsPicker.appendChild(row);
+      });
+    }
+
+    async function searchMerchantsForPosts() {
+      const q = postsSearch.value.trim();
+      hideMessage(postsMessage);
+      postsPickerLoading.hidden = false;
+      postsPicker.hidden = true;
+      try {
+        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
+        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        postsPickerLoading.hidden = true;
+        renderPostsPicker(items);
+      } catch (error) {
+        postsPickerLoading.hidden = true;
+        postsPicker.hidden = true;
+        showMessage(postsMessage, error.message || "No se pudo buscar comercios.");
+      }
+    }
+
+    function selectMerchantForPosts(merchant) {
+      postsSelectedMerchant = merchant;
+      postsPicker.hidden = true;
+      postsDetail.hidden = false;
+      postsMerchantName.textContent = merchant.name || "(sin nombre)";
+      postsMerchantIdEl.textContent = merchant.merchantId;
+      loadMerchantPosts();
+    }
+
+    function clearPostsSelection() {
+      postsSelectedMerchant = null;
+      postsDetail.hidden = true;
+      postsList.innerHTML = "";
+      postsEmpty.hidden = true;
+      postsPicker.hidden = !postsPicker.children.length;
+    }
+
+    async function loadMerchantPosts() {
+      if (!postsSelectedMerchant) return;
+      hideMessage(postsMessage);
+      postsList.innerHTML = "";
+      postsEmpty.hidden = true;
+      postsLoading.hidden = false;
+      setBusy(true);
+      try {
+        const params = new URLSearchParams({
+          merchantId: postsSelectedMerchant.merchantId,
+        });
+        if (postsIncludeExpired.checked) params.set("includeExpired", "true");
+        const data = await authedFetch(`adminListMerchantOffers?${params.toString()}`);
+        postsLoading.hidden = true;
+        if (data.merchantName) {
+          postsMerchantName.textContent = data.merchantName;
+          postsSelectedMerchant.name = data.merchantName;
+        }
+        renderPostsList(data.items || []);
+      } catch (error) {
+        postsLoading.hidden = true;
+        showMessage(postsMessage, error.message || "No se pudieron cargar las publicaciones.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function renderPostsList(items) {
+      postsList.innerHTML = "";
+      if (!items.length) {
+        postsEmpty.hidden = false;
+        return;
+      }
+      postsEmpty.hidden = true;
+      items.forEach((it) => {
+        postsList.appendChild(buildPostRow(it));
+      });
+    }
+
+    function buildPostRow(item) {
+      const row = document.createElement("div");
+      row.className = "post-row";
+
+      const thumb = document.createElement("div");
+      thumb.className = "post-thumb";
+      if (item.imageUrl) {
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.alt = item.title || "Publicación";
+        img.src = item.imageUrl;
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = "Sin imagen";
+      }
+
+      const main = document.createElement("div");
+      main.className = "post-main";
+      const priceText = item.price != null && item.price !== ""
+        ? `${item.price} ${esc(item.currency || "EUR")}`
+        : "Sin precio";
+      const created = item.createdAt ? formatDate(item.createdAt) : "—";
+      const expires = item.expiresAt ? formatDate(item.expiresAt) : null;
+      const isActive = item.isActive ?? (item.expiresAt ? item.expiresAt > Date.now() : true);
+
+      main.innerHTML = `
+        <h4 class="post-title">${esc(item.title) || "(sin título)"}</h4>
+        <p class="post-meta">${esc(priceText)} · Publicada ${esc(created)}${expires ? ` · Caduca ${esc(expires)}` : ""}</p>
+        ${item.description ? `<p class="post-desc">${esc(item.description)}</p>` : ""}
+        <div class="post-badges">
+          <span class="post-badge ${isActive ? "active" : "expired"}">${isActive ? "Activa" : "Vencida"}</span>
+          <span class="post-badge">ID ${esc(item.offerId)}</span>
+        </div>
+      `;
+
+      const actions = document.createElement("div");
+      actions.className = "post-actions";
+
+      const viewBtn = document.createElement("a");
+      viewBtn.className = "btn-secondary";
+      viewBtn.target = "_blank";
+      viewBtn.rel = "noopener noreferrer";
+      viewBtn.href = `/o/${encodeURIComponent(item.offerId)}`;
+      viewBtn.textContent = "Ver";
+      actions.appendChild(viewBtn);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn-danger";
+      delBtn.textContent = "Eliminar";
+      delBtn.addEventListener("click", () => deletePost(item, delBtn));
+      actions.appendChild(delBtn);
+
+      row.appendChild(thumb);
+      row.appendChild(main);
+      row.appendChild(actions);
+      return row;
+    }
+
+    async function deletePost(item, triggerBtn) {
+      if (!postsSelectedMerchant) return;
+      const titleLabel = item.title || `oferta ${item.offerId}`;
+      const reason = window.prompt(
+        `Vas a eliminar la publicación "${titleLabel}".\n\nMotivo (queda registrado en logs):`,
+        "Infringe política de Zampa",
+      );
+      if (reason === null) return;
+      const trimmed = reason.trim();
+      if (!trimmed) {
+        showMessage(postsMessage, "Se requiere un motivo para eliminar la publicación.");
+        return;
+      }
+      if (!window.confirm(`¿Confirmas eliminar "${titleLabel}"? Esta acción es definitiva.`)) return;
+
+      hideMessage(postsMessage);
+      const previousLabel = triggerBtn.textContent;
+      triggerBtn.disabled = true;
+      triggerBtn.textContent = "Eliminando...";
+      setBusy(true);
+      try {
+        await authedFetch("adminDeleteMerchantOffer", {
+          method: "POST",
+          body: JSON.stringify({
+            merchantId: postsSelectedMerchant.merchantId,
+            offerId: item.offerId,
+            reason: trimmed,
+          }),
+        });
+        showMessage(postsMessage, `Publicación "${titleLabel}" eliminada.`, "ok");
+        await loadMerchantPosts();
+      } catch (error) {
+        triggerBtn.disabled = false;
+        triggerBtn.textContent = previousLabel;
+        showMessage(postsMessage, error.message || "No se pudo eliminar la publicación.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
     function switchTab(tab) {
       if (!allowedTabs.includes(tab)) tab = "verifications";
       activeTab = tab;
@@ -2308,6 +2687,7 @@
       verificationsPane.hidden = tab !== "verifications";
       plansPane.hidden = tab !== "plans";
       statsPane.hidden = tab !== "stats";
+      postsPane.hidden = tab !== "posts";
       if (tab === "plans") {
         tabEyebrow.textContent = "Gestión de planes";
         tabTitle.textContent = "Extender plan gratuito";
@@ -2318,6 +2698,12 @@
         // Si no hay merchant seleccionado y la lista está vacía, hacemos una búsqueda inicial.
         if (!statsSelectedMerchant && !statsPicker.children.length) {
           searchMerchantsForStats();
+        }
+      } else if (tab === "posts") {
+        tabEyebrow.textContent = "Moderación de contenido";
+        tabTitle.textContent = "Publicaciones de comercios";
+        if (!postsSelectedMerchant && !postsPicker.children.length) {
+          searchMerchantsForPosts();
         }
       } else {
         tabEyebrow.textContent = "Bandeja de revisión";
@@ -2353,6 +2739,20 @@
       if (!statsPicker.children.length) searchMerchantsForStats();
     });
 
+    postsSearch.addEventListener("input", () => {
+      if (postsSearchDebounce) clearTimeout(postsSearchDebounce);
+      postsSearchDebounce = setTimeout(() => { searchMerchantsForPosts(); }, 280);
+    });
+
+    postsClearBtn.addEventListener("click", () => {
+      clearPostsSelection();
+      if (!postsPicker.children.length) searchMerchantsForPosts();
+    });
+
+    postsIncludeExpired.addEventListener("change", () => {
+      if (postsSelectedMerchant) loadMerchantPosts();
+    });
+
     loginBtn.addEventListener("click", async () => {
       hideMessage(loginMessage);
       setBusy(true);
@@ -2384,6 +2784,9 @@
       } else if (activeTab === "stats") {
         if (statsSelectedMerchant) loadMerchantStats();
         else searchMerchantsForStats();
+      } else if (activeTab === "posts") {
+        if (postsSelectedMerchant) loadMerchantPosts();
+        else searchMerchantsForPosts();
       } else {
         loadPending();
       }
@@ -2405,6 +2808,7 @@
       hideMessage(loginMessage);
       hideMessage(workspaceMessage);
       hideMessage(plansMessage);
+      hideMessage(postsMessage);
 
       if (!user) {
         loginCard.hidden = false;
@@ -2415,6 +2819,10 @@
         statsPicker.innerHTML = "";
         statsPicker.hidden = true;
         clearStatsSelection();
+        postsPicker.innerHTML = "";
+        postsPicker.hidden = true;
+        postsIncludeExpired.checked = false;
+        clearPostsSelection();
         return;
       }
 
