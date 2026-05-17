@@ -832,6 +832,208 @@
       color: var(--success);
     }
 
+    .stats-picker {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stats-picker .pick-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: border-color 120ms, transform 120ms;
+    }
+
+    .stats-picker .pick-row:hover {
+      border-color: var(--brand-dark);
+      transform: translateY(-1px);
+    }
+
+    .stats-picker .pick-row strong {
+      color: var(--ink);
+      font-size: 0.95rem;
+    }
+
+    .stats-picker .pick-row .pick-sub {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .stats-picker .pick-row .pick-id {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-family: var(--font);
+    }
+
+    .stats-header {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .stats-header h3 {
+      margin: 4px 0 2px;
+      color: var(--ink);
+      font-size: 1.15rem;
+    }
+
+    .stats-window {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stats-days {
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .stats-days button.active {
+      background: var(--brand);
+      color: #1a1a1a;
+      border-color: var(--brand);
+    }
+
+    .stats-kpis {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid var(--line);
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .kpi-value {
+      font-size: 1.6rem;
+      color: var(--ink);
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .stats-chart-wrap {
+      margin-top: 18px;
+      padding: 16px 18px 12px;
+      border-radius: 18px;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid var(--line);
+    }
+
+    .stats-chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .stats-chart-head strong {
+      color: var(--ink);
+    }
+
+    .stats-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .stats-legend .legend::before {
+      content: "";
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: baseline;
+    }
+
+    .stats-legend .legend.impressions::before { background: rgba(243, 111, 47, 0.55); }
+    .stats-legend .legend.calls::before       { background: #4ade80; }
+    .stats-legend .legend.directions::before  { background: #60a5fa; }
+    .stats-legend .legend.shares::before      { background: #fbbf24; }
+
+    .stats-chart {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(14px, 1fr);
+      align-items: end;
+      gap: 4px;
+      height: 180px;
+      padding-bottom: 22px;
+      position: relative;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stats-day {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 1px;
+      cursor: default;
+    }
+
+    .stats-day .bar {
+      width: 100%;
+      border-radius: 2px 2px 0 0;
+      transition: filter 120ms;
+    }
+
+    .stats-day:hover .bar {
+      filter: brightness(1.25);
+    }
+
+    .stats-day .bar.impressions { background: rgba(243, 111, 47, 0.55); }
+    .stats-day .bar.calls       { background: #4ade80; }
+    .stats-day .bar.directions  { background: #60a5fa; }
+    .stats-day .bar.shares      { background: #fbbf24; }
+
+    .stats-day .day-label {
+      position: absolute;
+      bottom: -20px;
+      font-size: 0.65rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
     .loading,
     .empty {
       margin-top: 18px;
@@ -1110,6 +1312,7 @@
           <div class="tabs" role="tablist">
             <button class="tab-btn active" role="tab" data-tab="verifications">Verificaciones</button>
             <button class="tab-btn" role="tab" data-tab="plans">Planes</button>
+            <button class="tab-btn" role="tab" data-tab="stats">Stats</button>
           </div>
           <p class="eyebrow" id="tabEyebrow">Bandeja de revisión</p>
           <h2 id="tabTitle">Verificaciones de comercios</h2>
@@ -1146,6 +1349,86 @@
 
         <p class="footer-note">
           Al extender, el backend setea <code>businesses/{uid}.trialEndsAt</code> y normaliza <code>subscriptionStatus = "trial"</code>. Si el comercio luego compra suscripción real (App Store / Play Billing), el callback del store reescribe estos campos.
+        </p>
+      </div>
+
+      <div id="statsPane" class="tab-pane" hidden>
+        <div id="statsMessage" class="message ok" hidden></div>
+        <div class="control-strip">
+          <div class="search-row">
+            <input id="statsSearch" class="search-input" type="search" placeholder="Buscar comercio por nombre, teléfono, CIF, dirección o UID">
+          </div>
+          <p class="card-meta">Selecciona un comercio para ver su actividad. Las métricas se agregan diariamente en zona horaria <strong>Madrid</strong>; <code>favoritesNet</code> es delta neto del día (puede ser negativo).</p>
+        </div>
+        <div id="statsPickerLoading" class="loading" hidden>Buscando comercios...</div>
+        <div id="statsPicker" class="stats-picker" hidden></div>
+
+        <div id="statsDetail" hidden>
+          <div class="stats-header">
+            <div>
+              <p class="card-meta">Comercio seleccionado</p>
+              <h3 id="statsMerchantName"></h3>
+              <p class="card-meta" id="statsMerchantId"></p>
+            </div>
+            <div class="stats-window">
+              <span class="card-meta">Ventana</span>
+              <div class="stats-days" role="group" aria-label="Ventana en días">
+                <button class="btn-secondary" data-stats-days="7">7d</button>
+                <button class="btn-secondary" data-stats-days="30">30d</button>
+                <button class="btn-secondary" data-stats-days="90">90d</button>
+              </div>
+              <button id="statsClearBtn" class="btn-secondary" title="Cambiar de comercio">✕ Cambiar</button>
+            </div>
+          </div>
+
+          <div id="statsLoading" class="loading" hidden>Cargando estadísticas...</div>
+
+          <div id="statsContent" hidden>
+            <div class="stats-kpis">
+              <div class="kpi">
+                <span class="kpi-label">Impresiones</span>
+                <strong class="kpi-value" id="kpiImpressions">—</strong>
+                <span class="kpi-sub" id="kpiImpressionsRange">—</span>
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Llamadas</span>
+                <strong class="kpi-value" id="kpiCalls">—</strong>
+                <span class="kpi-sub" id="kpiUniqueCalls">—</span>
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Cómo llegar</span>
+                <strong class="kpi-value" id="kpiDirections">—</strong>
+                <span class="kpi-sub" id="kpiUniqueDirections">—</span>
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Compartir</span>
+                <strong class="kpi-value" id="kpiShares">—</strong>
+                <span class="kpi-sub">en la ventana</span>
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Favoritos actuales</span>
+                <strong class="kpi-value" id="kpiFavoritesCurrent">—</strong>
+                <span class="kpi-sub" id="kpiFavoritesNet">—</span>
+              </div>
+            </div>
+
+            <div class="stats-chart-wrap">
+              <div class="stats-chart-head">
+                <strong>Actividad diaria</strong>
+                <div class="stats-legend">
+                  <span class="legend impressions">Impresiones</span>
+                  <span class="legend calls">Llamadas</span>
+                  <span class="legend directions">Cómo llegar</span>
+                  <span class="legend shares">Compartir</span>
+                </div>
+              </div>
+              <div id="statsChart" class="stats-chart"></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="footer-note">
+          Origen: <code>metrics/{merchantId}/daily/{YYYY-MM-DD}</code> (pre-agregado por iOS/Android). Favoritos actuales se cuentan con aggregation query sobre <code>favorites</code>. <em>Usuarios únicos</em> proviene de <code>userHistory</code> y es histórico (lifetime), no filtrado por la ventana — solo cubre <code>call</code> y <code>directions</code>.
         </p>
       </div>
     </section>
@@ -1207,6 +1490,27 @@
     const plansLoading = document.getElementById("plansLoading");
     const plansEmpty = document.getElementById("plansEmpty");
     const plansMessage = document.getElementById("plansMessage");
+    const statsPane = document.getElementById("statsPane");
+    const statsMessage = document.getElementById("statsMessage");
+    const statsSearch = document.getElementById("statsSearch");
+    const statsPickerLoading = document.getElementById("statsPickerLoading");
+    const statsPicker = document.getElementById("statsPicker");
+    const statsDetail = document.getElementById("statsDetail");
+    const statsMerchantName = document.getElementById("statsMerchantName");
+    const statsMerchantIdEl = document.getElementById("statsMerchantId");
+    const statsClearBtn = document.getElementById("statsClearBtn");
+    const statsLoading = document.getElementById("statsLoading");
+    const statsContent = document.getElementById("statsContent");
+    const statsChart = document.getElementById("statsChart");
+    const kpiImpressions = document.getElementById("kpiImpressions");
+    const kpiImpressionsRange = document.getElementById("kpiImpressionsRange");
+    const kpiCalls = document.getElementById("kpiCalls");
+    const kpiUniqueCalls = document.getElementById("kpiUniqueCalls");
+    const kpiDirections = document.getElementById("kpiDirections");
+    const kpiUniqueDirections = document.getElementById("kpiUniqueDirections");
+    const kpiShares = document.getElementById("kpiShares");
+    const kpiFavoritesCurrent = document.getElementById("kpiFavoritesCurrent");
+    const kpiFavoritesNet = document.getElementById("kpiFavoritesNet");
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabTitle = document.getElementById("tabTitle");
     const tabEyebrow = document.getElementById("tabEyebrow");
@@ -1217,11 +1521,14 @@
     let activeView = new URLSearchParams(window.location.search).get("view") || localStorage.getItem("adminView") || "cards";
     if (!["cards", "list"].includes(activeView)) activeView = "cards";
 
-    const allowedTabs = ["verifications", "plans"];
+    const allowedTabs = ["verifications", "plans", "stats"];
     let activeTab = new URLSearchParams(window.location.search).get("tab") || "verifications";
     if (!allowedTabs.includes(activeTab)) activeTab = "verifications";
     let plansLoaded = false;
     let plansSearchDebounce = null;
+    let statsSearchDebounce = null;
+    let statsSelectedMerchant = null;
+    let statsDays = 30;
 
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
@@ -1816,6 +2123,182 @@
       }
     }
 
+    // ── Stats tab ────────────────────────────────────────────────────────────
+
+    function renderStatsPicker(items) {
+      statsPicker.innerHTML = "";
+      if (!items.length) {
+        statsPicker.hidden = false;
+        statsPicker.innerHTML = `<div class="empty" style="margin:0">Sin resultados.</div>`;
+        return;
+      }
+      statsPicker.hidden = false;
+      items.slice(0, 30).forEach((it) => {
+        const row = document.createElement("div");
+        row.className = "pick-row";
+        row.innerHTML = `
+          <div>
+            <strong>${esc(it.name) || "(sin nombre)"}</strong>
+            <div class="pick-sub">${esc(it.phone) || "Sin teléfono"} · ${esc(it.addressText) || "Sin dirección"}</div>
+            <div class="pick-id">${esc(it.merchantId)}</div>
+          </div>
+          <div class="pick-sub">${it.isVerified ? "Verificado" : "No verificado"}</div>
+        `;
+        row.addEventListener("click", () => selectMerchantForStats({
+          merchantId: it.merchantId,
+          name: it.name || "",
+        }));
+        statsPicker.appendChild(row);
+      });
+    }
+
+    async function searchMerchantsForStats() {
+      const q = statsSearch.value.trim();
+      hideMessage(statsMessage);
+      statsPickerLoading.hidden = false;
+      statsPicker.hidden = true;
+      try {
+        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
+        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        statsPickerLoading.hidden = true;
+        renderStatsPicker(items);
+      } catch (error) {
+        statsPickerLoading.hidden = true;
+        statsPicker.hidden = true;
+        showMessage(statsMessage, error.message || "No se pudo buscar comercios.");
+      }
+    }
+
+    function selectMerchantForStats(merchant) {
+      statsSelectedMerchant = merchant;
+      statsPicker.hidden = true;
+      statsDetail.hidden = false;
+      statsMerchantName.textContent = merchant.name || "(sin nombre)";
+      statsMerchantIdEl.textContent = merchant.merchantId;
+      updateStatsDayButtons();
+      loadMerchantStats();
+    }
+
+    function clearStatsSelection() {
+      statsSelectedMerchant = null;
+      statsDetail.hidden = true;
+      statsContent.hidden = true;
+      statsPicker.hidden = !statsPicker.children.length;
+    }
+
+    function updateStatsDayButtons() {
+      statsPane.querySelectorAll("[data-stats-days]").forEach((btn) => {
+        btn.classList.toggle("active", Number(btn.dataset.statsDays) === statsDays);
+      });
+    }
+
+    async function loadMerchantStats() {
+      if (!statsSelectedMerchant) return;
+      hideMessage(statsMessage);
+      statsContent.hidden = true;
+      statsLoading.hidden = false;
+      setBusy(true);
+      try {
+        const data = await authedFetch(
+          `adminMerchantStats?merchantId=${encodeURIComponent(statsSelectedMerchant.merchantId)}&days=${statsDays}`
+        );
+        statsLoading.hidden = true;
+        if (data.merchantName) {
+          statsMerchantName.textContent = data.merchantName;
+          statsSelectedMerchant.name = data.merchantName;
+        }
+        renderStatsContent(data);
+        statsContent.hidden = false;
+      } catch (error) {
+        statsLoading.hidden = true;
+        showMessage(statsMessage, error.message || "No se pudieron cargar las estadísticas.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function renderStatsContent(data) {
+      const t = data.totals || {};
+      const clicks = t.clicks || {};
+      const uniq = data.uniqueUsersFromHistory || {};
+
+      kpiImpressions.textContent = formatNumber(t.impressions || 0);
+      kpiImpressionsRange.textContent = `${data.fromDate} → ${data.toDate}`;
+      kpiCalls.textContent = formatNumber(clicks.call || 0);
+      kpiUniqueCalls.textContent = `${formatNumber(uniq.call || 0)} usuarios únicos (lifetime)`;
+      kpiDirections.textContent = formatNumber(clicks.directions || 0);
+      kpiUniqueDirections.textContent = `${formatNumber(uniq.directions || 0)} usuarios únicos (lifetime)`;
+      kpiShares.textContent = formatNumber(clicks.share || 0);
+      kpiFavoritesCurrent.textContent = formatNumber(data.favoritesCurrent || 0);
+      const net = t.favoritesNet || 0;
+      const sign = net > 0 ? "+" : "";
+      kpiFavoritesNet.textContent = `${sign}${formatNumber(net)} netos en la ventana`;
+
+      renderStatsChart(data.daily || []);
+    }
+
+    function renderStatsChart(daily) {
+      statsChart.innerHTML = "";
+      if (!daily.length) {
+        statsChart.innerHTML = `<div class="card-meta">Sin datos en la ventana seleccionada.</div>`;
+        return;
+      }
+      // Escala compartida: el máximo de cualquier métrica entre todos los días.
+      let max = 1;
+      daily.forEach((d) => {
+        const c = d.clicks || {};
+        max = Math.max(max, d.impressions || 0, c.call || 0, c.directions || 0, c.share || 0);
+      });
+
+      // Cantidad de etiquetas visibles bajo el eje X (límite ~10 para no apelotonar).
+      const labelStride = Math.max(1, Math.ceil(daily.length / 10));
+
+      daily.forEach((d, idx) => {
+        const c = d.clicks || {};
+        const col = document.createElement("div");
+        col.className = "stats-day";
+        col.title = [
+          d.date,
+          `Impresiones: ${d.impressions || 0}`,
+          `Llamadas: ${c.call || 0}`,
+          `Cómo llegar: ${c.directions || 0}`,
+          `Compartir: ${c.share || 0}`,
+          `Favoritos (neto): ${d.favoritesNet ?? 0}`,
+        ].join("\n");
+
+        const inner = document.createElement("div");
+        inner.style.cssText = "display:flex; align-items:flex-end; gap:2px; width:100%; height:100%;";
+        const bars = [
+          { cls: "impressions", val: d.impressions || 0 },
+          { cls: "calls", val: c.call || 0 },
+          { cls: "directions", val: c.directions || 0 },
+          { cls: "shares", val: c.share || 0 },
+        ];
+        bars.forEach((b) => {
+          const bar = document.createElement("div");
+          bar.className = `bar ${b.cls}`;
+          const pct = max > 0 ? (b.val / max) * 100 : 0;
+          bar.style.height = `${pct}%`;
+          bar.style.flex = "1";
+          inner.appendChild(bar);
+        });
+        col.appendChild(inner);
+
+        if (idx % labelStride === 0 || idx === daily.length - 1) {
+          const label = document.createElement("span");
+          label.className = "day-label";
+          // mostrar MM-DD para ahorrar espacio
+          label.textContent = (d.date || "").slice(5);
+          col.appendChild(label);
+        }
+        statsChart.appendChild(col);
+      });
+    }
+
+    function formatNumber(n) {
+      return new Intl.NumberFormat("es-ES").format(Math.trunc(n));
+    }
+
     function switchTab(tab) {
       if (!allowedTabs.includes(tab)) tab = "verifications";
       activeTab = tab;
@@ -1824,10 +2307,18 @@
       });
       verificationsPane.hidden = tab !== "verifications";
       plansPane.hidden = tab !== "plans";
+      statsPane.hidden = tab !== "stats";
       if (tab === "plans") {
         tabEyebrow.textContent = "Gestión de planes";
         tabTitle.textContent = "Extender plan gratuito";
         loadPlans();
+      } else if (tab === "stats") {
+        tabEyebrow.textContent = "Métricas de comercios";
+        tabTitle.textContent = "Stats por comercio";
+        // Si no hay merchant seleccionado y la lista está vacía, hacemos una búsqueda inicial.
+        if (!statsSelectedMerchant && !statsPicker.children.length) {
+          searchMerchantsForStats();
+        }
       } else {
         tabEyebrow.textContent = "Bandeja de revisión";
         tabTitle.textContent = "Verificaciones de comercios";
@@ -1842,6 +2333,24 @@
     plansSearch.addEventListener("input", () => {
       if (plansSearchDebounce) clearTimeout(plansSearchDebounce);
       plansSearchDebounce = setTimeout(() => { loadPlans(true); }, 280);
+    });
+
+    statsSearch.addEventListener("input", () => {
+      if (statsSearchDebounce) clearTimeout(statsSearchDebounce);
+      statsSearchDebounce = setTimeout(() => { searchMerchantsForStats(); }, 280);
+    });
+
+    statsPane.querySelectorAll("[data-stats-days]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        statsDays = Number(btn.dataset.statsDays) || 30;
+        updateStatsDayButtons();
+        loadMerchantStats();
+      });
+    });
+
+    statsClearBtn.addEventListener("click", () => {
+      clearStatsSelection();
+      if (!statsPicker.children.length) searchMerchantsForStats();
     });
 
     loginBtn.addEventListener("click", async () => {
@@ -1872,6 +2381,9 @@
     refreshBtn.addEventListener("click", () => {
       if (activeTab === "plans") {
         loadPlans(true);
+      } else if (activeTab === "stats") {
+        if (statsSelectedMerchant) loadMerchantStats();
+        else searchMerchantsForStats();
       } else {
         loadPending();
       }
@@ -1900,6 +2412,9 @@
         cards.innerHTML = "";
         plansResults.innerHTML = "";
         plansLoaded = false;
+        statsPicker.innerHTML = "";
+        statsPicker.hidden = true;
+        clearStatsSelection();
         return;
       }
 
