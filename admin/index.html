@@ -2357,6 +2357,9 @@
       statsMerchantName.textContent = merchant.name || "(sin nombre)";
       statsMerchantIdEl.textContent = merchant.merchantId;
       updateStatsDayButtons();
+      // Mismo problema que en el tab Publicaciones: al colapsar el picker
+      // el viewport queda por debajo del header. Llevamos el detalle arriba.
+      statsDetail.scrollIntoView({ behavior: "smooth", block: "start" });
       loadMerchantStats();
     }
 
