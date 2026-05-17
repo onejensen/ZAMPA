@@ -2530,6 +2530,10 @@
       postsDetail.hidden = false;
       postsMerchantName.textContent = merchant.name || "(sin nombre)";
       postsMerchantIdEl.textContent = merchant.merchantId;
+      // El picker puede tener hasta 30 filas; al colapsarlo el viewport
+      // queda muy por debajo del header. Llevamos el nombre del merchant
+      // arriba del viewport para que la lista cargue ya en pantalla.
+      postsDetail.scrollIntoView({ behavior: "smooth", block: "start" });
       loadMerchantPosts();
     }
 
