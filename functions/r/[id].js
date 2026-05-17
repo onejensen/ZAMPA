@@ -5,36 +5,38 @@ import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js
 import { cacheControlForRestaurant } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
+import { t } from '../_lib/i18n.js';
 
 export async function onRequest({ request, params }) {
   const id = (params.id || '').trim();
   const userAgent = request.headers.get('User-Agent') || '';
   const canonicalUrl = `https://www.getzampa.com/r/${encodeURIComponent(id)}`;
+  const locale = resolveLocale(request);
   const data = await fetchRestaurant(id);
 
   if (isBot(userAgent)) {
-    const ogLocale = toOgLocale(resolveLocale(request));
-    return renderBotResponse({ canonicalUrl, ogLocale, data });
+    return renderBotResponse({ canonicalUrl, locale, data });
   }
 
-  return renderBrowserResponse({ canonicalUrl, id, data });
+  return renderBrowserResponse({ canonicalUrl, locale, id, data });
 }
 
-function renderBotResponse({ canonicalUrl, ogLocale, data }) {
+function renderBotResponse({ canonicalUrl, locale, data }) {
   const exists = Boolean(data?.exists);
   const restaurant = data?.restaurant || null;
+  const ogLocale = toOgLocale(locale);
 
   let title;
   let description;
   let imageAlt;
 
   if (exists && restaurant?.name) {
-    title = `${restaurant.name} · Zampa`;
-    description = buildRestaurantDescription(restaurant);
-    imageAlt = `${restaurant.name} en Zampa`;
+    title = t(locale, 'share.restaurant.title', { name: restaurant.name });
+    description = buildRestaurantDescription(locale, restaurant);
+    imageAlt = restaurant.name;
   } else {
-    title = 'Zampa — descubre ofertas y menús del día';
-    description = 'Encuentra ofertas y menús del día en bares y restaurantes cerca de ti.';
+    title = t(locale, 'share.brand.tagline');
+    description = t(locale, 'share.brand.description');
     imageAlt = 'Zampa';
   }
 
@@ -73,20 +75,21 @@ function renderBotResponse({ canonicalUrl, ogLocale, data }) {
 }
 
 // Builds the bot-path description. Priority:
-//   1. restaurant.description (truncated to 200 chars)
-//   2. "Restaurante en {city} · {cuisines}" — falls back through whichever
-//      pieces are present
-//   3. "Restaurante en Zampa" — final fallback when nothing usable exists
-function buildRestaurantDescription(restaurant) {
+//   1. restaurant.description (truncated to 200 chars, no translation —
+//      it's user content from Firestore)
+//   2. localized "Restaurant in {city} · {cuisines}" template, falling
+//      through fallback_city / fallback_cuisines / fallback_zampa
+//      depending on which pieces are present.
+function buildRestaurantDescription(locale, restaurant) {
   if (restaurant.description) {
     return truncateDescription(restaurant.description, 200);
   }
   const city = restaurant.city || null;
   const cuisines = formatCuisines(restaurant.cuisineTypes);
-  if (city && cuisines) return `Restaurante en ${city} · ${cuisines}`;
-  if (city) return `Restaurante en ${city}`;
-  if (cuisines) return `Restaurante en Zampa · ${cuisines}`;
-  return 'Restaurante en Zampa';
+  if (city && cuisines) return t(locale, 'share.restaurant.fallback_full', { city, cuisines });
+  if (city) return t(locale, 'share.restaurant.fallback_city', { city });
+  if (cuisines) return t(locale, 'share.restaurant.fallback_cuisines', { cuisines });
+  return t(locale, 'share.restaurant.fallback_zampa');
 }
 
 // First two cuisine types only (keeps the meta tag short), joined by " · ".
@@ -102,7 +105,7 @@ function formatCuisines(types) {
   return cleaned.length ? cleaned.join(' · ') : null;
 }
 
-function renderBrowserResponse({ canonicalUrl, id, data }) {
+function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
   const exists = Boolean(data?.exists);
   const restaurant = data?.restaurant || null;
 
@@ -110,14 +113,16 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
   let mainContent;
 
   if (exists && restaurant?.name) {
-    title = `${restaurant.name} · Zampa`;
-    mainContent = renderRestaurantExistsMain({ id, restaurant });
+    title = t(locale, 'share.restaurant.title', { name: restaurant.name });
+    mainContent = renderRestaurantExistsMain({ locale, id, restaurant });
   } else {
-    title = 'Restaurante no encontrado · Zampa';
-    mainContent = renderRestaurantMissingMain();
+    // "{not_found_title} · Zampa" — brand suffix is hardcoded because Zampa
+    // doesn't translate and · is locale-neutral.
+    title = `${t(locale, 'share.restaurant.not_found_title')} · Zampa`;
+    mainContent = renderRestaurantMissingMain({ locale });
   }
 
-  const html = renderShell({ title, canonicalUrl, mainContent });
+  const html = renderShell({ title, canonicalUrl, mainContent, locale });
 
   return new Response(html, {
     headers: {
@@ -127,7 +132,7 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
   });
 }
 
-function renderRestaurantExistsMain({ id, restaurant }) {
+function renderRestaurantExistsMain({ locale, id, restaurant }) {
   // Route the visible hero through the same resizer used for og:image so
   // scrapers and humans see byte-identical 1200×630 JPEGs and share the 24h
   // resizer cache. The resizer 302-falls-back internally if the entity has
@@ -149,18 +154,18 @@ function renderRestaurantExistsMain({ id, restaurant }) {
     ${subtitleBlock}
     ${descriptionBlock}
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="zampa://r/${escapeHtml(id)}">Abrir en Zampa</a>
-      <a class="share-cta share-cta--secondary" href="/download.html">Descargar app</a>
+      <a class="share-cta share-cta--primary" href="zampa://r/${escapeHtml(id)}">${escapeHtml(t(locale, 'share.cta.open_in_zampa'))}</a>
+      <a class="share-cta share-cta--secondary" href="/download.html">${escapeHtml(t(locale, 'footer.download'))}</a>
     </div>
   `;
 }
 
-function renderRestaurantMissingMain() {
+function renderRestaurantMissingMain({ locale }) {
   return `
-    <h1 class="share-title">No hemos encontrado este restaurante</h1>
-    <p class="share-description">El enlace puede haber caducado o el restaurante ya no está disponible. Descubre más restaurantes y ofertas en Zampa.</p>
+    <h1 class="share-title">${escapeHtml(t(locale, 'share.restaurant.not_found_title'))}</h1>
+    <p class="share-description">${escapeHtml(t(locale, 'share.restaurant.missing_explanation'))}</p>
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="/download.html">Descargar Zampa</a>
+      <a class="share-cta share-cta--primary" href="/download.html">${escapeHtml(t(locale, 'share.cta.download_zampa'))}</a>
     </div>
   `;
 }

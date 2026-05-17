@@ -1,4 +1,5 @@
 import { escapeHtml } from './html.js';
+import { t } from './i18n.js';
 
 // Minimalist "share landing" CSS — scoped to .share-* so it does not affect
 // the main marketing site. Brand tokens (--share-primary etc.) mirror the
@@ -168,9 +169,9 @@ export function renderShell({ title, canonicalUrl, mainContent, locale = 'es' })
   </main>
   <footer class="share-footer">
     <p>
-      <a href="/privacy.html">Privacidad</a>·
-      <a href="/terms.html">Términos</a>·
-      <a href="/download.html">Descargar app</a>
+      <a href="/privacy.html">${escapeHtml(t(locale, 'footer.privacy'))}</a>·
+      <a href="/terms.html">${escapeHtml(t(locale, 'footer.terms'))}</a>·
+      <a href="/download.html">${escapeHtml(t(locale, 'footer.download'))}</a>
     </p>
     <p class="share-footer-copy">© 2026 Sozo Labs</p>
   </footer>

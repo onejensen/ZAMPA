@@ -1,29 +1,31 @@
 import { isBot } from '../_lib/botDetect.js';
-import { resolveLocale, toOgLocale } from '../_lib/locale.js';
+import { resolveLocale, toOgLocale, toIntlLocale } from '../_lib/locale.js';
 import { fetchOffer } from '../_lib/apiClient.js';
 import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js';
 import { cacheControlForOffer } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
+import { t } from '../_lib/i18n.js';
 
 export async function onRequest({ request, params }) {
   const id = (params.id || '').trim();
   const userAgent = request.headers.get('User-Agent') || '';
   const canonicalUrl = `https://www.getzampa.com/o/${encodeURIComponent(id)}`;
+  const locale = resolveLocale(request);
   const data = await fetchOffer(id);
 
   if (isBot(userAgent)) {
-    const ogLocale = toOgLocale(resolveLocale(request));
-    return renderBotResponse({ canonicalUrl, ogLocale, data, id });
+    return renderBotResponse({ canonicalUrl, locale, data, id });
   }
 
-  return renderBrowserResponse({ canonicalUrl, id, data });
+  return renderBrowserResponse({ canonicalUrl, locale, id, data });
 }
 
-function renderBotResponse({ canonicalUrl, ogLocale, data, id }) {
+function renderBotResponse({ canonicalUrl, locale, data, id }) {
   const offerExists = Boolean(data?.exists);
   const offer = data?.offer || null;
   const restaurant = data?.restaurant || null;
+  const ogLocale = toOgLocale(locale);
 
   let title;
   let description;
@@ -31,18 +33,23 @@ function renderBotResponse({ canonicalUrl, ogLocale, data, id }) {
 
   if (offerExists && offer) {
     const rName = restaurant?.name || '';
-    title = rName ? `${offer.title} · ${rName}` : offer.title;
+    title = rName
+      ? t(locale, 'share.offer.title_with_restaurant', {
+          offer_title: offer.title,
+          restaurant_name: rName,
+        })
+      : offer.title;
     description = offer.description
       ? truncateDescription(offer.description, 200)
-      : 'Descubre ofertas y menús del día cerca de ti en Zampa.';
-    imageAlt = rName ? `${offer.title} en ${rName}` : offer.title;
+      : t(locale, 'share.offer.fallback_description');
+    imageAlt = offer.title;
   } else if (restaurant) {
-    title = `${restaurant.name} en Zampa`;
-    description = 'Esta oferta ya no está disponible, pero el restaurante sigue en Zampa.';
-    imageAlt = `${restaurant.name} en Zampa`;
+    title = t(locale, 'share.restaurant.in_zampa', { name: restaurant.name });
+    description = t(locale, 'share.offer.expired_with_known_restaurant_meta_desc');
+    imageAlt = restaurant.name;
   } else {
-    title = 'Zampa — descubre ofertas y menús del día';
-    description = 'Encuentra ofertas y menús del día en bares y restaurantes cerca de ti.';
+    title = t(locale, 'share.brand.tagline');
+    description = t(locale, 'share.brand.description');
     imageAlt = 'Zampa';
   }
 
@@ -82,7 +89,7 @@ function renderBotResponse({ canonicalUrl, ogLocale, data, id }) {
   });
 }
 
-function renderBrowserResponse({ canonicalUrl, id, data }) {
+function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
   const offerExists = Boolean(data?.exists);
   const offer = data?.offer || null;
   const restaurant = data?.restaurant || null;
@@ -91,17 +98,22 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
   let mainContent;
 
   if (offerExists && offer) {
-    title = restaurant?.name ? `${offer.title} · ${restaurant.name}` : offer.title;
-    mainContent = renderOfferExistsMain({ id, offer, restaurant });
+    title = restaurant?.name
+      ? t(locale, 'share.offer.title_with_restaurant', {
+          offer_title: offer.title,
+          restaurant_name: restaurant.name,
+        })
+      : offer.title;
+    mainContent = renderOfferExistsMain({ locale, id, offer, restaurant });
   } else if (restaurant) {
-    title = `Esta oferta ya no está disponible · ${restaurant.name}`;
-    mainContent = renderOfferExpiredMain({ restaurant });
+    title = t(locale, 'share.offer.expired_with_name', { name: restaurant.name });
+    mainContent = renderOfferExpiredMain({ locale, restaurant });
   } else {
-    title = 'Esta oferta ya no está disponible · Zampa';
-    mainContent = renderOfferMissingMain();
+    title = t(locale, 'share.offer.expired_with_name', { name: 'Zampa' });
+    mainContent = renderOfferMissingMain({ locale });
   }
 
-  const html = renderShell({ title, canonicalUrl, mainContent });
+  const html = renderShell({ title, canonicalUrl, mainContent, locale });
 
   return new Response(html, {
     headers: {
@@ -111,7 +123,7 @@ function renderBrowserResponse({ canonicalUrl, id, data }) {
   });
 }
 
-function renderOfferExistsMain({ id, offer, restaurant }) {
+function renderOfferExistsMain({ locale, id, offer, restaurant }) {
   // Route the visible hero through the same resizer used for og:image so
   // scrapers and humans see byte-identical 1200×630 JPEGs and share the 24h
   // resizer cache. The resizer 302-falls-back internally if the entity has
@@ -121,7 +133,7 @@ function renderOfferExistsMain({ id, offer, restaurant }) {
     offerHasImage: Boolean(offer.imageUrl),
     merchantId: restaurant?.id,
   });
-  const priceText = formatPrice(offer.price, offer.currency);
+  const priceText = formatPrice(offer.price, offer.currency, locale);
 
   const priceBlock = priceText
     ? `<p class="share-price">${escapeHtml(priceText)}</p>`
@@ -129,11 +141,24 @@ function renderOfferExistsMain({ id, offer, restaurant }) {
   const descriptionBlock = offer.description
     ? `<p class="share-description">${escapeHtml(offer.description)}</p>`
     : '';
-  const restaurantBlock = restaurant?.id
-    ? `<p class="share-restaurant">en <a href="/r/${escapeHtml(restaurant.id)}">${escapeHtml(restaurant.name)}</a>${
-        restaurant.city ? ` · ${escapeHtml(restaurant.city)}` : ''
-      }</p>`
-    : '';
+
+  // Subtitle "{connector} {name_link} · {city}" is built with the
+  // share.offer.in_restaurant_subtitle template. {name_link} is pre-built
+  // escaped HTML; {city} is pre-escaped plain text. The template is
+  // interpolated raw into the page, so any user data must be pre-escaped.
+  let restaurantBlock = '';
+  if (restaurant?.id) {
+    const nameLink = `<a href="/r/${escapeHtml(restaurant.id)}">${escapeHtml(restaurant.name)}</a>`;
+    const cityText = restaurant.city ? escapeHtml(restaurant.city) : '';
+    let subtitleHtml = t(locale, 'share.offer.in_restaurant_subtitle', {
+      name_link: nameLink,
+      city: cityText,
+    });
+    // If the locale's template ends with " · {city}" and city is empty, the
+    // result has a trailing " · " — strip it for visual cleanliness.
+    if (!cityText) subtitleHtml = subtitleHtml.replace(/\s·\s*$/, '').trimEnd();
+    restaurantBlock = `<p class="share-restaurant">${subtitleHtml}</p>`;
+  }
 
   return `
     <img class="share-hero" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(offer.title)}" loading="eager">
@@ -142,13 +167,13 @@ function renderOfferExistsMain({ id, offer, restaurant }) {
     ${descriptionBlock}
     ${restaurantBlock}
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="zampa://o/${escapeHtml(id)}">Abrir en Zampa</a>
-      <a class="share-cta share-cta--secondary" href="/download.html">Descargar app</a>
+      <a class="share-cta share-cta--primary" href="zampa://o/${escapeHtml(id)}">${escapeHtml(t(locale, 'share.cta.open_in_zampa'))}</a>
+      <a class="share-cta share-cta--secondary" href="/download.html">${escapeHtml(t(locale, 'footer.download'))}</a>
     </div>
   `;
 }
 
-function renderOfferExpiredMain({ restaurant }) {
+function renderOfferExpiredMain({ locale, restaurant }) {
   // Same resizer rationale as renderOfferExistsMain.
   const cardImage = pickOgImage({ merchantId: restaurant.id });
   const cityLine = restaurant.city
@@ -156,8 +181,8 @@ function renderOfferExpiredMain({ restaurant }) {
     : '';
 
   return `
-    <h1 class="share-title">Esta oferta ya no está disponible</h1>
-    <p class="share-description">El restaurante puede haber actualizado su carta. Echa un vistazo a su perfil para ver qué propone hoy.</p>
+    <h1 class="share-title">${escapeHtml(t(locale, 'share.offer.expired_title'))}</h1>
+    <p class="share-description">${escapeHtml(t(locale, 'share.offer.expired_explanation'))}</p>
     <div class="share-card">
       <img class="share-card-image" src="${escapeHtml(cardImage)}" alt="" loading="lazy">
       <div class="share-card-text">
@@ -166,30 +191,28 @@ function renderOfferExpiredMain({ restaurant }) {
       </div>
     </div>
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="/r/${escapeHtml(restaurant.id)}">Ver perfil del restaurante</a>
-      <a class="share-cta share-cta--secondary" href="/download.html">Descargar app</a>
+      <a class="share-cta share-cta--primary" href="/r/${escapeHtml(restaurant.id)}">${escapeHtml(t(locale, 'share.cta.view_restaurant_profile'))}</a>
+      <a class="share-cta share-cta--secondary" href="/download.html">${escapeHtml(t(locale, 'footer.download'))}</a>
     </div>
   `;
 }
 
-function renderOfferMissingMain() {
+function renderOfferMissingMain({ locale }) {
   return `
-    <h1 class="share-title">Esta oferta ya no está disponible</h1>
-    <p class="share-description">El enlace puede haber caducado o la oferta ya no está activa. Descubre más ofertas en Zampa.</p>
+    <h1 class="share-title">${escapeHtml(t(locale, 'share.offer.expired_title'))}</h1>
+    <p class="share-description">${escapeHtml(t(locale, 'share.offer.missing_explanation'))}</p>
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="/download.html">Descargar Zampa</a>
+      <a class="share-cta share-cta--primary" href="/download.html">${escapeHtml(t(locale, 'share.cta.download_zampa'))}</a>
     </div>
   `;
 }
 
-// Hardcoded 'es-ES' for now. The end-of-session i18n pass will replace this
-// with the dynamic locale resolved from the request.
-function formatPrice(price, currency) {
+function formatPrice(price, currency, locale) {
   if (price === null || price === undefined || price === '') return null;
   const numeric = parseFloat(price);
   if (!Number.isFinite(numeric)) return null;
   try {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat(toIntlLocale(locale), {
       style: 'currency',
       currency: currency || 'EUR',
     }).format(numeric);
