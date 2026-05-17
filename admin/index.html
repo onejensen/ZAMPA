@@ -2611,6 +2611,8 @@
         ${item.description ? `<p class="post-desc">${esc(item.description)}</p>` : ""}
         <div class="post-badges">
           <span class="post-badge ${isActive ? "active" : "expired"}">${isActive ? "Activa" : "Vencida"}</span>
+          ${item.isPermanent ? `<span class="post-badge">Permanente</span>` : ""}
+          ${item.offerType ? `<span class="post-badge">${esc(item.offerType)}</span>` : ""}
           <span class="post-badge">ID ${esc(item.offerId)}</span>
         </div>
       `;
