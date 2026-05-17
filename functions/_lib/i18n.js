@@ -4,18 +4,18 @@
 // (esbuild bundles JSON natively). Total ~72KB across all locales — well
 // within the per-function bundle budget — and zero request-time latency.
 
-import es from '../../i18n/es.json' with { type: 'json' };
-import ca from '../../i18n/ca.json' with { type: 'json' };
-import gl from '../../i18n/gl.json' with { type: 'json' };
-import eu from '../../i18n/eu.json' with { type: 'json' };
-import en from '../../i18n/en.json' with { type: 'json' };
-import pt from '../../i18n/pt.json' with { type: 'json' };
-import fr from '../../i18n/fr.json' with { type: 'json' };
-import it from '../../i18n/it.json' with { type: 'json' };
-import de from '../../i18n/de.json' with { type: 'json' };
-import fi from '../../i18n/fi.json' with { type: 'json' };
-import sv from '../../i18n/sv.json' with { type: 'json' };
-import no from '../../i18n/no.json' with { type: 'json' };
+import es from '../../i18n/es.json';
+import ca from '../../i18n/ca.json';
+import gl from '../../i18n/gl.json';
+import eu from '../../i18n/eu.json';
+import en from '../../i18n/en.json';
+import pt from '../../i18n/pt.json';
+import fr from '../../i18n/fr.json';
+import it from '../../i18n/it.json';
+import de from '../../i18n/de.json';
+import fi from '../../i18n/fi.json';
+import sv from '../../i18n/sv.json';
+import no from '../../i18n/no.json';
 
 const TRANSLATIONS = { es, ca, gl, eu, en, pt, fr, it, de, fi, sv, no };
 const DEFAULT_LOCALE = 'es';
