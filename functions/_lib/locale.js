@@ -48,3 +48,24 @@ const OG_LOCALE_MAP = {
 export function toOgLocale(locale) {
   return OG_LOCALE_MAP[locale] || OG_LOCALE_MAP[DEFAULT_LOCALE];
 }
+
+// BCP-47 with hyphen, as accepted by Intl.NumberFormat / Intl.DateTimeFormat.
+// Distinct from the underscore form used for og:locale.
+const INTL_LOCALE_MAP = {
+  es: 'es-ES',
+  ca: 'ca-ES',
+  gl: 'gl-ES',
+  eu: 'eu-ES',
+  en: 'en-US',
+  pt: 'pt-PT',
+  fr: 'fr-FR',
+  it: 'it-IT',
+  de: 'de-DE',
+  fi: 'fi-FI',
+  sv: 'sv-SE',
+  no: 'nb-NO',
+};
+
+export function toIntlLocale(locale) {
+  return INTL_LOCALE_MAP[locale] || INTL_LOCALE_MAP[DEFAULT_LOCALE];
+}
