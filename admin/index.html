@@ -2362,22 +2362,27 @@
       loadMerchantStats();
     }
 
-    // Reposiciona el viewport tras colapsar un picker: el header del detalle
-    // aparece en la misma Y del viewport donde estaba el row clicado, dando
-    // la sensación de "se abre debajo del item" en vez de mandar el scroll
-    // al final del documento.
-    function alignDetailToAnchor(detailEl, anchorTop) {
-      requestAnimationFrame(() => {
-        if (anchorTop != null) {
-          const detailTop = detailEl.getBoundingClientRect().top;
-          const delta = detailTop - anchorTop;
-          if (Math.abs(delta) > 1) {
-            window.scrollBy({ top: delta, left: 0, behavior: "smooth" });
-          }
-        } else {
-          detailEl.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
+    // Reposiciona el viewport tras colapsar un picker. El approach con
+    // anchor relativo al row clicado fallaba porque entre el hide del picker
+    // y el rAF, el navegador clampa scrollY (el doc se ha encogido) y las
+    // mediciones quedan inconsistentes. En su lugar: doble rAF + forced
+    // layout para esperar a que el reflow termine, luego scrollTo absoluto.
+    // El parámetro anchorTop se mantiene por compatibilidad de firma pero
+    // se ignora.
+    function alignDetailToAnchor(detailEl /* , anchorTop */) {
+      const doScroll = () => {
+        // Forzar layout síncrono para que getBoundingClientRect sea fiable.
+        void detailEl.offsetHeight;
+        const detailDocY = detailEl.getBoundingClientRect().top + window.pageYOffset;
+        // 16px de margen para que se vea limpio el header arriba.
+        const target = Math.max(0, detailDocY - 16);
+        // Salto instantáneo: el smooth es vulnerable a interrupciones por
+        // los renders que disparan loadMerchantPosts/loadMerchantStats.
+        window.scrollTo({ top: target, left: 0, behavior: "auto" });
+      };
+      // Doble rAF: el primero corre tras el hide del picker, el segundo
+      // tras el reflow + clamp automático del navegador.
+      requestAnimationFrame(() => requestAnimationFrame(doScroll));
     }
 
     function clearStatsSelection() {
