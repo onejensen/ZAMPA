@@ -2328,7 +2328,7 @@
         row.addEventListener("click", () => selectMerchantForStats({
           merchantId: it.merchantId,
           name: it.name || "",
-        }));
+        }, row));
         statsPicker.appendChild(row);
       });
     }
@@ -2350,17 +2350,34 @@
       }
     }
 
-    function selectMerchantForStats(merchant) {
+    function selectMerchantForStats(merchant, sourceRow) {
+      const anchorTop = sourceRow ? sourceRow.getBoundingClientRect().top : null;
       statsSelectedMerchant = merchant;
       statsPicker.hidden = true;
       statsDetail.hidden = false;
       statsMerchantName.textContent = merchant.name || "(sin nombre)";
       statsMerchantIdEl.textContent = merchant.merchantId;
       updateStatsDayButtons();
-      // Mismo problema que en el tab Publicaciones: al colapsar el picker
-      // el viewport queda por debajo del header. Llevamos el detalle arriba.
-      statsDetail.scrollIntoView({ behavior: "smooth", block: "start" });
+      alignDetailToAnchor(statsDetail, anchorTop);
       loadMerchantStats();
+    }
+
+    // Reposiciona el viewport tras colapsar un picker: el header del detalle
+    // aparece en la misma Y del viewport donde estaba el row clicado, dando
+    // la sensación de "se abre debajo del item" en vez de mandar el scroll
+    // al final del documento.
+    function alignDetailToAnchor(detailEl, anchorTop) {
+      requestAnimationFrame(() => {
+        if (anchorTop != null) {
+          const detailTop = detailEl.getBoundingClientRect().top;
+          const delta = detailTop - anchorTop;
+          if (Math.abs(delta) > 1) {
+            window.scrollBy({ top: delta, left: 0, behavior: "smooth" });
+          }
+        } else {
+          detailEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
     }
 
     function clearStatsSelection() {
@@ -2505,7 +2522,7 @@
         row.addEventListener("click", () => selectMerchantForPosts({
           merchantId: it.merchantId,
           name: it.name || "",
-        }));
+        }, row));
         postsPicker.appendChild(row);
       });
     }
@@ -2527,16 +2544,14 @@
       }
     }
 
-    function selectMerchantForPosts(merchant) {
+    function selectMerchantForPosts(merchant, sourceRow) {
+      const anchorTop = sourceRow ? sourceRow.getBoundingClientRect().top : null;
       postsSelectedMerchant = merchant;
       postsPicker.hidden = true;
       postsDetail.hidden = false;
       postsMerchantName.textContent = merchant.name || "(sin nombre)";
       postsMerchantIdEl.textContent = merchant.merchantId;
-      // El picker puede tener hasta 30 filas; al colapsarlo el viewport
-      // queda muy por debajo del header. Llevamos el nombre del merchant
-      // arriba del viewport para que la lista cargue ya en pantalla.
-      postsDetail.scrollIntoView({ behavior: "smooth", block: "start" });
+      alignDetailToAnchor(postsDetail, anchorTop);
       loadMerchantPosts();
     }
 
