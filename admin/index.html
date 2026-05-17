@@ -246,6 +246,18 @@
       transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
 
+    /* Los checkboxes/radios no deben heredar el sizing de los inputs de texto:
+       width:100% los estira y el padding los infla, descomponiendo cualquier
+       label inline (ver header de Publicaciones / Stats). */
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: auto;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      flex-shrink: 0;
+    }
+
     input:focus,
     textarea:focus {
       border-color: rgba(243, 111, 47, 0.58);
