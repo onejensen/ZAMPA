@@ -1979,6 +1979,40 @@
     let postsSearchDebounce = null;
     let postsSelectedMerchant = null;
 
+    // Cache compartida del endpoint adminSearchMerchants. Plans/Stats/Posts
+    // golpean exactamente el mismo endpoint con la misma query, así que el
+    // mismo término de búsqueda en cualquier tab se sirve desde memoria
+    // mientras esté fresco. Invalidar tras mutaciones que cambian el listado
+    // (extender plan, aprobar/rechazar verificación).
+    const MERCHANT_CACHE_TTL_MS = 30000;
+    const merchantSearchCache = new Map();
+    let merchantSearchAbort = null;
+
+    function hasFreshMerchantCache(q) {
+      const hit = merchantSearchCache.get(q);
+      return !!(hit && Date.now() - hit.ts < MERCHANT_CACHE_TTL_MS);
+    }
+
+    function invalidateMerchantSearchCache() {
+      merchantSearchCache.clear();
+    }
+
+    async function fetchMerchantSearch(q) {
+      const hit = merchantSearchCache.get(q);
+      if (hit && Date.now() - hit.ts < MERCHANT_CACHE_TTL_MS) {
+        return hit.items;
+      }
+      // Cancela la búsqueda anterior en vuelo si el usuario sigue tecleando.
+      if (merchantSearchAbort) merchantSearchAbort.abort();
+      const ctrl = new AbortController();
+      merchantSearchAbort = ctrl;
+      const qs = q ? `?q=${encodeURIComponent(q)}` : "";
+      const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`, { signal: ctrl.signal });
+      if (merchantSearchAbort === ctrl) merchantSearchAbort = null;
+      merchantSearchCache.set(q, { items, ts: Date.now() });
+      return items;
+    }
+
     googleBtn.className = "btn-secondary";
     googleBtn.textContent = "Entrar con Google";
     loginBtn.parentElement.appendChild(googleBtn);
@@ -2080,7 +2114,10 @@
         throw new Error("No hay sesión activa.");
       }
 
-      const token = await user.getIdToken(true);
+      // getIdToken() sin force: reusa el token cacheado y solo refresca
+      // si está expirado. Antes pasábamos `true` y eso añadía un round-trip
+      // contra el server de auth de Google en CADA fetch (notable al buscar).
+      const token = await user.getIdToken();
       const response = await fetch(`${FUNCTIONS_BASE}/${path}`, {
         ...options,
         headers: {
@@ -2390,6 +2427,9 @@
           body: JSON.stringify({ merchantId, notes })
         });
         showMessage(workspaceMessage, `${successMessage}. Ofertas sincronizadas: ${result.updatedOffers || 0}.`, "ok");
+        // isVerified cambia → invalidamos el cache compartido por si el
+        // admin pasa a Stats/Posts/Planes inmediatamente después.
+        invalidateMerchantSearchCache();
         await loadPending();
       } catch (error) {
         showMessage(workspaceMessage, error.message || "No se pudo completar la acción.");
@@ -2528,18 +2568,20 @@
     async function loadPlans(force = false) {
       if (plansLoaded && !force) return;
       hideMessage(plansMessage);
+      const q = plansSearch.value.trim();
+      // Si hay cache fresca, evitamos el flicker del estado de "cargando".
+      const cacheHit = hasFreshMerchantCache(q);
       plansResults.innerHTML = "";
       plansEmpty.hidden = true;
-      plansLoading.hidden = false;
+      plansLoading.hidden = cacheHit;
       setBusy(true);
       try {
-        const q = plansSearch.value.trim();
-        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
-        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        const items = await fetchMerchantSearch(q);
         plansLoading.hidden = true;
         renderPlanResults(items);
         plansLoaded = true;
       } catch (error) {
+        if (error.name === "AbortError") return;
         plansLoading.hidden = true;
         showMessage(plansMessage, error.message || "No se pudieron cargar los comercios.");
       } finally {
@@ -2563,6 +2605,9 @@
             ? `fijado al ${formatDate(payload.untilMs)}`
             : `+${payload.days} días aplicados`;
         showMessage(plansMessage, `${item.name || item.merchantId}: ${what}. Nuevo final: ${formatDate(result.trialEndsAt)}.`, "ok");
+        // El comercio que acabamos de tocar va a tener trialEndsAt distinto
+        // → cache stale. Limpiar para que loadPlans(true) traiga fresco.
+        invalidateMerchantSearchCache();
         await loadPlans(true);
       } catch (error) {
         showMessage(plansMessage, error.message || "No se pudo aplicar la acción.");
@@ -2604,14 +2649,15 @@
     async function searchMerchantsForStats() {
       const q = statsSearch.value.trim();
       hideMessage(statsMessage);
-      statsPickerLoading.hidden = false;
-      statsPicker.hidden = true;
+      const cacheHit = hasFreshMerchantCache(q);
+      statsPickerLoading.hidden = cacheHit;
+      if (!cacheHit) statsPicker.hidden = true;
       try {
-        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
-        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        const items = await fetchMerchantSearch(q);
         statsPickerLoading.hidden = true;
         renderStatsPicker(items);
       } catch (error) {
+        if (error.name === "AbortError") return;
         statsPickerLoading.hidden = true;
         statsPicker.hidden = true;
         showMessage(statsMessage, error.message || "No se pudo buscar comercios.");
@@ -2788,14 +2834,15 @@
     async function searchMerchantsForPosts() {
       const q = postsSearch.value.trim();
       hideMessage(postsMessage);
-      postsPickerLoading.hidden = false;
-      postsPicker.hidden = true;
+      const cacheHit = hasFreshMerchantCache(q);
+      postsPickerLoading.hidden = cacheHit;
+      if (!cacheHit) postsPicker.hidden = true;
       try {
-        const qs = q ? `?q=${encodeURIComponent(q)}` : "";
-        const { items = [] } = await authedFetch(`adminSearchMerchants${qs}`);
+        const items = await fetchMerchantSearch(q);
         postsPickerLoading.hidden = true;
         renderPostsPicker(items);
       } catch (error) {
+        if (error.name === "AbortError") return;
         postsPickerLoading.hidden = true;
         postsPicker.hidden = true;
         showMessage(postsMessage, error.message || "No se pudo buscar comercios.");
@@ -3000,12 +3047,12 @@
 
     plansSearch.addEventListener("input", () => {
       if (plansSearchDebounce) clearTimeout(plansSearchDebounce);
-      plansSearchDebounce = setTimeout(() => { loadPlans(true); }, 280);
+      plansSearchDebounce = setTimeout(() => { loadPlans(true); }, 180);
     });
 
     statsSearch.addEventListener("input", () => {
       if (statsSearchDebounce) clearTimeout(statsSearchDebounce);
-      statsSearchDebounce = setTimeout(() => { searchMerchantsForStats(); }, 280);
+      statsSearchDebounce = setTimeout(() => { searchMerchantsForStats(); }, 180);
     });
 
     statsPane.querySelectorAll("[data-stats-days]").forEach((btn) => {
@@ -3038,7 +3085,7 @@
 
     postsSearch.addEventListener("input", () => {
       if (postsSearchDebounce) clearTimeout(postsSearchDebounce);
-      postsSearchDebounce = setTimeout(() => { searchMerchantsForPosts(); }, 280);
+      postsSearchDebounce = setTimeout(() => { searchMerchantsForPosts(); }, 180);
     });
 
     postsClearBtn.addEventListener("click", () => returnToList("posts"));
