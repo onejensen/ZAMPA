@@ -1565,11 +1565,15 @@ summary,
   max-width: 520px;
 }
 
+/* Stack vertical: botón primario arriba, link secundario debajo.
+   En la versión anterior iban inline con flex-wrap y se peleaban en
+   ancho (la flecha del link rompía a línea aparte). Apilarlos da una
+   jerarquía clara y evita el wrap raro. */
 .referral-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px 22px;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
   margin-top: 4px;
 }
 
@@ -1577,7 +1581,7 @@ summary,
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 24px;
+  padding: 14px 26px;
   border: 0;
   border-radius: 999px;
   background: var(--primary);
@@ -1616,6 +1620,8 @@ summary,
   text-decoration: none;
   border-bottom: 2px solid rgba(0, 184, 169, 0.32);
   padding-bottom: 2px;
+  /* nowrap evita que la flecha "→" quede sola en una segunda línea */
+  white-space: nowrap;
   transition: color 0.18s, border-color 0.18s;
 }
 
