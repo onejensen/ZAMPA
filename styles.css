@@ -1548,11 +1548,16 @@ summary,
 }
 
 /* ===== Referral (cliente recomienda Zampa a su restaurante) =====
-   Layout split (mockup + texto), igual que customers/merchants pero con
-   un mockup tipo WhatsApp que ENSEÑA literalmente la acción que pedimos
-   al visitante: mandar el mensaje al dueño de su bar. */
+   Bloque centrado: eyebrow + título + subtítulo + CTAs. Encaja con
+   el resto de secciones que centran su contenido (benefits, faq). */
 .referral-section {
   overflow: hidden;
+}
+
+.referral-content {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .referral-eyebrow {
@@ -1570,191 +1575,13 @@ summary,
   text-transform: uppercase;
 }
 
-/* Mockup tipo WhatsApp */
-.referral-phone {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  background: #efeae2;
-  border-radius: 22px;
-  padding: 0;
-  overflow: hidden;
-  box-shadow:
-    0 24px 56px rgba(45, 52, 54, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  font-family: var(--font-body);
-}
-
-/* "Wallpaper" sutil estilo WhatsApp con pequeñas marcas */
-.referral-phone__chat {
-  position: relative;
-  padding: 18px 14px 20px;
-  background-image:
-    radial-gradient(rgba(45, 52, 54, 0.04) 1px, transparent 1px),
-    radial-gradient(rgba(45, 52, 54, 0.03) 1px, transparent 1px);
-  background-size: 28px 28px, 36px 36px;
-  background-position: 0 0, 14px 14px;
-}
-
-.referral-phone__header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  background: #f0f2f5;
-  border-bottom: 1px solid rgba(45, 52, 54, 0.06);
-}
-
-.referral-phone__back {
-  font-size: 1.3rem;
-  color: rgba(17, 27, 33, 0.55);
-  font-weight: 400;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.referral-phone__avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #ff8c8c);
-  color: var(--white);
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.05rem;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.referral-phone__contact {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.referral-phone__name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #111b21;
-  line-height: 1.2;
-}
-
-.referral-phone__sub {
-  font-size: 0.74rem;
-  color: rgba(17, 27, 33, 0.5);
-  line-height: 1.2;
-}
-
-/* Burbuja de mensaje saliente (estilo WhatsApp verde claro) */
-.referral-bubble {
-  position: relative;
-  align-self: flex-end;
-  max-width: 92%;
-  margin-left: auto;
-  padding: 7px 10px 5px;
-  background: #d9fdd3;
-  border-radius: 12px 4px 12px 12px;
-  box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
-}
-
-/* "Cola" típica de la burbuja saliente */
-.referral-bubble::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -7px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 0 10px 8px;
-  border-color: transparent transparent transparent #d9fdd3;
-}
-
-.referral-bubble__text {
-  margin: 0 0 6px;
-  font-size: 0.9rem;
-  line-height: 1.42;
-  color: #111b21;
-  font-weight: 400;
-  word-break: break-word;
-}
-
-.referral-bubble__preview {
-  display: flex;
-  gap: 9px;
-  padding: 6px 8px;
-  margin: 6px 0;
-  background: rgba(255, 255, 255, 0.58);
-  border-left: 3px solid var(--primary);
-  border-radius: 6px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.referral-bubble__preview-img {
-  width: 42px;
-  height: 42px;
-  border-radius: 6px;
-  background: var(--primary-surface);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.referral-bubble__preview-img img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-.referral-bubble__preview-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-  justify-content: center;
-}
-
-.referral-bubble__preview-title {
-  font-weight: 700;
-  font-size: 0.86rem;
-  color: #111b21;
-  line-height: 1.2;
-}
-
-.referral-bubble__preview-domain {
-  font-size: 0.72rem;
-  color: rgba(17, 27, 33, 0.55);
-  line-height: 1.2;
-}
-
-.referral-bubble__meta {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  font-size: 0.68rem;
-  color: rgba(17, 27, 33, 0.5);
-}
-
-/* Dobles ticks azules estilo WhatsApp leído */
-.referral-bubble__meta svg {
-  color: #53bdeb;
-  width: 16px;
-  height: 11px;
-  flex-shrink: 0;
-}
-
-/* CTAs en la columna de texto */
+/* CTAs centrados bajo el texto */
 .referral-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 22px;
   align-items: center;
+  justify-content: center;
   margin-top: 8px;
 }
 
@@ -1818,15 +1645,6 @@ summary,
 }
 
 @media (max-width: 767px) {
-  .referral-phone {
-    max-width: 320px;
-  }
-  /* En mobile el título ya se centra (regla de .section__title--left).
-     Alineamos también el eyebrow y los demás elementos inline para
-     mantener el conjunto coherente. */
-  .referral-section .split__text {
-    text-align: center;
-  }
   .referral-actions {
     flex-direction: column;
     align-items: stretch;
