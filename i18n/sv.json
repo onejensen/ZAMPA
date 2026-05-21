@@ -197,5 +197,8 @@
   "contact.title": "Ska vi prata?",
   "contact.subtitle": "Frågor, idéer eller bara vill säga hej? Vi är ett meddelande bort.",
   "contact.email_label": "Mejla oss",
-  "contact.instagram_label": "Följ oss"
+  "contact.instagram_label": "Följ oss",
+  "contact.eyebrow": "Kontakt",
+  "contact.email_hint": "Vi svarar inom 24 timmar",
+  "contact.instagram_hint": "Dagliga stories och nyheter"
 }

@@ -197,5 +197,8 @@
   "contact.title": "¿Hablamos?",
   "contact.subtitle": "Si tienes dudas, ideas o quieres contarnos algo, estamos a un mensaje.",
   "contact.email_label": "Escríbenos",
-  "contact.instagram_label": "Síguenos"
+  "contact.instagram_label": "Síguenos",
+  "contact.eyebrow": "Contacto",
+  "contact.email_hint": "Te respondemos en menos de 24 h",
+  "contact.instagram_hint": "Stories diarias y novedades"
 }

@@ -197,5 +197,8 @@
   "contact.title": "Jutellaanko?",
   "contact.subtitle": "Kysymyksiä, ideoita tai jotain kerrottavaa? Olemme yhden viestin päässä.",
   "contact.email_label": "Lähetä viesti",
-  "contact.instagram_label": "Seuraa meitä"
+  "contact.instagram_label": "Seuraa meitä",
+  "contact.eyebrow": "Yhteystiedot",
+  "contact.email_hint": "Vastaamme alle 24 tunnissa",
+  "contact.instagram_hint": "Päivittäiset storyt ja uutiset"
 }

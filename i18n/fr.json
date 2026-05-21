@@ -197,5 +197,8 @@
   "contact.title": "On en parle ?",
   "contact.subtitle": "Une question, une idée, envie de partager quelque chose ? On est à un message.",
   "contact.email_label": "Écris-nous",
-  "contact.instagram_label": "Suis-nous"
+  "contact.instagram_label": "Suis-nous",
+  "contact.eyebrow": "Contact",
+  "contact.email_hint": "On te répond en moins de 24 h",
+  "contact.instagram_hint": "Stories quotidiennes et actus"
 }

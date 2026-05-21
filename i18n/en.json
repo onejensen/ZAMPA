@@ -197,5 +197,8 @@
   "contact.title": "Let's talk?",
   "contact.subtitle": "Got questions, ideas, or just want to say hi? We're one message away.",
   "contact.email_label": "Email us",
-  "contact.instagram_label": "Follow us"
+  "contact.instagram_label": "Follow us",
+  "contact.eyebrow": "Get in touch",
+  "contact.email_hint": "We reply within 24 hours",
+  "contact.instagram_hint": "Daily stories and updates"
 }

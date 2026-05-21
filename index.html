@@ -567,14 +567,27 @@
   </section>
 
   <!-- ===== Contacto ===== -->
-  <section id="contact" class="section section--teal-light contact-section">
+  <section id="contact" class="section contact-section">
+    <div class="contact-bg" aria-hidden="true">
+      <div class="contact-blob contact-blob--teal"></div>
+      <div class="contact-blob contact-blob--coral"></div>
+      <div class="contact-blob contact-blob--amber"></div>
+    </div>
+
     <div class="container">
       <div class="contact-head fade-up">
+        <span class="contact-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span data-i18n="contact.eyebrow">Contacto</span>
+        </span>
         <h2 class="section__title" data-i18n="contact.title">¿Hablamos?</h2>
         <p class="section__subtitle" data-i18n="contact.subtitle">
           Si tienes dudas, ideas o quieres contarnos algo, estamos a un mensaje.
         </p>
       </div>
+
       <div class="contact-cards" data-stagger>
         <a href="mailto:soporte@getzampa.com" class="contact-card contact-card--email">
           <span class="contact-card__icon" aria-hidden="true">
@@ -586,8 +599,16 @@
           <div class="contact-card__meta">
             <span class="contact-card__label" data-i18n="contact.email_label">Escríbenos</span>
             <span class="contact-card__value">soporte@getzampa.com</span>
+            <span class="contact-card__hint" data-i18n="contact.email_hint">Te respondemos en menos de 24 h</span>
           </div>
+          <span class="contact-card__arrow" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
         </a>
+
         <a href="https://www.instagram.com/zampa_app" target="_blank" rel="noopener" class="contact-card contact-card--ig">
           <span class="contact-card__icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -597,7 +618,14 @@
           <div class="contact-card__meta">
             <span class="contact-card__label" data-i18n="contact.instagram_label">Síguenos</span>
             <span class="contact-card__value">@zampa_app</span>
+            <span class="contact-card__hint" data-i18n="contact.instagram_hint">Stories diarias y novedades</span>
           </div>
+          <span class="contact-card__arrow" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
         </a>
       </div>
     </div>
