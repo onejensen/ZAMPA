@@ -223,7 +223,11 @@
 
     <div class="container hero__content">
       <div class="hero__text">
-        <h1 class="hero__title fade-up" data-i18n="hero.title">
+        <span class="hero-eyebrow fade-up">
+          <span class="hero-eyebrow__dot" aria-hidden="true"></span>
+          <span data-i18n="hero.eyebrow">Ya disponible · iOS + Android</span>
+        </span>
+        <h1 class="hero__title fade-up" style="--reveal-delay: 60ms" data-i18n="hero.title">
           <span>¿Dónde</span> comemos hoy?
         </h1>
         <p class="hero__subtitle fade-up" style="--reveal-delay: 120ms" data-i18n="hero.subtitle">
@@ -269,6 +273,12 @@
             <img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&q=80" alt="Sopa del día" loading="eager">
           </div>
         </div>
+        <div class="hero__chip hero__chip--price1" aria-hidden="true">9,90<span>€</span></div>
+        <div class="hero__chip hero__chip--rating" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          4.8
+        </div>
+        <div class="hero__chip hero__chip--price2" aria-hidden="true">12<span>€</span></div>
       </div>
     </div>
   </section>
