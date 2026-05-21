@@ -267,6 +267,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupNewsletterForm('newsletterForm', 'newsletterEmail', 'newsletterStatus');
 
+  // ----- Referral share button -----
+  // Cliente invita a su bar/restaurante de confianza a registrarse.
+  // Primera opción: Web Share API nativa (iOS/Android comparten a WhatsApp,
+  // SMS, Mail, etc.). Si no está disponible (desktop), abrimos wa.me con el
+  // mensaje precargado. Si tampoco se puede abrir ventana, copiamos al
+  // portapapeles como último recurso.
+  const referralBtn = document.getElementById('referralShareBtn');
+  if (referralBtn) {
+    const referralStatus = document.getElementById('referralStatus');
+    const shareUrl = `${window.location.origin}/#merchants`;
+
+    function setStatus(text) {
+      if (referralStatus) referralStatus.textContent = text || '';
+    }
+
+    referralBtn.addEventListener('click', async () => {
+      const text = currentTranslations['referral.share_text']
+        || 'Hola! ¿Conoces Zampa? Es una app gratis donde los restaurantes publican su menú del día y los clientes los encuentran cerca. Creo que os puede encajar:';
+      setStatus('');
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'Zampa', text, url: shareUrl });
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          // continúa al fallback
+        }
+      }
+
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${shareUrl}`)}`;
+      const popup = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      if (popup) return;
+
+      try {
+        await navigator.clipboard.writeText(`${text} ${shareUrl}`);
+        setStatus(currentTranslations['referral.copied'] || '¡Copiado! Pégalo donde quieras.');
+      } catch {
+        setStatus(currentTranslations['referral.share_error'] || 'No se pudo abrir la app para compartir.');
+      }
+    });
+  }
+
   /**
    * Update UI state to reflect the active language.
    */

@@ -183,5 +183,13 @@
   "share.restaurant.in_zampa": "{name} auf Zampa",
   "share.cta.open_in_zampa": "In Zampa öffnen",
   "share.cta.download_zampa": "Zampa herunterladen",
-  "share.cta.view_restaurant_profile": "Restaurantprofil ansehen"
+  "share.cta.view_restaurant_profile": "Restaurantprofil ansehen",
+  "referral.eyebrow": "Du machst Zampa",
+  "referral.title": "Dein Stammlokal ist noch nicht auf Zampa?",
+  "referral.subtitle": "Zampa wächst, wenn die Orte mitmachen, an denen du wirklich gerne isst. Wenn du eins kennst, das seine Tageskarte noch nicht veröffentlicht, gib ihnen den Tipp — der Einstieg ist kostenlos und dauert zwei Minuten.",
+  "referral.cta": "An mein Restaurant weitergeben",
+  "referral.cta_secondary": "So funktioniert's für Gastronomen →",
+  "referral.share_text": "Hey! Kennt ihr Zampa? Eine kostenlose App, in der Restaurants ihre Tageskarte veröffentlichen und Gäste sie in der Nähe finden. Ich glaube, das passt zu euch:",
+  "referral.copied": "Kopiert! Füg es ein, wo du willst.",
+  "referral.share_error": "Die Sharing-App konnte nicht geöffnet werden."
 }

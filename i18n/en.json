@@ -183,5 +183,13 @@
   "share.restaurant.in_zampa": "{name} on Zampa",
   "share.cta.open_in_zampa": "Open in Zampa",
   "share.cta.download_zampa": "Download Zampa",
-  "share.cta.view_restaurant_profile": "View restaurant profile"
+  "share.cta.view_restaurant_profile": "View restaurant profile",
+  "referral.eyebrow": "You make Zampa",
+  "referral.title": "Is your favourite place still missing from Zampa?",
+  "referral.subtitle": "Zampa grows when the places you actually love eating at join in. If you know one that doesn't publish its daily menu yet, drop them a hint — getting started is free and takes two minutes.",
+  "referral.cta": "Share it with my restaurant",
+  "referral.cta_secondary": "See how it works for merchants →",
+  "referral.share_text": "Hey! Have you heard of Zampa? It's a free app where restaurants publish their daily menus and customers find them nearby. I think it would suit you:",
+  "referral.copied": "Copied! Paste it wherever you want.",
+  "referral.share_error": "Couldn't open the sharing app."
 }

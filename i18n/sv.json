@@ -183,5 +183,13 @@
   "share.restaurant.in_zampa": "{name} på Zampa",
   "share.cta.open_in_zampa": "Öppna i Zampa",
   "share.cta.download_zampa": "Ladda ner Zampa",
-  "share.cta.view_restaurant_profile": "Se restaurangens profil"
+  "share.cta.view_restaurant_profile": "Se restaurangens profil",
+  "referral.eyebrow": "Du gör Zampa",
+  "referral.title": "Är ditt favoritställe ännu inte med på Zampa?",
+  "referral.subtitle": "Zampa växer när de ställen du verkligen gillar att äta på är med. Om du känner ett ställe som inte publicerar sin dagens meny än, tipsa dem — det är gratis och tar två minuter.",
+  "referral.cta": "Dela med min restaurang",
+  "referral.cta_secondary": "Se hur det fungerar för restauratörer →",
+  "referral.share_text": "Hej! Känner du till Zampa? Det är en gratisapp där restauranger publicerar sin dagens meny och kunder hittar dem i närheten. Jag tror det skulle passa er:",
+  "referral.copied": "Kopierat! Klistra in var du vill.",
+  "referral.share_error": "Det gick inte att öppna dela-appen."
 }

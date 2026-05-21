@@ -183,5 +183,13 @@
   "share.restaurant.in_zampa": "{name} en Zampa",
   "share.cta.open_in_zampa": "Abrir en Zampa",
   "share.cta.download_zampa": "Descargar Zampa",
-  "share.cta.view_restaurant_profile": "Ver perfil del restaurante"
+  "share.cta.view_restaurant_profile": "Ver perfil del restaurante",
+  "referral.eyebrow": "Tú haces Zampa",
+  "referral.title": "¿Tu bar de toda la vida aún no está en Zampa?",
+  "referral.subtitle": "Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.",
+  "referral.cta": "Compartirlo con mi restaurante",
+  "referral.cta_secondary": "Ver cómo funciona para comercios →",
+  "referral.share_text": "Hola! ¿Conoces Zampa? Es una app gratis donde los restaurantes publican su menú del día y los clientes los encuentran cerca. Creo que os puede encajar:",
+  "referral.copied": "¡Copiado! Pégalo donde quieras.",
+  "referral.share_error": "No se pudo abrir la app para compartir."
 }
