@@ -192,5 +192,10 @@
   "referral.copied": "Kopiert! Lim det inn hvor du vil.",
   "referral.share_error": "Kunne ikke åpne delings-appen.",
   "referral.body": "Zampa vokser når stedene du virkelig liker å spise på blir med. Hvis du kjenner et som ennå ikke publiserer dagens meny, gi dem et tips — det er gratis å komme i gang og tar to minutter.",
-  "referral.image_alt": "Smilende bartender bak disken på en tradisjonell bar med dagens meny"
+  "referral.image_alt": "Smilende bartender bak disken på en tradisjonell bar med dagens meny",
+  "nav.contact": "Kontakt",
+  "contact.title": "Skal vi prate?",
+  "contact.subtitle": "Spørsmål, idéer eller vil bare si hei? Vi er én melding unna.",
+  "contact.email_label": "Send oss e-post",
+  "contact.instagram_label": "Følg oss"
 }

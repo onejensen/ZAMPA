@@ -192,5 +192,10 @@
   "referral.copied": "Copiat! Enganxa-ho on vulguis.",
   "referral.share_error": "No s'ha pogut obrir l'app per compartir.",
   "referral.body": "Zampa creix quan s'hi sumen els llocs on de veritat t'agrada menjar. Si en coneixes un que encara no publica el seu menú del dia, dóna-li la pista — començar és gratis i es triga dos minuts.",
-  "referral.image_alt": "Cambrer somrient darrere la barra d'un bar tradicional amb menú del dia"
+  "referral.image_alt": "Cambrer somrient darrere la barra d'un bar tradicional amb menú del dia",
+  "nav.contact": "Contacte",
+  "contact.title": "Parlem?",
+  "contact.subtitle": "Si tens dubtes, idees o vols explicar-nos res, estem a un missatge.",
+  "contact.email_label": "Escriu-nos",
+  "contact.instagram_label": "Segueix-nos"
 }

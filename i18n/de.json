@@ -192,5 +192,10 @@
   "referral.copied": "Kopiert! Füg es ein, wo du willst.",
   "referral.share_error": "Die Sharing-App konnte nicht geöffnet werden.",
   "referral.body": "Zampa wächst, wenn die Orte mitmachen, an denen du wirklich gerne isst. Wenn du eins kennst, das seine Tageskarte noch nicht veröffentlicht, gib ihnen den Tipp — der Einstieg ist kostenlos und dauert zwei Minuten.",
-  "referral.image_alt": "Lächelnder Wirt hinter der Theke einer traditionellen Bar mit Tagesmenü"
+  "referral.image_alt": "Lächelnder Wirt hinter der Theke einer traditionellen Bar mit Tagesmenü",
+  "nav.contact": "Kontakt",
+  "contact.title": "Sprechen wir?",
+  "contact.subtitle": "Fragen, Ideen oder einfach mal Hallo? Du erreichst uns mit einer Nachricht.",
+  "contact.email_label": "Schreib uns",
+  "contact.instagram_label": "Folg uns"
 }

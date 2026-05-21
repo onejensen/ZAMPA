@@ -192,5 +192,10 @@
   "referral.copied": "Copiato! Incollalo dove vuoi.",
   "referral.share_error": "Impossibile aprire l'app di condivisione.",
   "referral.body": "Zampa cresce quando si aggiungono i posti in cui ti piace davvero mangiare. Se ne conosci uno che non pubblica ancora il suo menu del giorno, fagli un cenno — iniziare è gratis e ci vogliono due minuti.",
-  "referral.image_alt": "Barista sorridente dietro al bancone di un bar tradizionale con menu del giorno"
+  "referral.image_alt": "Barista sorridente dietro al bancone di un bar tradizionale con menu del giorno",
+  "nav.contact": "Contatti",
+  "contact.title": "Parliamone?",
+  "contact.subtitle": "Hai dubbi, idee o vuoi raccontarci qualcosa? Siamo a un messaggio.",
+  "contact.email_label": "Scrivici",
+  "contact.instagram_label": "Seguici"
 }

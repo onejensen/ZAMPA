@@ -192,5 +192,10 @@
   "referral.copied": "Copié ! Colle-le où tu veux.",
   "referral.share_error": "Impossible d'ouvrir l'application de partage.",
   "referral.body": "Zampa grandit quand les endroits où tu aimes vraiment manger nous rejoignent. Si tu en connais un qui ne publie pas encore son menu du jour, glisse-leur l'info — c'est gratuit et ça prend deux minutes.",
-  "referral.image_alt": "Serveur souriant derrière le comptoir d'un bar traditionnel avec menu du jour"
+  "referral.image_alt": "Serveur souriant derrière le comptoir d'un bar traditionnel avec menu du jour",
+  "nav.contact": "Contact",
+  "contact.title": "On en parle ?",
+  "contact.subtitle": "Une question, une idée, envie de partager quelque chose ? On est à un message.",
+  "contact.email_label": "Écris-nous",
+  "contact.instagram_label": "Suis-nous"
 }

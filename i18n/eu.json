@@ -192,5 +192,10 @@
   "referral.copied": "Kopiatuta! Itsatsi nahi duzun lekuan.",
   "referral.share_error": "Ezin izan da partekatzeko aplikazioa ireki.",
   "referral.body": "Zampa hazi egiten da gustuko dituzun lekuak ere bertan daudenean. Bere eguneko menua oraindik argitaratzen ez duen bat ezagutzen baduzu, esan iezaiozu — hastea doan da eta bi minutu besterik ez.",
-  "referral.image_alt": "Tabernari irribarretsua ohiko taberna bateko barra atzean, eguneko menuarekin"
+  "referral.image_alt": "Tabernari irribarretsua ohiko taberna bateko barra atzean, eguneko menuarekin",
+  "nav.contact": "Kontaktua",
+  "contact.title": "Hitz egingo dugu?",
+  "contact.subtitle": "Zalantzak, ideiak edo zerbait kontatu nahi badiguzu, mezu batera gaude.",
+  "contact.email_label": "Idatz iezaguzu",
+  "contact.instagram_label": "Jarrai gaitzazu"
 }

@@ -192,5 +192,10 @@
   "referral.copied": "Copied! Paste it wherever you want.",
   "referral.share_error": "Couldn't open the sharing app.",
   "referral.body": "Zampa grows when the places you actually love eating at join in. If you know one that doesn't publish its daily menu yet, drop them a hint — getting started is free and takes two minutes.",
-  "referral.image_alt": "Smiling bartender behind the counter of a traditional bar with daily menu"
+  "referral.image_alt": "Smiling bartender behind the counter of a traditional bar with daily menu",
+  "nav.contact": "Contact",
+  "contact.title": "Let's talk?",
+  "contact.subtitle": "Got questions, ideas, or just want to say hi? We're one message away.",
+  "contact.email_label": "Email us",
+  "contact.instagram_label": "Follow us"
 }
