@@ -418,19 +418,54 @@
   </section>
 
   <!-- ===== Referral: clientes invitan a su bar/restaurante de confianza ===== -->
-  <section id="refer-restaurant" class="section section--white referral-section">
+  <section id="refer-restaurant" class="section section--white section--bg-table referral-section">
     <div class="container">
-      <div class="referral-card fade-up">
-        <div class="referral-card__inner">
-          <span class="referral-card__eyebrow" data-i18n="referral.eyebrow">Tú haces Zampa</span>
-          <h2 class="referral-card__title" data-i18n="referral.title">
+      <div class="split">
+        <div class="split__image split__image--coral fade-left">
+          <div class="referral-phone" aria-hidden="true">
+            <div class="referral-phone__header">
+              <span class="referral-phone__back" aria-hidden="true">‹</span>
+              <span class="referral-phone__avatar">P</span>
+              <div class="referral-phone__contact">
+                <span class="referral-phone__name">Bar de Pepe</span>
+                <span class="referral-phone__sub">online</span>
+              </div>
+            </div>
+            <div class="referral-phone__chat">
+              <div class="referral-bubble">
+                <p class="referral-bubble__text" data-i18n="referral.share_text">Hola! ¿Conoces Zampa? Es una app gratis donde los restaurantes publican su menú del día y los clientes los encuentran cerca. Creo que os puede encajar:</p>
+                <span class="referral-bubble__preview">
+                  <span class="referral-bubble__preview-img">
+                    <img src="assets/logo.png" alt="" loading="lazy">
+                  </span>
+                  <span class="referral-bubble__preview-meta">
+                    <span class="referral-bubble__preview-title">Zampa</span>
+                    <span class="referral-bubble__preview-domain">getzampa.com</span>
+                  </span>
+                </span>
+                <span class="referral-bubble__meta">
+                  14:32
+                  <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 6.5 4 9.5 9 1"/><path d="M6.5 6.5 9.5 9.5 15 1"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="split__text fade-right">
+          <span class="referral-eyebrow" data-i18n="referral.eyebrow">Tú haces Zampa</span>
+          <h2 class="section__title section__title--left" data-i18n="referral.title">
             ¿Tu bar de toda la vida aún no está en Zampa?
           </h2>
-          <p class="referral-card__text" data-i18n="referral.subtitle">
+          <p class="section__subtitle section__subtitle--left" data-i18n="referral.subtitle">
             Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.
           </p>
-          <div class="referral-card__actions">
-            <button id="referralShareBtn" type="button" class="referral-card__cta">
+          <div class="referral-actions">
+            <button id="referralShareBtn" type="button" class="referral-cta">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                 <polyline points="16 6 12 2 8 6"/>
@@ -438,11 +473,11 @@
               </svg>
               <span data-i18n="referral.cta">Compartirlo con mi restaurante</span>
             </button>
-            <a href="#merchants" class="referral-card__link" data-i18n="referral.cta_secondary">
+            <a href="#merchants" class="referral-link" data-i18n="referral.cta_secondary">
               Ver cómo funciona para comercios →
             </a>
           </div>
-          <p id="referralStatus" class="referral-card__status" role="status" aria-live="polite"></p>
+          <p id="referralStatus" class="referral-status" role="status" aria-live="polite"></p>
         </div>
       </div>
     </div>
