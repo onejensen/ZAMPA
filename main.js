@@ -265,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  setupNewsletterForm('newsletterFormHero', 'heroNewsletterEmail', 'heroNewsletterStatus');
   setupNewsletterForm('newsletterForm', 'newsletterEmail', 'newsletterStatus');
 
   /**
