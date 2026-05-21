@@ -184,12 +184,13 @@
   "share.cta.open_in_zampa": "Obre a Zampa",
   "share.cta.download_zampa": "Descarrega Zampa",
   "share.cta.view_restaurant_profile": "Veure perfil del restaurant",
-  "referral.eyebrow": "Tu fas Zampa",
-  "referral.title": "El teu bar de tota la vida encara no és a Zampa?",
-  "referral.subtitle": "Zampa creix quan s'hi sumen els llocs on de veritat t'agrada menjar. Si en coneixes un que encara no publica el seu menú del dia, dóna-li la pista — començar és gratis i es triga dos minuts.",
+  "referral.title": "Tu fas Zampa",
+  "referral.subtitle": "El teu bar de tota la vida encara no és a Zampa?",
   "referral.cta": "Compartir-ho amb el meu restaurant",
   "referral.cta_secondary": "Veure com funciona per a comerços →",
   "referral.share_text": "Hola! Coneixes Zampa? És una app gratis on els restaurants publiquen el seu menú del dia i els clients els trobem a prop. Crec que us pot encaixar:",
   "referral.copied": "Copiat! Enganxa-ho on vulguis.",
-  "referral.share_error": "No s'ha pogut obrir l'app per compartir."
+  "referral.share_error": "No s'ha pogut obrir l'app per compartir.",
+  "referral.body": "Zampa creix quan s'hi sumen els llocs on de veritat t'agrada menjar. Si en coneixes un que encara no publica el seu menú del dia, dóna-li la pista — començar és gratis i es triga dos minuts.",
+  "referral.image_alt": "Cambrer darrere d'una barra eixugant un got"
 }

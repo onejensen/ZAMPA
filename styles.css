@@ -1548,41 +1548,29 @@ summary,
 }
 
 /* ===== Referral (cliente recomienda Zampa a su restaurante) =====
-   Bloque centrado: eyebrow + título + subtítulo + CTAs. Encaja con
-   el resto de secciones que centran su contenido (benefits, faq). */
+   Split (foto + texto), mismo patrón que customers/merchants. */
 .referral-section {
   overflow: hidden;
 }
 
-.referral-content {
-  max-width: 720px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.referral-eyebrow {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(255, 107, 107, 0.14);
-  border: 1px solid rgba(255, 107, 107, 0.32);
-  color: #c83d3d;
+/* Párrafo de cuerpo bajo el subtítulo. Menos protagonismo que el
+   subtítulo (que ya hace la pregunta clave), pero más cuerpo y
+   detalle del por qué. */
+.referral-body {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: clamp(0.96rem, 1.4vw, 1.06rem);
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0 0 28px;
+  max-width: 520px;
 }
 
-/* CTAs centrados bajo el texto */
 .referral-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 22px;
   align-items: center;
-  justify-content: center;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .referral-cta {

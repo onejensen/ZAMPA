@@ -184,12 +184,13 @@
   "share.cta.open_in_zampa": "Avaa Zampassa",
   "share.cta.download_zampa": "Lataa Zampa",
   "share.cta.view_restaurant_profile": "Katso ravintolan profiili",
-  "referral.eyebrow": "Sinä teet Zampan",
-  "referral.title": "Eikö suosikkipaikkasi ole vielä Zampassa?",
-  "referral.subtitle": "Zampa kasvaa, kun mukaan tulevat ne paikat, joissa todella nautit syömisestä. Jos tiedät paikan, joka ei vielä julkaise päivän menuaan, vinkkaa siitä heille — aloittaminen on ilmaista ja vie kaksi minuuttia.",
+  "referral.title": "Sinä teet Zampan",
+  "referral.subtitle": "Eikö suosikkipaikkasi ole vielä Zampassa?",
   "referral.cta": "Jaa ravintolalleni",
   "referral.cta_secondary": "Katso miten se toimii kauppiaille →",
   "referral.share_text": "Hei! Tunnetko Zampan? Se on ilmainen sovellus, jossa ravintolat julkaisevat päivän menut ja asiakkaat löytävät ne läheltä. Mielestäni se voisi sopia teille:",
   "referral.copied": "Kopioitu! Liitä mihin haluat.",
-  "referral.share_error": "Jakosovellusta ei voitu avata."
+  "referral.share_error": "Jakosovellusta ei voitu avata.",
+  "referral.body": "Zampa kasvaa, kun mukaan tulevat ne paikat, joissa todella nautit syömisestä. Jos tiedät paikan, joka ei vielä julkaise päivän menuaan, vinkkaa siitä heille — aloittaminen on ilmaista ja vie kaksi minuuttia.",
+  "referral.image_alt": "Baarimikko baaritiskin takana kuivaamassa lasia"
 }

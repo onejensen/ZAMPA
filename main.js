@@ -220,6 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
         el.setAttribute('placeholder', currentTranslations[key]);
       }
     });
+
+    document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+      const key = el.getAttribute('data-i18n-alt');
+      if (currentTranslations[key] != null) {
+        el.setAttribute('alt', currentTranslations[key]);
+      }
+    });
   }
 
   // ----- Newsletter signup -----

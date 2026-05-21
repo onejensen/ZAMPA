@@ -420,28 +420,41 @@
   <!-- ===== Referral: clientes invitan a su bar/restaurante de confianza ===== -->
   <section id="refer-restaurant" class="section section--white section--bg-table referral-section">
     <div class="container">
-      <div class="referral-content fade-up">
-        <span class="referral-eyebrow" data-i18n="referral.eyebrow">Tú haces Zampa</span>
-        <h2 class="section__title" data-i18n="referral.title">
-          ¿Tu bar de toda la vida aún no está en Zampa?
-        </h2>
-        <p class="section__subtitle" data-i18n="referral.subtitle">
-          Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.
-        </p>
-        <div class="referral-actions">
-          <button id="referralShareBtn" type="button" class="referral-cta">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-              <polyline points="16 6 12 2 8 6"/>
-              <line x1="12" y1="2" x2="12" y2="15"/>
-            </svg>
-            <span data-i18n="referral.cta">Compartirlo con mi restaurante</span>
-          </button>
-          <a href="#merchants" class="referral-link" data-i18n="referral.cta_secondary">
-            Ver cómo funciona para comercios →
-          </a>
+      <div class="split">
+        <div class="split__image split__image--coral split__image--photo fade-left">
+          <!-- TODO: sustituir por la imagen licenciada de Shutterstock (camarero
+               detrás de la barra secando un vaso). Mientras tanto, placeholder
+               de Unsplash con el mismo encuadre/tono. -->
+          <img src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=900&q=80" alt="Camarero detrás de una barra secando un vaso" data-i18n-alt="referral.image_alt" loading="lazy">
+          <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
         </div>
-        <p id="referralStatus" class="referral-status" role="status" aria-live="polite"></p>
+        <div class="split__text fade-right">
+          <h2 class="section__title section__title--left" data-i18n="referral.title">
+            Tú haces Zampa
+          </h2>
+          <p class="section__subtitle section__subtitle--left" data-i18n="referral.subtitle">
+            ¿Tu bar de toda la vida aún no está en Zampa?
+          </p>
+          <p class="referral-body" data-i18n="referral.body">
+            Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.
+          </p>
+          <div class="referral-actions">
+            <button id="referralShareBtn" type="button" class="referral-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              <span data-i18n="referral.cta">Compartirlo con mi restaurante</span>
+            </button>
+            <a href="#merchants" class="referral-link" data-i18n="referral.cta_secondary">
+              Ver cómo funciona para comercios →
+            </a>
+          </div>
+          <p id="referralStatus" class="referral-status" role="status" aria-live="polite"></p>
+        </div>
       </div>
     </div>
   </section>

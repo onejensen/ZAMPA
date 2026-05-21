@@ -184,12 +184,13 @@
   "share.cta.open_in_zampa": "Ouvrir dans Zampa",
   "share.cta.download_zampa": "Télécharger Zampa",
   "share.cta.view_restaurant_profile": "Voir le profil du restaurant",
-  "referral.eyebrow": "Tu fais Zampa",
-  "referral.title": "Ton resto de toujours n'est pas encore sur Zampa ?",
-  "referral.subtitle": "Zampa grandit quand les endroits où tu aimes vraiment manger nous rejoignent. Si tu en connais un qui ne publie pas encore son menu du jour, glisse-leur l'info — c'est gratuit et ça prend deux minutes.",
+  "referral.title": "Tu fais Zampa",
+  "referral.subtitle": "Ton resto de toujours n'est pas encore sur Zampa ?",
   "referral.cta": "Le partager avec mon restaurant",
   "referral.cta_secondary": "Voir comment ça marche pour les commerçants →",
   "referral.share_text": "Salut ! Tu connais Zampa ? C'est une appli gratuite où les restaurants publient leur menu du jour et où les clients les trouvent à proximité. Je crois que ça pourrait vous convenir :",
   "referral.copied": "Copié ! Colle-le où tu veux.",
-  "referral.share_error": "Impossible d'ouvrir l'application de partage."
+  "referral.share_error": "Impossible d'ouvrir l'application de partage.",
+  "referral.body": "Zampa grandit quand les endroits où tu aimes vraiment manger nous rejoignent. Si tu en connais un qui ne publie pas encore son menu du jour, glisse-leur l'info — c'est gratuit et ça prend deux minutes.",
+  "referral.image_alt": "Serveur derrière un comptoir essuyant un verre"
 }

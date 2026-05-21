@@ -184,12 +184,13 @@
   "share.cta.open_in_zampa": "Apri su Zampa",
   "share.cta.download_zampa": "Scarica Zampa",
   "share.cta.view_restaurant_profile": "Vedi profilo del ristorante",
-  "referral.eyebrow": "Zampa la fai tu",
-  "referral.title": "Il tuo locale di sempre non è ancora su Zampa?",
-  "referral.subtitle": "Zampa cresce quando si aggiungono i posti in cui ti piace davvero mangiare. Se ne conosci uno che non pubblica ancora il suo menu del giorno, fagli un cenno — iniziare è gratis e ci vogliono due minuti.",
+  "referral.title": "Zampa la fai tu",
+  "referral.subtitle": "Il tuo locale di sempre non è ancora su Zampa?",
   "referral.cta": "Condividerlo col mio ristorante",
   "referral.cta_secondary": "Vedi come funziona per i locali →",
   "referral.share_text": "Ciao! Conosci Zampa? È un'app gratuita dove i ristoranti pubblicano il menu del giorno e i clienti li trovano vicino. Penso che possa fare al caso vostro:",
   "referral.copied": "Copiato! Incollalo dove vuoi.",
-  "referral.share_error": "Impossibile aprire l'app di condivisione."
+  "referral.share_error": "Impossibile aprire l'app di condivisione.",
+  "referral.body": "Zampa cresce quando si aggiungono i posti in cui ti piace davvero mangiare. Se ne conosci uno che non pubblica ancora il suo menu del giorno, fagli un cenno — iniziare è gratis e ci vogliono due minuti.",
+  "referral.image_alt": "Barista dietro al bancone che asciuga un bicchiere"
 }

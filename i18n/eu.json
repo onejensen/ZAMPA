@@ -184,12 +184,13 @@
   "share.cta.open_in_zampa": "Ireki Zampan",
   "share.cta.download_zampa": "Deskargatu Zampa",
   "share.cta.view_restaurant_profile": "Ikusi jatetxearen profila",
-  "referral.eyebrow": "Zuk egiten duzu Zampa",
-  "referral.title": "Zure betiko tabernarik oraindik ez dago Zampan?",
-  "referral.subtitle": "Zampa hazi egiten da gustuko dituzun lekuak ere bertan daudenean. Bere eguneko menua oraindik argitaratzen ez duen bat ezagutzen baduzu, esan iezaiozu — hastea doan da eta bi minutu besterik ez.",
+  "referral.title": "Zuk egiten duzu Zampa",
+  "referral.subtitle": "Zure betiko tabernarik oraindik ez dago Zampan?",
   "referral.cta": "Nire jatetxearekin partekatu",
   "referral.cta_secondary": "Ikusi merkatariekin nola funtzionatzen duen →",
   "referral.share_text": "Kaixo! Ezagutzen duzu Zampa? Doako app bat da: jatetxeek eguneko menua argitaratzen dute eta bezeroek gertu aurkitzen ditugu. Egokia izan daitekeela uste dut:",
   "referral.copied": "Kopiatuta! Itsatsi nahi duzun lekuan.",
-  "referral.share_error": "Ezin izan da partekatzeko aplikazioa ireki."
+  "referral.share_error": "Ezin izan da partekatzeko aplikazioa ireki.",
+  "referral.body": "Zampa hazi egiten da gustuko dituzun lekuak ere bertan daudenean. Bere eguneko menua oraindik argitaratzen ez duen bat ezagutzen baduzu, esan iezaiozu — hastea doan da eta bi minutu besterik ez.",
+  "referral.image_alt": "Tabernaria barra atzean edalontzi bat lehortzen"
 }
