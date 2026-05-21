@@ -1574,12 +1574,13 @@ summary,
   color: #fff;
 }
 
+/* Email → naranja brand (primary). Igual paleta que el CTA referral. */
 .contact-card--email {
   --card-tint: rgba(250, 175, 50, 0.10);
 }
 
 .contact-card--email .contact-card__icon {
-  background: linear-gradient(135deg, #FAAF32 0%, #f99c1a 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   box-shadow:
     0 12px 24px rgba(250, 175, 50, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
@@ -1589,24 +1590,24 @@ summary,
   border-color: rgba(250, 175, 50, 0.4);
 }
 
+/* Instagram → teal brand (secondary). Antes usábamos el gradiente
+   púrpura/rosa oficial de IG, que no encajaba con la paleta del sitio
+   (naranja-teal-coral). El teal hace de "color comunicación" en el resto
+   de la web (Clientes section, eyebrow del propio contacto), así que
+   balancea bien al naranja del email. */
 .contact-card--ig {
-  --card-tint: rgba(220, 39, 67, 0.08);
+  --card-tint: rgba(0, 184, 169, 0.10);
 }
 
 .contact-card--ig .contact-card__icon {
-  background: linear-gradient(135deg,
-    #f09433 0%,
-    #e6683c 25%,
-    #dc2743 50%,
-    #cc2366 75%,
-    #bc1888 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, #007e72 100%);
   box-shadow:
-    0 12px 24px rgba(220, 39, 67, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 12px 24px rgba(0, 184, 169, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 
 .contact-card--ig:hover {
-  border-color: rgba(220, 39, 67, 0.36);
+  border-color: rgba(0, 184, 169, 0.4);
 }
 
 .contact-card__meta {
@@ -1668,8 +1669,8 @@ summary,
 }
 
 .contact-card--ig:hover .contact-card__arrow {
-  background: rgba(220, 39, 67, 0.18);
-  color: #bc1888;
+  background: rgba(0, 184, 169, 0.18);
+  color: #007e72;
 }
 
 @media (max-width: 767px) {
