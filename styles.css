@@ -2179,6 +2179,12 @@ html.is-android body[data-page="download"] .store-btn--ios {
   background: #FAAF31;
 }
 
+/* Continuación de #customers (mismo motivo: el resaltado superior
+   pertenece a #customers, el borde alto del panel cliente). */
+#refer-restaurant {
+  background: #FAAF31;
+}
+
 /* The Hero gets a richer warmth — a radial highlight in the upper
    left adds focus to the headline without harming legibility. */
 .hero {
@@ -2297,6 +2303,17 @@ html.is-android body[data-page="download"] .store-btn--ios {
   clip-path: url(#section-merge-top);
 }
 #invite-customers {
+  clip-path: url(#section-merge-bottom);
+}
+/* Mismo patrón para el bloque cliente: #customers + #refer-restaurant se
+   funden en un único panel (recto en los bordes que se tocan). #customers
+   conserva su onda superior (variante -a) para no alterar la transición
+   con el hero; #refer-restaurant arranca recto y conserva la onda inferior
+   y pierde el degradado superior (regla más abajo). */
+#customers {
+  clip-path: url(#section-merge-top-a);
+}
+#refer-restaurant {
   clip-path: url(#section-merge-bottom);
 }
 #faq {

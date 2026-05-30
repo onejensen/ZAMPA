@@ -171,6 +171,12 @@
       <clipPath id="section-merge-top" clipPathUnits="objectBoundingBox">
         <path d="M 0,0.05 C 0.33,0 0.66,0.09 1,0.04 L 1,1 L 0,1 Z"/>
       </clipPath>
+      <!-- Variante con la onda superior de #section-wave-a (la que ya tenía
+           #customers), para fundir el bloque cliente sin alterar la
+           transición hero → cliente. -->
+      <clipPath id="section-merge-top-a" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.04 C 0.25,0.09 0.75,0 1,0.05 L 1,1 L 0,1 Z"/>
+      </clipPath>
       <clipPath id="section-merge-bottom" clipPathUnits="objectBoundingBox">
         <path d="M 0,0 L 1,0 L 1,0.95 C 0.75,1 0.25,0.91 0,0.96 Z"/>
       </clipPath>
@@ -321,6 +327,45 @@
               </div>
             </li>
           </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Referral: clientes invitan a su bar/restaurante de confianza (fusionada con la sección cliente) ===== -->
+  <section id="refer-restaurant" class="section section--white section--bg-table referral-section">
+    <div class="container">
+      <div class="split">
+        <div class="split__image split__image--coral split__image--photo fade-left">
+          <img src="assets/referral-bartender.jpg" alt="Camarero sonriente detrás de la barra de un bar tradicional con menú del día" data-i18n-alt="referral.image_alt" loading="lazy">
+          <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="split__text fade-right">
+          <h2 class="section__title section__title--left" data-i18n="referral.title">
+            Tú haces Zampa
+          </h2>
+          <p class="section__subtitle section__subtitle--left" data-i18n="referral.subtitle">
+            ¿Tu bar de toda la vida aún no está en Zampa?
+          </p>
+          <p class="referral-body" data-i18n="referral.body">
+            Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.
+          </p>
+          <div class="referral-actions">
+            <button id="referralShareBtn" type="button" class="referral-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              <span data-i18n="referral.cta">Decírselo a mi bar</span>
+            </button>
+            <a href="#merchants" class="referral-link" data-i18n="referral.cta_secondary">
+              Ver cómo funciona para comercios →
+            </a>
+          </div>
+          <p id="referralStatus" class="referral-status" role="status" aria-live="polite"></p>
         </div>
       </div>
     </div>
@@ -486,45 +531,6 @@
               <span data-i18n="benefits.merchants.b6">Llega a miles de clientes potenciales que buscan donde comer cerca de ti cada dia</span>
             </li>
           </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Referral: clientes invitan a su bar/restaurante de confianza ===== -->
-  <section id="refer-restaurant" class="section section--white section--bg-table referral-section">
-    <div class="container">
-      <div class="split">
-        <div class="split__image split__image--coral split__image--photo fade-left">
-          <img src="assets/referral-bartender.jpg" alt="Camarero sonriente detrás de la barra de un bar tradicional con menú del día" data-i18n-alt="referral.image_alt" loading="lazy">
-          <div class="decorative-dots decorative-dots--coral" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="split__text fade-right">
-          <h2 class="section__title section__title--left" data-i18n="referral.title">
-            Tú haces Zampa
-          </h2>
-          <p class="section__subtitle section__subtitle--left" data-i18n="referral.subtitle">
-            ¿Tu bar de toda la vida aún no está en Zampa?
-          </p>
-          <p class="referral-body" data-i18n="referral.body">
-            Zampa crece cuando se suman los sitios donde de verdad te gusta comer. Si conoces uno que todavía no publica su menú del día, regálale el dato — empezar es gratis y se tarda dos minutos.
-          </p>
-          <div class="referral-actions">
-            <button id="referralShareBtn" type="button" class="referral-cta">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                <polyline points="16 6 12 2 8 6"/>
-                <line x1="12" y1="2" x2="12" y2="15"/>
-              </svg>
-              <span data-i18n="referral.cta">Decírselo a mi bar</span>
-            </button>
-            <a href="#merchants" class="referral-link" data-i18n="referral.cta_secondary">
-              Ver cómo funciona para comercios →
-            </a>
-          </div>
-          <p id="referralStatus" class="referral-status" role="status" aria-live="polite"></p>
         </div>
       </div>
     </div>
