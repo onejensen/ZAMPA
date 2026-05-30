@@ -164,6 +164,16 @@
       <clipPath id="faq-wave" clipPathUnits="objectBoundingBox">
         <path d="M 0,0.03 C 0.25,0 0.75,0.06 1,0.02 L 1,0.97 C 0.75,1 0.25,0.94 0,0.98 Z"/>
       </clipPath>
+      <!-- Pareja para fundir #merchants con #invite-customers en un único
+           panel: la de arriba mantiene su onda superior y se aplana abajo;
+           la de abajo arranca recta y conserva la onda inferior. Los bordes
+           rectos que se tocan eliminan el hueco oscuro entre ambas. -->
+      <clipPath id="section-merge-top" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.05 C 0.33,0 0.66,0.09 1,0.04 L 1,1 L 0,1 Z"/>
+      </clipPath>
+      <clipPath id="section-merge-bottom" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0 L 1,0 L 1,0.95 C 0.75,1 0.25,0.91 0,0.96 Z"/>
+      </clipPath>
     </defs>
   </svg>
 
@@ -358,7 +368,7 @@
   <!-- Mensaje de crecimiento: el dueño trae a sus clientes de siempre → siguen
        su perfil → reciben sus ofertas y descubren más sitios → la red se expande.
        CTA = mailto pre-rellenado (sin backend); el cartel se gestiona a mano. -->
-  <section id="invite-customers" class="section section--white section--bg-table invite-section">
+  <section id="invite-customers" class="section section--cream section--bg-kitchen invite-section">
     <div class="container">
       <div class="split">
         <div class="split__image split__image--coral split__image--photo fade-left">

@@ -773,6 +773,13 @@ summary,
   flex-wrap: wrap;
 }
 
+/* Download page: muestra solo el botón del SO detectado (script en
+   download.html marca <html> con is-ios/is-android). Sin clase → ambos. */
+html.is-ios body[data-page="download"] .store-btn--android,
+html.is-android body[data-page="download"] .store-btn--ios {
+  display: none;
+}
+
 .store-btn {
   display: inline-flex;
   align-items: center;
@@ -2196,6 +2203,12 @@ summary,
     #FAAF31;
 }
 
+/* Continuación de #merchants: naranja plano, sin el degradado superior
+   (ese resaltado pertenece al borde alto del panel, que es #merchants). */
+#invite-customers {
+  background: #FAAF31;
+}
+
 /* The Hero gets a richer warmth — a radial highlight in the upper
    left adds focus to the headline without harming legibility. */
 .hero {
@@ -2311,9 +2324,17 @@ summary,
 .section--teal-light {
   clip-path: url(#section-wave-a);
 }
-/* Alternate the wave shape on every other section for visual rhythm */
+/* #merchants + #invite-customers se funden en un único panel: la primera
+   conserva su onda superior (antes #section-wave-b) pero se aplana abajo,
+   y la segunda arranca recta y conserva la onda inferior. Bordes rectos
+   que se tocan = sin hueco oscuro entre ambas. #invite-customers pierde
+   además el degradado superior (regla más abajo) porque es continuación,
+   no un panel nuevo. */
 #merchants {
-  clip-path: url(#section-wave-b);
+  clip-path: url(#section-merge-top);
+}
+#invite-customers {
+  clip-path: url(#section-merge-bottom);
 }
 #faq {
   clip-path: url(#faq-wave);
