@@ -81,38 +81,8 @@ summary,
   overflow: hidden;
 }
 
-.section--bg-terrace::before,
-.section--bg-table::before,
-.section--bg-kitchen::before,
-.section--bg-market::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.06;
-  z-index: 0;
-}
-
-/* Terraza de restaurante — sección clientes */
-.section--bg-terrace::before {
-  background-image: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80');
-}
-
-/* Mesa con platos — sección FAQ */
-.section--bg-table::before {
-  background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80');
-}
-
-/* Cocina de restaurante — sección comercios */
-.section--bg-kitchen::before {
-  background-image: url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&q=80');
-}
-
-/* Mercado/barra con tapas — sección beneficios */
-.section--bg-market::before {
-  background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80');
-}
+/* Las fotos de fondo a baja opacidad de estas secciones se retiraron;
+   solo el hero conserva su imagen de fondo (regla aparte más abajo). */
 
 .section--bg-terrace > *,
 .section--bg-table > *,
@@ -2224,13 +2194,6 @@ html.is-android body[data-page="download"] .store-btn--ios {
 
 /* Lift decorative photo backgrounds slightly so they read as
    texture under the orange instead of disappearing. */
-.section--bg-terrace::before,
-.section--bg-table::before,
-.section--bg-kitchen::before,
-.section--bg-market::before {
-  opacity: 0.10;
-  mix-blend-mode: multiply;
-}
 .section--bg-hero::before {
   opacity: 0.08;
   mix-blend-mode: multiply;
