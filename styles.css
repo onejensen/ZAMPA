@@ -2344,3 +2344,26 @@ html.is-android body[data-page="download"] .store-btn--ios {
     margin-bottom: -24px;
   }
 }
+
+/* Aprieta el padding en las juntas fusionadas (cliente y comercio): antes
+   quedaban ~160px de naranja entre los dos contenidos (100px inferior +
+   100px superior − 40px de solape). Los bordes que se tocan son rectos,
+   así que no hay onda que invada el contenido y se puede recortar. */
+#customers,
+#merchants {
+  padding-bottom: 48px;
+}
+#refer-restaurant,
+#invite-customers {
+  padding-top: 48px;
+}
+@media (max-width: 767px) {
+  #customers,
+  #merchants {
+    padding-bottom: 32px;
+  }
+  #refer-restaurant,
+  #invite-customers {
+    padding-top: 32px;
+  }
+}
