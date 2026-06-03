@@ -74,6 +74,9 @@
     text-decoration: none;
   }
   .back:hover { color: #1A1A2E; }
+  .store-badge { display: inline-flex; transition: transform .1s; }
+  .store-badge img { height: 48px; width: auto; display: block; }
+  .store-badge:active { transform: scale(0.97); }
   .hidden { display: none; }
 </style>
 </head>
@@ -85,11 +88,11 @@
     <h1>Abre esta oferta en Zampa</h1>
     <p>Instala la app para ver los menús del día cerca de ti.</p>
     <div class="cta-row">
-      <a id="ios-store" class="btn btn-primary" href="https://apps.apple.com/app/zampa">
-        📱 App Store
+      <a id="ios-store" class="store-badge" href="https://apps.apple.com/us/app/zampa/id6762012593">
+        <img src="/assets/badges/app-store-es.svg" alt="Descárgalo en el App Store" />
       </a>
-      <a id="android-store" class="btn" href="https://play.google.com/store/apps/details?id=com.sozolab.zampa">
-        🤖 Google Play
+      <a id="android-store" class="store-badge" href="https://play.google.com/store/apps/details?id=com.sozolab.zampa">
+        <img src="/assets/badges/google-play-es.png" alt="Disponible en Google Play" />
       </a>
     </div>
     <a href="/" class="back">← Volver a getzampa.com</a>

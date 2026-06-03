@@ -318,6 +318,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
+   * Swap the official store badges to the active language's artwork.
+   * Apple ships per-locale SVGs (white variant for dark contexts, marked with
+   * data-variant="white"); Google ships a single per-locale PNG. Every one of
+   * the 12 langs has a file on disk, so there's no missing-asset case.
+   */
+  function updateBadges(lang) {
+    document.querySelectorAll('img[data-badge]').forEach(img => {
+      const kind = img.getAttribute('data-badge');
+      if (kind === 'ios') {
+        const variant = img.getAttribute('data-variant') === 'white' ? '-white' : '';
+        img.src = `assets/badges/app-store-${lang}${variant}.svg`;
+      } else if (kind === 'android') {
+        img.src = `assets/badges/google-play-${lang}.png`;
+      }
+    });
+  }
+
+  /**
    * Update UI state to reflect the active language.
    */
   function updateLangUI(lang) {
@@ -336,6 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update <html lang="">
     document.documentElement.lang = lang;
+
+    // Swap store badges to the active locale's official artwork
+    updateBadges(lang);
   }
 
   /**

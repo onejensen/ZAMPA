@@ -736,65 +736,42 @@ summary,
   }
 }
 
-/* Store buttons — pill style */
+/* Store buttons */
 .store-buttons {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-/* Download page: muestra solo el botón del SO detectado (script en
+/* Download page: muestra solo el badge del SO detectado (script en
    download.html marca <html> con is-ios/is-android). Sin clase → ambos. */
-html.is-ios body[data-page="download"] .store-btn--android,
-html.is-android body[data-page="download"] .store-btn--ios {
+html.is-ios body[data-page="download"] .store-badge--android,
+html.is-android body[data-page="download"] .store-badge--ios {
   display: none;
 }
 
-.store-btn {
+/* Official store badges — App Store (SVG) + Google Play (PNG), localized.
+   Both assets are trimmed tight, so a shared height aligns them visually.
+   Drop-shadow (not box-shadow) follows the badge's rounded silhouette. */
+.store-badge {
   display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 28px;
-  background: var(--white);
-  color: var(--text);
-  border-radius: 50px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
-  box-shadow: 0 4px 20px rgba(250, 175, 50, 0.2);
-  border: 2px solid rgba(250, 175, 50, 0.15);
+  transition: transform 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.14));
 }
 
-.store-btn:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(250, 175, 50, 0.35);
-  background: var(--primary-surface);
-}
-
-.store-btn:active {
-  transform: translateY(-1px) scale(1.0);
-}
-
-.store-btn svg {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.store-btn__text {
-  text-align: left;
-  line-height: 1.2;
-}
-
-.store-btn__text small {
-  font-size: 0.7rem;
-  font-weight: 400;
-  opacity: 0.6;
+.store-badge img {
   display: block;
+  height: 52px;
+  width: auto;
 }
 
-.store-btn__text strong {
-  font-size: 1rem;
+.store-badge:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.22));
+}
+
+.store-badge:active {
+  transform: translateY(-1px) scale(1.0);
 }
 
 @media (max-width: 767px) {
@@ -1731,25 +1708,17 @@ html.is-android body[data-page="download"] .store-btn--ios {
   gap: 12px;
 }
 
-.footer .store-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white);
-  padding: 12px 24px;
-  font-size: 0.85rem;
-  box-shadow: none;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 50px;
+/* Footer is dark (var(--text)); iOS badge uses the white variant there. */
+.footer .store-badge {
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
 }
 
-.footer .store-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(250, 175, 50, 0.15);
-  transform: translateY(-2px);
-  border-color: rgba(250, 175, 50, 0.3);
+.footer .store-badge img {
+  height: 44px;
 }
 
-.footer .store-btn__text strong {
-  font-size: 0.9rem;
+.footer .store-badge:hover {
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45));
 }
 
 .footer__links {
@@ -2131,8 +2100,8 @@ html.is-android body[data-page="download"] .store-btn--ios {
     padding: 100px 0 96px;
   }
 
-  .store-btn {
-    padding: 14px 22px;
+  .store-badge img {
+    height: 46px;
   }
 
   .footer__links {
