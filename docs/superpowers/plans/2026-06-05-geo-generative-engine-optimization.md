@@ -96,10 +96,14 @@ Huecos (por impacto):
   MistralAI, YouBot) añadidos a `botDetect.js` → reciben la rama SSR **indexable**
   con JSON-LD en vez del shell `noindex`. Se mantiene el `noindex` del shell
   humano (decisión de producto sobre páginas efímeras intacta).
+- **2026-06-05 · Body del SSR de bots enriquecido ✅** — la rama bot de `/o` y
+  `/r` pasaba un `<body>` con solo un enlace; ahora emite el mismo contenido
+  visible que el humano (título, precio, descripción, restaurante, imagen con
+  `alt`) reutilizando las funciones de render vía helpers compartidos
+  (`renderOfferMain`/`renderRestaurantMain`). Paridad de contenido, sin cloaking.
 
 ### Pendiente
 - **Fase 3** — sitemap dinámico (bloqueada: endpoint en backend `eatout-70b8b`).
 - **Fase 4** — contenido-respuesta (guías; opcional landings por ciudad).
 - **Fase 5** — medición: rastrear hits de los crawlers ya enrutados; validar
-  schema en producción; (opcional) enriquecer el `<body>` de la rama bot con el
-  contenido visible para dar más texto extraíble a los crawlers.
+  schema en producción.
