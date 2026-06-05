@@ -5,7 +5,21 @@ import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js
 import { cacheControlForOffer } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
+import { buildOfferSchema, buildRestaurantSchema, renderJsonLd } from '../_lib/schema.js';
 import { t } from '../_lib/i18n.js';
+
+// Picks the JSON-LD for an /o response: the full offer graph when the offer is
+// live, the bare restaurant node when the offer expired but its restaurant is
+// known, and nothing otherwise. Returns a ready-to-inline <script> string ('').
+function offerJsonLd({ canonicalUrl, offerExists, offer, restaurant }) {
+  let schema = null;
+  if (offerExists && offer) {
+    schema = buildOfferSchema({ canonicalUrl, offer, restaurant });
+  } else if (restaurant) {
+    schema = buildRestaurantSchema(restaurant);
+  }
+  return renderJsonLd(schema);
+}
 
 export async function onRequest({ request, params }) {
   const id = (params.id || '').trim();
@@ -68,6 +82,8 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
     ogLocale,
   });
 
+  const jsonLd = offerJsonLd({ canonicalUrl, offerExists, offer, restaurant });
+
   const htmlLang = ogLocale.split('_')[0];
   const html = `<!DOCTYPE html>
 <html lang="${escapeHtml(htmlLang)}">
@@ -75,6 +91,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
   <meta charset="UTF-8">
   <title>${escapeHtml(title)}</title>
   ${metaTags}
+  ${jsonLd}
 </head>
 <body>
   <a href="${escapeHtml(canonicalUrl)}">${escapeHtml(title)}</a>
@@ -113,7 +130,9 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
     mainContent = renderOfferMissingMain({ locale });
   }
 
-  const html = renderShell({ title, canonicalUrl, mainContent, locale });
+  const jsonLd = offerJsonLd({ canonicalUrl, offerExists, offer, restaurant });
+
+  const html = renderShell({ title, canonicalUrl, mainContent, locale, jsonLd });
 
   return new Response(html, {
     headers: {

@@ -5,6 +5,7 @@ import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js
 import { cacheControlForRestaurant } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
+import { buildRestaurantSchema, renderJsonLd } from '../_lib/schema.js';
 import { t } from '../_lib/i18n.js';
 
 export async function onRequest({ request, params }) {
@@ -53,6 +54,10 @@ function renderBotResponse({ canonicalUrl, locale, data }) {
     ogLocale,
   });
 
+  const jsonLd = renderJsonLd(
+    exists && restaurant ? buildRestaurantSchema(restaurant) : null
+  );
+
   const htmlLang = ogLocale.split('_')[0];
   const html = `<!DOCTYPE html>
 <html lang="${escapeHtml(htmlLang)}">
@@ -60,6 +65,7 @@ function renderBotResponse({ canonicalUrl, locale, data }) {
   <meta charset="UTF-8">
   <title>${escapeHtml(title)}</title>
   ${metaTags}
+  ${jsonLd}
 </head>
 <body>
   <a href="${escapeHtml(canonicalUrl)}">${escapeHtml(title)}</a>
@@ -122,7 +128,11 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
     mainContent = renderRestaurantMissingMain({ locale });
   }
 
-  const html = renderShell({ title, canonicalUrl, mainContent, locale });
+  const jsonLd = renderJsonLd(
+    exists && restaurant ? buildRestaurantSchema(restaurant) : null
+  );
+
+  const html = renderShell({ title, canonicalUrl, mainContent, locale, jsonLd });
 
   return new Response(html, {
     headers: {

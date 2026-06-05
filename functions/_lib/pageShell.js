@@ -140,7 +140,7 @@ const SHARE_CSS = `
   .share-footer-copy { margin-top: 0.5rem; font-size: 0.8125rem; }
 `;
 
-export function renderShell({ title, canonicalUrl, mainContent, locale = 'es' }) {
+export function renderShell({ title, canonicalUrl, mainContent, locale = 'es', jsonLd = '' }) {
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(locale)}">
 <head>
@@ -156,6 +156,7 @@ export function renderShell({ title, canonicalUrl, mainContent, locale = 'es' })
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
   <style>${SHARE_CSS}</style>
+  ${jsonLd}
 </head>
 <body>
   <header class="share-header">
