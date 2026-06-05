@@ -16,13 +16,13 @@ export async function onRequest({ request, params }) {
   const data = await fetchRestaurant(id);
 
   if (isBot(userAgent)) {
-    return renderBotResponse({ canonicalUrl, locale, data });
+    return renderBotResponse({ canonicalUrl, locale, data, id });
   }
 
   return renderBrowserResponse({ canonicalUrl, locale, id, data });
 }
 
-function renderBotResponse({ canonicalUrl, locale, data }) {
+function renderBotResponse({ canonicalUrl, locale, data, id }) {
   const exists = Boolean(data?.exists);
   const restaurant = data?.restaurant || null;
   const ogLocale = toOgLocale(locale);
@@ -57,6 +57,7 @@ function renderBotResponse({ canonicalUrl, locale, data }) {
   const jsonLd = renderJsonLd(
     exists && restaurant ? buildRestaurantSchema(restaurant) : null
   );
+  const mainContent = renderRestaurantMain({ locale, id, exists, restaurant });
 
   const htmlLang = ogLocale.split('_')[0];
   const html = `<!DOCTYPE html>
@@ -68,7 +69,7 @@ function renderBotResponse({ canonicalUrl, locale, data }) {
   ${jsonLd}
 </head>
 <body>
-  <a href="${escapeHtml(canonicalUrl)}">${escapeHtml(title)}</a>
+  <main>${mainContent}</main>
 </body>
 </html>`;
 
@@ -116,18 +117,15 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
   const restaurant = data?.restaurant || null;
 
   let title;
-  let mainContent;
-
   if (exists && restaurant?.name) {
     title = t(locale, 'share.restaurant.title', { name: restaurant.name });
-    mainContent = renderRestaurantExistsMain({ locale, id, restaurant });
   } else {
     // "{not_found_title} · Zampa" — brand suffix is hardcoded because Zampa
     // doesn't translate and · is locale-neutral.
     title = `${t(locale, 'share.restaurant.not_found_title')} · Zampa`;
-    mainContent = renderRestaurantMissingMain({ locale });
   }
 
+  const mainContent = renderRestaurantMain({ locale, id, exists, restaurant });
   const jsonLd = renderJsonLd(
     exists && restaurant ? buildRestaurantSchema(restaurant) : null
   );
@@ -140,6 +138,14 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
       'Cache-Control': cacheControlForRestaurant({ exists }),
     },
   });
+}
+
+// Chooses the inner content for an /r page: the restaurant card or the
+// not-found fallback. Shared by the human shell and the bot SSR body so
+// crawlers index the same content humans see (content parity, no cloaking).
+function renderRestaurantMain({ locale, id, exists, restaurant }) {
+  if (exists && restaurant?.name) return renderRestaurantExistsMain({ locale, id, restaurant });
+  return renderRestaurantMissingMain({ locale });
 }
 
 function renderRestaurantExistsMain({ locale, id, restaurant }) {

@@ -83,6 +83,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
   });
 
   const jsonLd = offerJsonLd({ canonicalUrl, offerExists, offer, restaurant });
+  const mainContent = renderOfferMain({ locale, id, offerExists, offer, restaurant });
 
   const htmlLang = ogLocale.split('_')[0];
   const html = `<!DOCTYPE html>
@@ -94,7 +95,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
   ${jsonLd}
 </head>
 <body>
-  <a href="${escapeHtml(canonicalUrl)}">${escapeHtml(title)}</a>
+  <main>${mainContent}</main>
 </body>
 </html>`;
 
@@ -112,8 +113,6 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
   const restaurant = data?.restaurant || null;
 
   let title;
-  let mainContent;
-
   if (offerExists && offer) {
     title = restaurant?.name
       ? t(locale, 'share.offer.title_with_restaurant', {
@@ -121,15 +120,13 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
           restaurant_name: restaurant.name,
         })
       : offer.title;
-    mainContent = renderOfferExistsMain({ locale, id, offer, restaurant });
   } else if (restaurant) {
     title = t(locale, 'share.offer.expired_with_name', { name: restaurant.name });
-    mainContent = renderOfferExpiredMain({ locale, restaurant });
   } else {
     title = t(locale, 'share.offer.expired_with_name', { name: 'Zampa' });
-    mainContent = renderOfferMissingMain({ locale });
   }
 
+  const mainContent = renderOfferMain({ locale, id, offerExists, offer, restaurant });
   const jsonLd = offerJsonLd({ canonicalUrl, offerExists, offer, restaurant });
 
   const html = renderShell({ title, canonicalUrl, mainContent, locale, jsonLd });
@@ -140,6 +137,16 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
       'Cache-Control': cacheControlForOffer({ exists: offerExists }),
     },
   });
+}
+
+// Chooses the inner content for an /o page: the live offer card, the
+// expired-but-known-restaurant fallback, or the missing fallback. Shared by the
+// human shell and the bot SSR body so crawlers index the same content humans
+// see (content parity, no cloaking).
+function renderOfferMain({ locale, id, offerExists, offer, restaurant }) {
+  if (offerExists && offer) return renderOfferExistsMain({ locale, id, offer, restaurant });
+  if (restaurant) return renderOfferExpiredMain({ locale, restaurant });
+  return renderOfferMissingMain({ locale });
 }
 
 function renderOfferExistsMain({ locale, id, offer, restaurant }) {
