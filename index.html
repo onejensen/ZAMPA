@@ -72,10 +72,13 @@
       "priceCurrency": "EUR"
     },
     "url": "https://www.getzampa.com",
+    "image": "https://www.getzampa.com/assets/og-image-v2.png",
+    "downloadUrl": [
+      "https://apps.apple.com/us/app/zampa/id6762012593",
+      "https://play.google.com/store/apps/details?id=com.sozolab.zampa"
+    ],
     "publisher": {
-      "@type": "Organization",
-      "name": "Sozo Labs",
-      "url": "https://www.getzampa.com"
+      "@id": "https://www.getzampa.com/#organization"
     }
   }
   </script>
@@ -141,6 +144,55 @@
           "@type": "Answer",
           "text": "Escríbenos a soporte@getzampa.com y te responderemos lo antes posible."
         }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Schema: Organization + WebSite (entidad raíz para GEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.getzampa.com/#organization",
+        "name": "Sozo Labs",
+        "url": "https://www.getzampa.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.getzampa.com/assets/favicon-512x512.png"
+        },
+        "brand": {
+          "@type": "Brand",
+          "name": "Zampa"
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": "España"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "soporte@getzampa.com",
+          "areaServed": "ES"
+        },
+        "sameAs": [
+          "https://www.instagram.com/zampa_app",
+          "https://apps.apple.com/us/app/zampa/id6762012593",
+          "https://play.google.com/store/apps/details?id=com.sozolab.zampa"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.getzampa.com/#website",
+        "url": "https://www.getzampa.com",
+        "name": "Zampa",
+        "description": "Descubre las mejores ofertas y menús del día cerca de ti. Zampa conecta a comensales con restaurantes que publican sus ofertas diarias.",
+        "publisher": {
+          "@id": "https://www.getzampa.com/#organization"
+        },
+        "inLanguage": ["es", "ca", "eu", "gl", "en", "pt", "de", "fr", "it"]
       }
     ]
   }

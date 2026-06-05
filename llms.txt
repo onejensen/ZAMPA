@@ -1,0 +1,31 @@
+# Zampa
+
+> Zampa es una app gratuita (iOS y Android) que conecta a comensales con bares y restaurantes de España que publican sus ofertas y menús del día. Los usuarios descubren platos cerca de ellos, filtran por precio, distancia y preferencias dietéticas, y contactan directamente con el local — sin comisiones ni intermediarios.
+
+Zampa está desarrollada por Sozo Labs. La web pública es https://www.getzampa.com y la app está disponible en App Store y Google Play.
+
+## Qué es Zampa
+
+- Para clientes: descubrir ofertas y menús del día de restaurantes cercanos, filtrar por preferencias dietéticas (vegetariano, vegano, sin gluten, sin lactosa, sin frutos secos, sin carne, sin pescado), seguir a tus locales favoritos y recibir avisos cuando publican una oferta nueva. Es completamente gratis y no requiere reservas: llamas o consultas cómo llegar directamente.
+- Para comercios: publicar el menú del día en menos de un minuto, captar clientes cercanos sin comisiones, y —con el Plan Pro— enviar notificaciones push a sus seguidores y consultar estadísticas de impresiones y clics.
+
+## App
+
+- [Zampa en App Store](https://apps.apple.com/us/app/zampa/id6762012593): app para iPhone.
+- [Zampa en Google Play](https://play.google.com/store/apps/details?id=com.sozolab.zampa): app para Android.
+- [Descargar Zampa](https://www.getzampa.com/download.html): página de descarga con enlaces a ambas tiendas.
+
+## Páginas
+
+- [Inicio](https://www.getzampa.com/): qué es Zampa, beneficios para clientes y comercios, y preguntas frecuentes.
+- [Privacidad](https://www.getzampa.com/privacy.html): política de privacidad.
+- [Términos](https://www.getzampa.com/terms.html): términos y condiciones de uso.
+- [Eliminar cuenta](https://www.getzampa.com/delete-account.html): cómo eliminar tu cuenta y tus datos.
+
+## Detalles
+
+- Cobertura: España.
+- Idiomas: español, catalán, euskera, gallego, inglés, portugués, alemán, francés, italiano.
+- Contacto y soporte: soporte@getzampa.com
+- Instagram: https://www.instagram.com/zampa_app
+- Desarrollado por: Sozo Labs.
