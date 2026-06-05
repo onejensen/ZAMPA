@@ -60,12 +60,6 @@ Huecos (por impacto):
   públicos. Bloqueada hasta tenerlo.
 - Esfuerzo: M (+ backend) · Impacto: Medio · Riesgo: Bajo.
 
-## Fase 4 — Capa de contenido-respuesta (E-E-A-T)
-- Páginas-guía que responden consultas reales.
-- (Opcional) landings por ciudad/categoría solo con datos reales.
-- Corregir FAQ en futuro cuando se confirme lanzamiento.
-- Esfuerzo: L · Impacto: Alto (medio plazo) · Riesgo: Medio.
-
 ## Fase 5 — Medición y mantenimiento
 - Rastrear bots de IA (GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended).
 - Validar schema tras cada fase (Rich Results Test / validador schema.org).
@@ -76,7 +70,7 @@ Huecos (por impacto):
 ---
 
 ### Orden recomendado
-1 → 2 (sin tocar backend) → 3 (con backend) → 4 (fondo) · 5 en paralelo desde el inicio.
+1 → 2 (sin tocar backend) → 3 (con backend) · 5 en paralelo desde el inicio.
 
 ---
 
@@ -104,6 +98,5 @@ Huecos (por impacto):
 
 ### Pendiente
 - **Fase 3** — sitemap dinámico (bloqueada: endpoint en backend `eatout-70b8b`).
-- **Fase 4** — contenido-respuesta (guías; opcional landings por ciudad).
 - **Fase 5** — medición: rastrear hits de los crawlers ya enrutados; validar
   schema en producción.
