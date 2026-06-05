@@ -77,3 +77,29 @@ Huecos (por impacto):
 
 ### Orden recomendado
 1 → 2 (sin tocar backend) → 3 (con backend) → 4 (fondo) · 5 en paralelo desde el inicio.
+
+---
+
+## Progreso
+
+- **2026-06-05 · Fase 1 ✅** — `functions/_lib/schema.js`; `/r` emite `Restaurant`
+  y `/o` un `@graph` `Product`+`Offer` enlazado por `@id`. Inyectado en rama bot
+  y shell humano.
+- **2026-06-05 · Fase 2 ✅** — `/llms.txt` + nodos `Organization` y `WebSite`
+  (con `sameAs`, `logo`, `contactPoint`, `areaServed`) en `index.html`;
+  `SoftwareApplication` referencia al publisher por `@id` y añade `downloadUrl`.
+- **2026-06-05 · FAQ ✅** — `faq.q2`/`faq.a2` de futuro a presente (la app ya
+  está live). Solo el español estaba obsoleto.
+- **2026-06-05 · Decisión de routing (parte de Fase 5) ✅** — crawlers de IA
+  (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai,
+  PerplexityBot, Perplexity-User, CCBot, Bytespider, meta-externalagent,
+  MistralAI, YouBot) añadidos a `botDetect.js` → reciben la rama SSR **indexable**
+  con JSON-LD en vez del shell `noindex`. Se mantiene el `noindex` del shell
+  humano (decisión de producto sobre páginas efímeras intacta).
+
+### Pendiente
+- **Fase 3** — sitemap dinámico (bloqueada: endpoint en backend `eatout-70b8b`).
+- **Fase 4** — contenido-respuesta (guías; opcional landings por ciudad).
+- **Fase 5** — medición: rastrear hits de los crawlers ya enrutados; validar
+  schema en producción; (opcional) enriquecer el `<body>` de la rama bot con el
+  contenido visible para dar más texto extraíble a los crawlers.
