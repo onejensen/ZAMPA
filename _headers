@@ -1,0 +1,15 @@
+# Cloudflare Pages headers — https://developers.cloudflare.com/pages/configuration/headers/
+# Hardening del panel admin. La CSP se añadirá aparte cuando se pruebe
+# (el admin usa un <script type="module"> inline que la complica).
+
+/admin
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/admin/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
