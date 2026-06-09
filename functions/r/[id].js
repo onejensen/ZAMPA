@@ -74,6 +74,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
 </html>`;
 
   return new Response(html, {
+    status: exists ? 200 : 404,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForRestaurant({ exists }),
@@ -133,6 +134,7 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
   const html = renderShell({ title, canonicalUrl, mainContent, locale, jsonLd });
 
   return new Response(html, {
+    status: exists ? 200 : 404,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForRestaurant({ exists }),
