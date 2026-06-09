@@ -2929,12 +2929,13 @@
         ? `${item.price} ${esc(item.currency || "EUR")}`
         : "Sin precio";
       const created = item.createdAt ? formatDate(item.createdAt) : "—";
-      const expires = item.expiresAt ? formatDate(item.expiresAt) : null;
-      const isActive = item.isActive ?? (item.expiresAt ? item.expiresAt > Date.now() : true);
+      // adminListMerchantOffers no serializa expiresAt: la caducidad se computa
+      // en el backend y llega ya resuelta en isActive.
+      const isActive = item.isActive === true;
 
       main.innerHTML = `
         <h4 class="post-title">${esc(item.title) || "(sin título)"}</h4>
-        <p class="post-meta">${esc(priceText)} · Publicada ${esc(created)}${expires ? ` · Caduca ${esc(expires)}` : ""}</p>
+        <p class="post-meta">${esc(priceText)} · Publicada ${esc(created)}</p>
         ${item.description ? `<p class="post-desc">${esc(item.description)}</p>` : ""}
         <div class="post-badges">
           <span class="post-badge ${isActive ? "active" : "expired"}">${isActive ? "Activa" : "Vencida"}</span>
