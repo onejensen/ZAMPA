@@ -164,8 +164,10 @@ function renderRestaurantExistsMain({ locale, id, restaurant }) {
     ? `<p class="share-restaurant">${escapeHtml(subtitleText)}</p>`
     : '';
 
+  // 500 chars: más generoso que el cap de 200 del og:description, pero evita
+  // que una descripción kilométrica de comercio rompa el layout de la card.
   const descriptionBlock = restaurant.description
-    ? `<p class="share-description">${escapeHtml(restaurant.description)}</p>`
+    ? `<p class="share-description">${escapeHtml(truncateDescription(restaurant.description, 500))}</p>`
     : '';
 
   return `

@@ -168,8 +168,10 @@ function renderOfferExistsMain({ locale, id, offer, restaurant }) {
   const priceBlock = priceText
     ? `<p class="share-price">${escapeHtml(priceText)}</p>`
     : '';
+  // 500 chars: más generoso que el cap de 200 del og:description, pero evita
+  // que una descripción kilométrica de comercio rompa el layout de la card.
   const descriptionBlock = offer.description
-    ? `<p class="share-description">${escapeHtml(offer.description)}</p>`
+    ? `<p class="share-description">${escapeHtml(truncateDescription(offer.description, 500))}</p>`
     : '';
 
   // Subtitle "{connector} {name_link} · {city}" is built with the
