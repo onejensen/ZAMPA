@@ -261,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (json.success) {
           statusEl.textContent = currentTranslations['newsletter.success'] || '¡Gracias por suscribirte! Bienvenido a Zampa';
           form.reset();
+          submitBtn.disabled = false;
         } else {
           statusEl.textContent = currentTranslations['newsletter.error'] || 'Algo salió mal. Inténtalo de nuevo.';
           submitBtn.disabled = false;
