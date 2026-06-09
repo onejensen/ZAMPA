@@ -15,7 +15,9 @@ compartibles.
 
 ```
 /                       — landing, download, privacy, terms, delete-account
+/_headers               — hardening de /admin (XFO, nosniff…) + CSP Report-Only
 /admin/index.html       — panel admin (Firebase Auth + Cloud Functions allowlist)
+/admin/app.js           — JS del panel (módulo extraído del HTML por la CSP)
 /functions/             — Cloudflare Pages Functions (SSR para crawlers)
   /_lib/                — apiClient, locale, i18n, meta, pageShell, cache, botDetect, html
   /o/[id].js            — Open Graph + página para /o/{offerId} (oferta compartida)
@@ -65,7 +67,8 @@ Esquema Firestore relevante (cuidado con los nombres reales — diferentes de lo
 
 ## Admin panel (`/admin/index.html`)
 
-Una sola página, Firebase Web SDK + `fetch` a las Cloud Functions. Tabs:
+`index.html` (markup + CSS) + `app.js` (módulo ES, cache-busting `?v=N` —
+súbelo al editar app.js). Firebase Web SDK + `fetch` a las Cloud Functions. Tabs:
 
 1. **Verificaciones** — bandeja de comercios pendientes de revisión.
 2. **Planes** — buscar comercio y extender su plan gratuito (acciones rápidas o personalizado).
@@ -149,6 +152,10 @@ i18n: `resolveLocale(request)` lee `Accept-Language`, mapea a uno de los locales
   prioridad. Para suprimir el warning sin migrar:
   `FIREBASE_SUPPRESS_REGION_WARNING=true` en `.env`.
 - **AASA `Content-Type`** quirk pendiente (no bloqueante).
+- **CSP de /admin en Report-Only** (junio 2026): cuando se haya usado el
+  panel completo (login email + Google, 4 tabs, modal con mapa y fotos) sin
+  violaciones en la consola, renombrar en `_headers`
+  `Content-Security-Policy-Report-Only` → `Content-Security-Policy`.
 - **`adminMerchantStats`**: ver puntos #3-#6 del review de mayo 2026 (click
   keys hardcoded, info leak en error 500, mutación en `.map()`, fallback
   `.select()` puede facturar miles de reads si `.count()` falla). Conscious
