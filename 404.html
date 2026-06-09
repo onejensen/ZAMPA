@@ -83,9 +83,9 @@
 <body>
   <div class="logo"><img src="/assets/logo.png" alt="Zampa"></div>
 
-  <!-- Caso 1: oferta compartida (path /o/{id}) — intenta abrir la app -->
+  <!-- Caso 1: oferta o restaurante compartido (path /o/{id} o /r/{id}) — intenta abrir la app -->
   <div id="offer-view" class="hidden">
-    <h1>Abre esta oferta en Zampa</h1>
+    <h1 id="app-view-title">Abre esta oferta en Zampa</h1>
     <p>Instala la app para ver los menús del día cerca de ti.</p>
     <div class="cta-row">
       <a id="ios-store" class="store-badge" href="https://apps.apple.com/us/app/zampa/id6762012593">
@@ -111,24 +111,33 @@
 (function () {
   const path = window.location.pathname;
   const offerMatch = path.match(/^\/o\/([a-zA-Z0-9-]+)/);
+  const merchantMatch = path.match(/^\/r\/([a-zA-Z0-9-]+)/);
 
-  if (offerMatch) {
-    // Es una oferta — intenta abrir la app nativa
-    const offerId = offerMatch[1];
+  if (offerMatch || merchantMatch) {
+    // Es una oferta o un restaurante — intenta abrir la app nativa
     document.getElementById("offer-view").classList.remove("hidden");
-    document.title = "Oferta Zampa · getzampa.com";
+    if (merchantMatch) {
+      document.getElementById("app-view-title").textContent = "Abre este restaurante en Zampa";
+      document.title = "Restaurante Zampa · getzampa.com";
+    } else {
+      document.title = "Oferta Zampa · getzampa.com";
+    }
 
     // En iOS y Android con app instalada, el sistema ya habrá interceptado el URL
     // ANTES de cargar esta página (Universal Link / App Link verificado).
     // Si llegaste aquí es porque no tienes la app instalada.
     // Fallback: intenta custom scheme por si AASA/assetlinks no se verificó a tiempo.
+    // Schemes que entienden las apps: zampa://offer/{id} y zampa://merchant/{id}.
     const ua = navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
     const isAndroid = /android/.test(ua);
     if (isIOS || isAndroid) {
       // Custom scheme — si la app está instalada abre, si no no pasa nada.
+      const deepLink = offerMatch
+        ? "zampa://offer/" + offerMatch[1]
+        : "zampa://merchant/" + merchantMatch[1];
       setTimeout(() => {
-        window.location.href = "zampa://offer/" + offerId;
+        window.location.href = deepLink;
       }, 50);
     }
   } else {
