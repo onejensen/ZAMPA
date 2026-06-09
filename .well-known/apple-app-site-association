@@ -8,6 +8,10 @@
           {
             "/": "/o/*",
             "comment": "Matches /o/{offerId} — abre la oferta en Zampa iOS"
+          },
+          {
+            "/": "/r/*",
+            "comment": "Matches /r/{merchantId} — abre el restaurante en Zampa iOS"
           }
         ]
       }
