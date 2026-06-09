@@ -158,6 +158,24 @@ i18n: `resolveLocale(request)` lee `Accept-Language`, mapea a uno de los locales
 
 ## Histórico rápido
 
+- **junio 2026** — auditoría completa de la web (16 commits). Deep links:
+  `/r/*` añadido al AASA y al AndroidManifest (commit `6b7c857` en
+  Zampa-App, pendiente de release), CTAs de `/o` y `/r` corregidas a los
+  schemes reales `zampa://offer/` y `zampa://merchant/` (los `zampa://o|r/`
+  no los parsea ninguna app), y `404.html` ya maneja `/r/`. SEO en Pages
+  Functions: status 404 para entidades inexistentes, `Vary: User-Agent,
+  Accept-Language`, descripciones visibles truncadas a 500 chars, y FAQ q1
+  añadida al HTML (estaba en el JSON-LD pero no visible). i18n: bloque
+  `invite.*` traducido a los 11 idiomas no-ES. Landing: botón newsletter
+  reactivado tras éxito, `main.js?v=4` unificado en las 5 páginas, metas
+  sociales de `download.html` completadas, colores de marca en
+  `manifest.json`, nav de páginas legales con `/#anchor`. Admin:
+  `data-action-btn` en acciones de Planes/Publicaciones (anti doble
+  submit), `statsMessage` limpiado en auth change, código muerto de
+  `expiresAt` eliminado. Nota: `publicOffer`/`adminListMerchantOffers`
+  serializan `photoUrls[0]`→`imageUrl` y `priceTotal`→`price` (string), y
+  `publicRestaurant` → `coverImageUrl`/`logoUrl` — leer esos nombres en el
+  frontend es correcto, no un bug.
 - **mayo 2026** — UX back-to-list en admin: botón "← Volver a la lista",
   scroll automático al picker, atajo Esc. Fixes CSS de specificity (picker
   `hidden`) y checkbox sizing (override sobre regla global de inputs).
