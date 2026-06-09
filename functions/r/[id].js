@@ -174,7 +174,7 @@ function renderRestaurantExistsMain({ locale, id, restaurant }) {
     ${subtitleBlock}
     ${descriptionBlock}
     <div class="share-ctas">
-      <a class="share-cta share-cta--primary" href="zampa://r/${escapeHtml(id)}">${escapeHtml(t(locale, 'share.cta.open_in_zampa'))}</a>
+      <a class="share-cta share-cta--primary" href="zampa://merchant/${escapeHtml(id)}">${escapeHtml(t(locale, 'share.cta.open_in_zampa'))}</a>
       <a class="share-cta share-cta--secondary" href="/download.html">${escapeHtml(t(locale, 'footer.download'))}</a>
     </div>
   `;
