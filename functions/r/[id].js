@@ -2,7 +2,7 @@ import { isBot } from '../_lib/botDetect.js';
 import { resolveLocale, toOgLocale } from '../_lib/locale.js';
 import { fetchRestaurant } from '../_lib/apiClient.js';
 import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js';
-import { cacheControlForRestaurant } from '../_lib/cache.js';
+import { cacheControlForRestaurant, VARY_SHARE_PAGES } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
 import { buildRestaurantSchema, renderJsonLd } from '../_lib/schema.js';
@@ -78,6 +78,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForRestaurant({ exists }),
+      'Vary': VARY_SHARE_PAGES,
     },
   });
 }
@@ -138,6 +139,7 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForRestaurant({ exists }),
+      'Vary': VARY_SHARE_PAGES,
     },
   });
 }

@@ -2,7 +2,7 @@ import { isBot } from '../_lib/botDetect.js';
 import { resolveLocale, toOgLocale, toIntlLocale } from '../_lib/locale.js';
 import { fetchOffer } from '../_lib/apiClient.js';
 import { buildMetaTags, pickOgImage, truncateDescription } from '../_lib/meta.js';
-import { cacheControlForOffer } from '../_lib/cache.js';
+import { cacheControlForOffer, VARY_SHARE_PAGES } from '../_lib/cache.js';
 import { escapeHtml } from '../_lib/html.js';
 import { renderShell } from '../_lib/pageShell.js';
 import { buildOfferSchema, buildRestaurantSchema, renderJsonLd } from '../_lib/schema.js';
@@ -104,6 +104,7 @@ function renderBotResponse({ canonicalUrl, locale, data, id }) {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForOffer({ exists: offerExists }),
+      'Vary': VARY_SHARE_PAGES,
     },
   });
 }
@@ -137,6 +138,7 @@ function renderBrowserResponse({ canonicalUrl, locale, id, data }) {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': cacheControlForOffer({ exists: offerExists }),
+      'Vary': VARY_SHARE_PAGES,
     },
   });
 }

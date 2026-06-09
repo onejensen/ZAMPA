@@ -8,6 +8,11 @@ const CACHE_OFFER_MISSING = 'public, max-age=60';
 const CACHE_RESTAURANT_EXISTS = 'public, max-age=3600';
 const CACHE_RESTAURANT_MISSING = 'public, max-age=60';
 
+// The same /o and /r URL serves different HTML per User-Agent (bot vs human
+// shell) and per Accept-Language (locale). Any shared cache must key on both
+// or it can serve the bare bot page to a human, or the wrong language.
+export const VARY_SHARE_PAGES = 'User-Agent, Accept-Language';
+
 export function cacheControlForOffer({ exists }) {
   return exists ? CACHE_OFFER_EXISTS : CACHE_OFFER_MISSING;
 }
