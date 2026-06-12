@@ -2421,6 +2421,8 @@ html.is-android body[data-page="download"] .store-badge--ios {
   .marquee {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .marquee__track { animation: none; }
   .marquee__track[aria-hidden="true"] { display: none; }
