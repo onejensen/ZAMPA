@@ -510,6 +510,85 @@
     </div>
   </section>
 
+  <!-- ===== Featured: restaurantes adheridos (marquee) =====
+       Para añadir/quitar un restaurante: edita el <li> en AMBAS pistas (la
+       segunda <ul> es la copia aria-hidden que cierra el bucle) cambiando
+       el id de /r/ y de /i/m/, el nombre y la ciudad.
+       El atributo hidden se quita cuando los IDs placeholder sean reales. -->
+  <section id="featured-restaurants" class="section section--white featured-section" hidden>
+    <div class="container">
+      <h2 class="section__title fade-up" data-i18n="featured.title">Ya están en Zampa</h2>
+      <p class="section__subtitle fade-up" data-i18n="featured.subtitle">Bares y restaurantes que publican su menú del día cada mañana. Toca uno y echa un vistazo a su ficha.</p>
+    </div>
+    <div class="marquee" aria-label="Restaurantes en Zampa">
+      <ul class="marquee__track">
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_1" alt="Restaurante 1" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 1</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_2">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_2" alt="Restaurante 2" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 2</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_3">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_3" alt="Restaurante 3" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 3</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_4">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_4" alt="Restaurante 4" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 4</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_5">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_5" alt="Restaurante 5" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 5</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_6">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_6" alt="Restaurante 6" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 6</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+      </ul>
+      <ul class="marquee__track" aria-hidden="true">
+        <!-- Copia EXACTA de la pista de arriba (mismos 6 <li>) -->
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_1" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_1" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 1</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_2" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_2" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 2</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_3" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_3" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 3</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_4" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_4" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 4</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_5" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_5" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 5</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+        <li><a class="marquee__card" href="/r/MERCHANT_ID_6" tabindex="-1">
+          <img src="https://share.getzampa.com/i/m/MERCHANT_ID_6" alt="" width="300" height="190" loading="lazy">
+          <span class="marquee__name">Restaurante 6</span>
+          <span class="marquee__city">Ciudad</span>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+
   <!-- ===== Benefits ===== -->
   <section id="benefits" class="section section--teal-light section--bg-market">
     <div class="container">

@@ -2336,3 +2336,92 @@ html.is-android body[data-page="download"] .store-badge--ios {
     padding-top: 32px;
   }
 }
+
+/* ===== Featured restaurants (marquee) ===== */
+.featured-section {
+  overflow: hidden;
+}
+
+.marquee {
+  display: flex;
+  overflow: hidden;
+  margin-top: 48px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 20px;
+  width: max-content;
+  margin: 0;
+  padding: 8px 20px 8px 0; /* derecho = gap visual entre pista y su copia; vertical deja respirar la sombra */
+  list-style: none;
+  animation: marquee-scroll 30s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* Pausa para leer o clicar (ratón y teclado) */
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__card {
+  display: block;
+  width: 190px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(45, 52, 54, 0.12);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.marquee__card:hover {
+  transform: translateY(-3px);
+}
+
+.marquee__card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 300 / 190;
+  object-fit: cover;
+  display: block;
+}
+
+.marquee__name {
+  display: block;
+  padding: 10px 12px 2px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.marquee__city {
+  display: block;
+  padding: 0 12px 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+@media (max-width: 767px) {
+  .marquee__card { width: 150px; }
+  .marquee { margin-top: 32px; }
+}
+
+/* Sin animación: franja scrollable a mano, y la copia del bucle sobra */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .marquee__track { animation: none; }
+  .marquee__track[aria-hidden="true"] { display: none; }
+}
