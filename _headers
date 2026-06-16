@@ -1,31 +1,35 @@
 # Cloudflare Pages headers — https://developers.cloudflare.com/pages/configuration/headers/
 # Hardening del panel admin.
 #
-# La CSP está en Report-Only: registra violaciones en la consola de DevTools
-# sin bloquear nada. Cuando se haya usado el panel entero (login email +
-# Google, las 4 tabs, modal de verificación con mapa y fotos) sin violaciones,
-# renombrar "Content-Security-Policy-Report-Only" a "Content-Security-Policy".
+# CSP ENFORCED (bloquea, no solo reporta). Verificada: superficie de login sin
+# violaciones (headless) + análisis estático de app.js. Se añadió www.google.com
+# a script-src/connect-src de forma preventiva por si Firebase Auth dispara
+# reCAPTCHA en el login (carga recaptcha desde www.google.com); gstatic ya estaba.
 #
 # Inventario que cubre cada directiva:
-#   script-src   app.js local + SDK Firebase (gstatic) + gapi (apis.google.com,
-#                lo carga signInWithPopup)
-#   connect-src  Cloud Functions admin + auth REST (identitytoolkit/securetoken)
+#   script-src   app.js local + SDK Firebase (gstatic) + gapi (apis.google.com)
+#                + www.google.com (reCAPTCHA de Firebase Auth, defensivo)
+#   connect-src  Cloud Functions admin + auth REST (identitytoolkit/securetoken/
+#                googleapis) + www.google.com (verificación reCAPTCHA, defensivo)
 #   img-src      assets locales + fotos de comercios (Firebase Storage)
-#   frame-src    iframe del popup de Google Auth (authDomain) + embed de Maps
-#                (maps.google.com hace 301 a www.google.com/maps/embed, la CSP
-#                valida ambas URLs del redirect)
+#   frame-src    iframe auth de Firebase (authDomain) + embed de Maps
+#                (maps.google.com hace 301 a www.google.com/maps) + reCAPTCHA
 #   style-src    'unsafe-inline' por el <style> del propio index.html
+#
+# Si tras un cambio el panel deja de cargar algo, revisar la consola: una línea
+# "Refused to… because it violates… Content Security Policy" indica el origen
+# que falta añadir.
 
 /admin
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy-Report-Only: default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
 
 /admin/*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy-Report-Only: default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'
