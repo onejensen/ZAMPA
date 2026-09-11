@@ -18,6 +18,7 @@ Zampa está desarrollada por Sozo Labs. La web pública es https://www.getzampa.
 ## Páginas
 
 - [Inicio](https://www.getzampa.com/): qué es Zampa, beneficios para clientes y comercios, y preguntas frecuentes.
+- [Prensa](https://www.getzampa.com/prensa): sala de prensa con presentación, datos clave, logo y capturas de la app descargables.
 - [Privacidad](https://www.getzampa.com/privacy.html): política de privacidad.
 - [Términos](https://www.getzampa.com/terms.html): términos y condiciones de uso.
 - [Eliminar cuenta](https://www.getzampa.com/delete-account.html): cómo eliminar tu cuenta y tus datos.
