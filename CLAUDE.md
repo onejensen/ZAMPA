@@ -14,7 +14,7 @@ compartibles.
 ## Estructura
 
 ```
-/                       — landing, download, privacy, terms, delete-account
+/                       — landing, download, prensa, privacy, terms, delete-account
 /_headers               — hardening de /admin (XFO, nosniff…) + CSP Report-Only
 /admin/index.html       — panel admin (Firebase Auth + Cloud Functions allowlist)
 /admin/app.js           — JS del panel (módulo extraído del HTML por la CSP)
@@ -25,6 +25,7 @@ compartibles.
 /i18n/                  — JSON de traducciones por locale (es, en, ca, gl, eu, fr, it, de, pt, fi, sv, no)
 /.well-known/           — apple-app-site-association + assetlinks.json (deep links)
 /assets/                — imágenes, logo, mockups
+  /press/               — kit de prensa (capturas, iconos, ZIP) enlazado desde prensa.html
 ```
 
 ---

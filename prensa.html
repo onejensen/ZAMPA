@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C3R5JP0BHZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C3R5JP0BHZ');
+  </script>
+
+  <meta name="description" content="Sala de prensa de Zampa: presentación, datos clave, logo y capturas de la app para medios de comunicación.">
+  <meta name="theme-color" content="#2D3436">
+  <meta property="og:title" content="Zampa - Sala de prensa">
+  <meta property="og:description" content="Presentación, datos clave, logo y capturas de la app de Zampa para medios.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.getzampa.com/prensa">
+  <meta property="og:image" content="https://www.getzampa.com/assets/og-image-v2.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Zampa - Sala de prensa">
+  <meta name="twitter:description" content="Presentación, datos clave, logo y capturas de la app de Zampa para medios.">
+  <meta name="twitter:image" content="https://www.getzampa.com/assets/og-image-v2.png">
+  <title>Zampa - Sala de prensa</title>
+  <link rel="canonical" href="https://www.getzampa.com/prensa">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="press">
+  <!-- SVG defs: clip-paths de las ondas (hero + paneles naranja) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0 L 1,0 L 1,0.96 C 0.75,0.90 0.25,1.02 0,0.96 Z"/>
+      </clipPath>
+      <clipPath id="section-wave-a" clipPathUnits="objectBoundingBox">
+        <path d="M 0,0.04 C 0.25,0.09 0.75,0 1,0.05 L 1,0.95 C 0.75,1 0.25,0.91 0,0.96 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="header__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </a>
+
+      <nav class="header__nav">
+        <a href="/#customers" data-i18n="nav.customers">Clientes</a>
+        <a href="/#merchants" data-i18n="nav.merchants">Comercios</a>
+        <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="download.html" data-i18n="nav.download">Descargas</a>
+      </nav>
+
+      <div class="header__right">
+        <div class="lang-selector">
+          <button class="lang-selector__btn" aria-label="Seleccionar idioma">
+            <span class="lang-selector__label">ES</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="lang-selector__dropdown">
+            <button data-lang="ES" class="active">Espa&ntilde;ol</button>
+            <button data-lang="CA">Catal&agrave;</button>
+            <button data-lang="EU">Euskara</button>
+            <button data-lang="GL">Galego</button>
+            <button data-lang="EN">English</button>
+            <button data-lang="PT">Portugu&ecirc;s</button>
+            <button data-lang="DE">Deutsch</button>
+            <button data-lang="FR">Fran&ccedil;ais</button>
+            <button data-lang="IT">Italiano</button>
+          </div>
+        </div>
+
+        <button class="burger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="press">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero section--bg-hero press-hero">
+      <div class="hero__blobs" aria-hidden="true">
+        <div class="blob blob--1"></div>
+        <div class="blob blob--2"></div>
+        <div class="blob blob--3"></div>
+      </div>
+
+      <div class="container hero__content">
+        <div class="hero__text">
+          <h1 class="hero__title fade-up" data-i18n="press.title" data-i18n-html>Sala de <span>prensa</span></h1>
+          <p class="hero__subtitle fade-up" style="--reveal-delay: 120ms" data-i18n="press.lead">
+            Todo lo que necesitas para hablar de Zampa: presentación, datos clave, logo y capturas de la app.
+          </p>
+          <div class="press-actions fade-up" style="--reveal-delay: 240ms">
+            <a class="press-btn press-btn--solid" href="assets/press/zampa-kit-prensa.zip" download>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span data-i18n="press.cta.kit">Descargar kit de prensa</span>
+              <span class="press-btn__meta">ZIP · 13 MB</span>
+            </a>
+            <a class="press-btn press-btn--ghost" href="#contacto-prensa">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              <span data-i18n="press.cta.contact">Contacto de prensa</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="press-fan fade-zoom" style="--reveal-delay: 300ms" aria-hidden="true">
+          <img src="assets/press/capturas/miniaturas/zampa-02-mapa.jpg" alt="" width="480" height="1039">
+          <img src="assets/press/capturas/miniaturas/zampa-07-ficha-restaurante.jpg" alt="" width="480" height="1039">
+          <img src="assets/press/capturas/miniaturas/zampa-01-ofertas-cerca.jpg" alt="" width="480" height="1039">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Presentación + datos clave ===== -->
+    <section id="presentacion" class="section section--white press-about">
+      <div class="container press-about__grid">
+        <div class="press-about__text">
+          <h2 class="section__title section__title--left fade-up" data-i18n="press.about.title">Zampa en tres líneas</h2>
+          <p class="press-about__body fade-up" data-i18n="press.about.body">
+            Zampa es una app gratuita para iPhone y Android que reúne, de un vistazo, las ofertas y menús del día de los bares y restaurantes cercanos. Los comensales filtran por precio, distancia, tipo de cocina o preferencias alimentarias y llaman o van directamente al local, sin reservas ni comisiones. Los comercios publican su oferta en menos de un minuto y, con el Plan Pro, avisan a sus seguidores con cada novedad.
+          </p>
+        </div>
+
+        <aside class="press-facts fade-up" aria-labelledby="press-facts-title">
+          <h3 id="press-facts-title" class="press-facts__title" data-i18n="press.facts.title">Datos clave</h3>
+          <dl class="press-facts__list">
+            <div>
+              <dt data-i18n="press.facts.what.label">Qué es</dt>
+              <dd data-i18n="press.facts.what.value">App gratuita de ofertas y menús del día de bares y restaurantes</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.platforms.label">Plataformas</dt>
+              <dd data-i18n="press.facts.platforms.value">iPhone y Android</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.coverage.label">Cobertura</dt>
+              <dd data-i18n="press.facts.coverage.value">Toda España</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.price.label">Precio</dt>
+              <dd data-i18n="press.facts.price.value">Gratis para comensales. Los comercios tienen un plan gratuito y un Plan Pro.</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.founder.label">Creador</dt>
+              <dd>Juan José Coll</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.company.label">Empresa</dt>
+              <dd>Sozo Labs</dd>
+            </div>
+            <div>
+              <dt data-i18n="press.facts.web.label">Web</dt>
+              <dd><a href="https://www.getzampa.com">getzampa.com</a></dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== Capturas ===== -->
+    <section id="capturas" class="section press-shots">
+      <div class="container">
+        <h2 class="section__title fade-up" data-i18n="press.shots.title">Capturas de la app</h2>
+        <p class="section__subtitle fade-up" data-i18n="press.shots.subtitle">Ocho pantallas de Zampa listas para publicar. Pulsa una para descargarla en PNG.</p>
+
+        <ul class="press-shots__grid" data-stagger>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-01-ofertas-cerca.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-01-ofertas-cerca.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s1">Ofertas cerca de ti</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-02-mapa.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-02-mapa.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s2">Mapa de ofertas</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-03-filtros.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-03-filtros.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s3">Filtros</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-04-favoritos.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-04-favoritos.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s4">Favoritos y avisos</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-05-panel-restaurante.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-05-panel-restaurante.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s5">Panel del restaurante</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-06-publicar-oferta.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-06-publicar-oferta.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s6">Publicar una oferta</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-07-ficha-restaurante.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-07-ficha-restaurante.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s7">Ficha del restaurante, en modo oscuro</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a class="press-shot" href="assets/press/capturas/zampa-08-preferencias.png" download>
+              <img src="assets/press/capturas/miniaturas/zampa-08-preferencias.jpg" alt="" width="480" height="1039" loading="lazy">
+              <span class="press-shot__caption">
+                <span class="press-shot__name" data-i18n="press.shots.s8">Preferencias y alérgenos</span>
+                <span class="press-shot__meta">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG · 924 × 2000
+                </span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Logo ===== -->
+    <section id="logo" class="section section--cream press-logos">
+      <div class="container">
+        <h2 class="section__title fade-up" data-i18n="press.logos.title">Logo</h2>
+        <p class="section__subtitle fade-up" data-i18n="press.logos.subtitle">El icono de Zampa en PNG de 1024 × 1024 px con fondo transparente, en versión clara y oscura.</p>
+
+        <ul class="press-logos__grid" data-stagger>
+          <li class="press-logo">
+            <div class="press-logo__preview press-logo__preview--light">
+              <img src="assets/press/logo/preview-claro.png" alt="" width="336" height="336" loading="lazy">
+            </div>
+            <div class="press-logo__body">
+              <div>
+                <h3 id="press-logo-light" class="press-logo__name" data-i18n="press.logos.light">Versión clara</h3>
+                <span class="press-logo__meta">PNG · 1024 × 1024</span>
+              </div>
+              <a class="press-logo__download" href="assets/press/logo/zampa-icono-claro.png" download aria-labelledby="press-logo-light-dl press-logo-light">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="press-logo-light-dl" data-i18n="press.logos.download">Descargar</span>
+              </a>
+            </div>
+          </li>
+          <li class="press-logo">
+            <div class="press-logo__preview press-logo__preview--dark">
+              <img src="assets/press/logo/preview-oscuro.png" alt="" width="336" height="336" loading="lazy">
+            </div>
+            <div class="press-logo__body">
+              <div>
+                <h3 id="press-logo-dark" class="press-logo__name" data-i18n="press.logos.dark">Versión oscura</h3>
+                <span class="press-logo__meta">PNG · 1024 × 1024</span>
+              </div>
+              <a class="press-logo__download" href="assets/press/logo/zampa-icono-oscuro.png" download aria-labelledby="press-logo-dark-dl press-logo-dark">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="press-logo-dark-dl" data-i18n="press.logos.download">Descargar</span>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Quién está detrás ===== -->
+    <section id="quien" class="section press-founder">
+      <div class="container">
+        <h2 class="section__title fade-up" data-i18n="press.founder.title">Quién está detrás</h2>
+        <figure class="press-quote fade-up">
+          <blockquote>
+            <p data-i18n="press.founder.quote">«Creé Zampa para ayudar tanto a bares y restaurantes como a comensales. Es la manera perfecta de ver, de un vistazo, toda la oferta que hay a tu alrededor.»</p>
+          </blockquote>
+          <figcaption>
+            <span class="press-quote__name">Juan José Coll</span>
+            <span class="press-quote__role" data-i18n="press.founder.role">Programador y diseñador, creador de Zampa</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== Contacto de prensa ===== -->
+    <section id="contacto-prensa" class="section contact-section press-contact">
+      <div class="contact-bg" aria-hidden="true">
+        <div class="contact-blob contact-blob--teal"></div>
+        <div class="contact-blob contact-blob--coral"></div>
+        <div class="contact-blob contact-blob--amber"></div>
+      </div>
+
+      <div class="container">
+        <div class="contact-head fade-up">
+          <h2 class="section__title" data-i18n="press.contact.title">Contacto de prensa</h2>
+          <p class="section__subtitle" data-i18n="press.contact.subtitle">Para entrevistas, datos o material adicional, escríbenos.</p>
+        </div>
+
+        <div class="contact-cards" data-stagger>
+          <a href="mailto:soporte@getzampa.com?subject=Prensa%20Zampa" class="contact-card contact-card--email">
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </span>
+            <div class="contact-card__meta">
+              <span class="contact-card__label" data-i18n="press.contact.email_label">Prensa</span>
+              <span class="contact-card__value">soporte<wbr>@getzampa.com</span>
+              <span class="contact-card__hint" data-i18n="contact.email_hint">Te respondemos en menos de 24 h</span>
+            </div>
+            <span class="contact-card__arrow" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </span>
+          </a>
+
+          <a href="https://www.instagram.com/zampa_app" target="_blank" rel="noopener" class="contact-card contact-card--ig">
+            <span class="contact-card__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </span>
+            <div class="contact-card__meta">
+              <span class="contact-card__label" data-i18n="contact.instagram_label">Síguenos</span>
+              <span class="contact-card__value">@zampa_app</span>
+              <span class="contact-card__hint" data-i18n="contact.instagram_hint">Stories diarias y novedades</span>
+            </div>
+            <span class="contact-card__arrow" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__logo">
+        <img src="assets/logo.png" alt="Zampa logo">
+        <span>Zampa</span>
+      </div>
+      <p class="footer__tagline" data-i18n="footer.tagline">Descubre las mejores ofertas y menús del día</p>
+
+      <div class="store-wrap store-wrap--footer">
+        <div class="store-buttons">
+          <a href="https://apps.apple.com/us/app/zampa/id6762012593" class="store-badge store-badge--ios" target="_blank" rel="noopener">
+            <img data-badge="ios" data-variant="white" src="assets/badges/app-store-es-white.svg" data-i18n-alt="badge.appstore.alt" alt="Descárgalo en el App Store" />
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.sozolab.zampa" class="store-badge store-badge--android" target="_blank" rel="noopener">
+            <img data-badge="android" src="assets/badges/google-play-es.png" data-i18n-alt="badge.playstore.alt" alt="Disponible en Google Play" />
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer__links">
+        <a href="download.html" data-i18n="footer.download">Descarga la app</a>
+        <a href="mailto:soporte@getzampa.com" data-i18n="footer.contact">Contacto</a>
+        <a href="prensa.html" data-i18n="footer.press">Prensa</a>
+        <a href="privacy.html" data-i18n="footer.privacy">Politica de privacidad</a>
+        <a href="terms.html" data-i18n="footer.terms">Terminos de uso</a>
+        <a href="delete-account.html" data-i18n="footer.delete">Eliminar cuenta</a>
+      </nav>
+
+      <p class="footer__copy" data-i18n="footer.copyright">&copy; 2026 Sozo Labs. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="main.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+ZAMPA · KIT DE PRENSA
+=====================
+
+Zampa en tres líneas
+--------------------
+Zampa es una app gratuita para iPhone y Android que reúne, de un vistazo, las ofertas y menús del día de los bares y restaurantes cercanos. Los comensales filtran por precio, distancia, tipo de cocina o preferencias alimentarias y llaman o van directamente al local, sin reservas ni comisiones. Los comercios publican su oferta en menos de un minuto y, con el Plan Pro, avisan a sus seguidores con cada novedad.
+
+Datos clave
+-----------
+Qué es:       App gratuita de ofertas y menús del día de bares y restaurantes
+Plataformas:  iPhone y Android
+Cobertura:    Toda España
+Precio:       Gratis para comensales. Los comercios tienen un plan gratuito y un Plan Pro.
+Creador:      Juan José Coll
+Empresa:      Sozo Labs
+Web:          https://www.getzampa.com
+App Store:    https://apps.apple.com/us/app/zampa/id6762012593
+Google Play:  https://play.google.com/store/apps/details?id=com.sozolab.zampa
+
+Quién está detrás
+-----------------
+«Creé Zampa para ayudar tanto a bares y restaurantes como a comensales. Es la manera perfecta de ver, de un vistazo, toda la oferta que hay a tu alrededor.»
+— Juan José Coll, programador y diseñador, creador de Zampa
+
+Contenido del kit
+-----------------
+capturas/  Ocho pantallas de la app (PNG, 924 × 2000 px)
+logo/      Icono de la app en versión clara y oscura (PNG, 1024 × 1024 px, fondo transparente)
+
+Contacto de prensa
+------------------
+soporte@getzampa.com
+https://www.getzampa.com/prensa

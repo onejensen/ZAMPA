@@ -2427,3 +2427,558 @@ html.is-android body[data-page="download"] .store-badge--ios {
   .marquee__track { animation: none; }
   .marquee__track[aria-hidden="true"] { display: none; }
 }
+
+/* ===== Sala de prensa (prensa.html) =====
+   Hereda el mundo del sitio (paneles naranja con onda sobre el fondo
+   oscuro, tarjetas blancas, Poppins/Nunito), pero con tinta oscura sobre
+   el naranja: es una página de lectura y el blanco sobre #FAAF31 no llega
+   a un contraste legible. Es la misma tinta que usan las capturas de la app. */
+.press {
+  --press-ink-soft: #5a3d05;
+  --press-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.press ::selection {
+  background: var(--text);
+  color: var(--white);
+}
+
+.press-shots ::selection,
+.press-founder ::selection {
+  background: var(--primary);
+  color: var(--text);
+}
+
+.press :focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.press-shots :focus-visible,
+.press-founder :focus-visible {
+  outline-color: var(--primary);
+}
+
+/* Hero a tamaño de contenido (no a pantalla completa) para que la
+   siguiente sección asome ya en el primer viewport. */
+.press-hero {
+  min-height: 0;
+  padding: 32px 0 88px;
+}
+
+.press-hero .hero__title {
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.press-hero .hero__subtitle {
+  max-width: 34rem;
+  color: var(--press-ink-soft);
+  font-weight: 600;
+}
+
+.press-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.press-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 800;
+  transition:
+    transform 0.25s var(--press-ease),
+    box-shadow 0.25s var(--press-ease),
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.press-btn svg {
+  flex-shrink: 0;
+}
+
+.press-btn--solid {
+  background: var(--text);
+  color: var(--white);
+  box-shadow: 0 12px 28px rgba(45, 52, 54, 0.28);
+}
+
+.press-btn--solid:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(45, 52, 54, 0.34);
+}
+
+.press-btn__meta {
+  padding-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--primary-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.press-btn--ghost {
+  border: 2px solid rgba(45, 52, 54, 0.5);
+  color: var(--text);
+}
+
+.press-btn--ghost:hover {
+  border-color: var(--text);
+  background: rgba(45, 52, 54, 0.08);
+}
+
+/* Abanico de capturas: el feed delante, mapa y ficha detrás. Al pasar
+   el ratón se abre un poco, eco del abanico de fotos de la home. Los
+   desplazamientos van en variables para que cada breakpoint los escale. */
+.press-fan {
+  --fan-w: 224px;
+  --fan-x: 124px;
+  --fan-x-open: 156px;
+  --fan-tilt: 8deg;
+  --fan-tilt-open: 12deg;
+  position: relative;
+  height: calc(var(--fan-w) * 2.32);
+}
+
+.press-fan img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--fan-w);
+  height: auto;
+  aspect-ratio: 480 / 1039;
+  border: 4px solid var(--white);
+  border-radius: 28px;
+  box-shadow:
+    0 26px 52px rgba(45, 52, 54, 0.3),
+    0 2px 6px rgba(45, 52, 54, 0.12);
+  transition: transform 0.6s var(--press-ease);
+}
+
+.press-fan img:nth-child(1) {
+  transform: translate(-50%, -50%) translateX(calc(var(--fan-x) * -1)) rotate(calc(var(--fan-tilt) * -1)) scale(0.86);
+}
+
+.press-fan img:nth-child(2) {
+  transform: translate(-50%, -50%) translateX(var(--fan-x)) rotate(var(--fan-tilt)) scale(0.86);
+}
+
+.press-fan img:nth-child(3) {
+  transform: translate(-50%, -50%);
+}
+
+/* Las capturas de detrás llevan su titular impreso (abajo el mapa, arriba
+   la ficha) y la de delante lo tapa a medias: se recortan por ese lado
+   para que no asomen letras sueltas. */
+.press-fan img:nth-child(1),
+.press-fan img:nth-child(2) {
+  aspect-ratio: 480 / 760;
+  object-fit: cover;
+}
+
+.press-fan img:nth-child(1) {
+  object-position: 50% 0;
+}
+
+.press-fan img:nth-child(2) {
+  object-position: 50% 100%;
+}
+
+@media (hover: hover) {
+  .press-fan:hover {
+    --fan-x: var(--fan-x-open);
+    --fan-tilt: var(--fan-tilt-open);
+  }
+
+  .press-fan:hover img:nth-child(3) {
+    transform: translate(-50%, -50%) translateY(-8px);
+  }
+}
+
+/* Presentación + datos clave (panel naranja) */
+.press-about__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.press .section--white .section__title,
+.press .section--cream .section__title {
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.press .section--cream .section__subtitle {
+  color: var(--press-ink-soft);
+}
+
+.press-about__body {
+  max-width: 36em;
+  color: var(--text);
+  font-size: clamp(1.1rem, 1.7vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.press-facts,
+.press-logo {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-xl);
+  background: var(--white);
+  color: var(--text);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 14px 36px rgba(45, 52, 54, 0.2),
+    0 2px 6px rgba(45, 52, 54, 0.08);
+}
+
+.press-facts {
+  padding: 30px 32px;
+}
+
+.press-facts__title {
+  margin-bottom: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.press-facts__list > div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(45, 52, 54, 0.09);
+}
+
+.press-facts__list > div:first-child {
+  border-top: 0;
+}
+
+.press-facts dt {
+  padding-top: 1px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.press-facts dd {
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.press-facts dd a {
+  color: #8a5a00;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Capturas sobre el fondo oscuro: sin panel, el naranja lo ponen las
+   propias capturas. */
+.press-shots .section__title {
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.press-shots .section__subtitle {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.press-shots__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 28px;
+}
+
+.press-shot {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 22px;
+  color: var(--white);
+}
+
+.press-shot img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 480 / 1039;
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.4s var(--press-ease),
+    box-shadow 0.4s var(--press-ease);
+}
+
+.press-shot:hover img {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.45);
+}
+
+/* Cada tarjeta estira hasta el alto de su fila y la etiqueta PNG se va al
+   pie: así las etiquetas quedan alineadas aunque un nombre ocupe dos líneas. */
+.press-shots__grid > li {
+  display: flex;
+}
+
+.press-shot {
+  flex: 1;
+}
+
+.press-shot__caption {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.press-shot__meta {
+  margin-top: auto;
+}
+
+.press-shot__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.press-shot__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(250, 175, 50, 0.16);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.press-shot:hover .press-shot__meta {
+  background: var(--primary);
+  color: var(--text);
+}
+
+/* Logo (panel naranja) */
+.press-logos__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.press-logo {
+  overflow: hidden;
+}
+
+.press-logo__preview {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  padding: 28px;
+}
+
+/* Damero suave: deja ver que el PNG tiene fondo transparente */
+.press-logo__preview--light {
+  background: repeating-conic-gradient(#f1f2f2 0% 25%, #ffffff 0% 50%) 50% / 22px 22px;
+}
+
+.press-logo__preview--dark {
+  background: var(--text);
+}
+
+.press-logo__preview img {
+  width: min(168px, 56%);
+  height: auto;
+}
+
+.press-logo__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px 20px;
+}
+
+.press-logo__name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.press-logo__meta {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.press-logo__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--white);
+  font-size: 0.85rem;
+  font-weight: 800;
+  transition: transform 0.25s var(--press-ease), background 0.2s ease;
+}
+
+.press-logo__download:hover {
+  background: #1f2426;
+  transform: translateY(-2px);
+}
+
+/* Quién está detrás (fondo oscuro) */
+.press-founder .section__title {
+  margin-bottom: 40px;
+  color: var(--white);
+}
+
+.press-quote {
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* La cita va en Nunito y un escalón por debajo del h2 para que se lea
+   como voz, no como un segundo título. */
+.press-quote blockquote p {
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: clamp(1.3rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.press-quote figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 32px;
+}
+
+/* Barra naranja: el mismo trazo que subraya la palabra clave del hero */
+.press-quote figcaption::before {
+  content: "";
+  width: 48px;
+  height: 4px;
+  margin-bottom: 14px;
+  border-radius: 4px;
+  background: var(--primary);
+}
+
+.press-quote__name {
+  color: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.press-quote__role {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Contacto: mismo bloque que la home, recortado con la onda de los paneles
+   para que no corte en recto contra la sección oscura de arriba. */
+.press-contact {
+  clip-path: url(#section-wave-a);
+}
+
+/* Aquí el email es el dato que el periodista viene a buscar: tarjetas algo
+   más anchas para que quepa entero y, si aun así no cabe, parte línea en
+   el <wbr> antes de la arroba en vez de recortarse con puntos suspensivos. */
+.press-contact .contact-cards {
+  max-width: 920px;
+}
+
+.press-contact .contact-card__value {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 1023px) {
+  .press-fan {
+    --fan-w: 184px;
+    --fan-x: 100px;
+    --fan-x-open: 122px;
+  }
+
+  .press-about__grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 767px) {
+  .press-hero {
+    padding: 8px 0 64px;
+  }
+
+  /* El título acompaña a su párrafo (alineado a la izquierda) en vez de
+     centrarse como el resto de títulos --left del sitio en móvil. */
+  .press-about .section__title--left {
+    text-align: left;
+  }
+
+  .press-actions {
+    justify-content: center;
+  }
+
+  .press-fan {
+    --fan-w: 150px;
+    --fan-x: 80px;
+    --fan-x-open: 80px;
+    --fan-tilt-open: 8deg;
+  }
+
+  .press-facts {
+    padding: 24px 22px;
+  }
+
+  .press-facts__list > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .press-shots__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 16px;
+  }
+
+  .press-logos__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press-fan img,
+  .press-btn,
+  .press-shot img,
+  .press-shot__meta,
+  .press-logo__download {
+    transition: none;
+  }
+}
