@@ -44,4 +44,4 @@ jobs:
       # Los predeploy de firebase.json generan la copia pública (desde este commit)
       # y empaquetan la función; el CLI no redespliega la función si no ha cambiado.
       - name: Desplegar
-        run: npx --yes firebase-tools@15.17.0 deploy --only functions:web,hosting:getzampa --project eatout-70b8b --non-interactive
+        run: npx --yes firebase-tools@15.30.0 deploy --only functions:web,hosting:getzampa --project eatout-70b8b --non-interactive
