@@ -138,8 +138,26 @@ i18n: `resolveLocale(request)` lee `Accept-Language`, mapea a uno de los locales
   más de un push.
 
 ### Despliegue
-- El sitio se despliega automático en Cloudflare Pages al hacer push a `main`.
-- El backend se despliega aparte (`firebase deploy --only functions:…` desde el repo de funciones).
+- Un push a `main` publica en **dos sitios a la vez**: Cloudflare Pages (automático) y
+  **Firebase Hosting** (`.github/workflows/firebase-hosting.yml` → sitio `getzampa`,
+  `https://getzampa.web.app`, más la función `webSharePage` del codebase `web`).
+- **Por qué Firebase:** en día de partido los operadores españoles bloquean por orden de
+  LaLiga IPs de Cloudflare compartidas con webs piratas, y `getzampa.com` cae con ellas.
+  Firebase Hosting va por IPs de Google. Mudanza en curso desde 2026-09-13: el dominio
+  pasará a Firebase con el cambio de DNS; hasta entonces lo sirve Cloudflare.
+- `firebase.json` + `firebase-web/`: `/o` y `/r` son las MISMAS Pages Functions de
+  `/functions`, empaquetadas con esbuild y servidas por un adaptador Express ↔
+  Request/Response. Si tocas `/functions` o `i18n/`, el workflow redespliega la función.
+- La copia pública sale de `git archive HEAD` (`firebase-web/build-public.sh`) y excluye
+  `CLAUDE.md`, `mempalace.yaml`, `docs/`, `scripts/`: lo no versionado no se publica nunca.
+- Cabeceras: las de `_headers` están replicadas en `firebase.json`. **Si cambias una,
+  cámbiala en los dos sitios.** En `firebase.json`, `regex` casa la ruta entera y, si dos
+  reglas coinciden, gana la última.
+- La CI no guarda claves: federación de identidad (`github`/`zampa-web`, sólo `main` de
+  este repo) → cuenta `github-web-deploy`. Necesita `firebase-tools` ≥ 15.22.3: la 15.17.0
+  falla con "Failed to authenticate" (firebase/firebase-tools#10726).
+- El backend se despliega aparte (`firebase deploy --only functions:…` desde el repo de funciones);
+  no toca `webSharePage` porque va en otro codebase.
 
 ---
 

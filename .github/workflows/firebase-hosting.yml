@@ -8,7 +8,7 @@ name: Firebase Hosting
 
 on:
   push:
-    branches: [main, feat/firebase-hosting]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
