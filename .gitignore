@@ -12,3 +12,10 @@
 # Internal planning docs (never deploy)
 zampa-*.md
 docs/internal/
+
+# Firebase Hosting: copia pública generada, caché de la CLI y build de la función
+.firebase-public/
+.firebase/
+firebase-web/node_modules/
+firebase-web/lib/
+firebase-debug.log

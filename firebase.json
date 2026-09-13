@@ -1,0 +1,62 @@
+{
+  "hosting": {
+    "site": "getzampa",
+    "public": ".firebase-public",
+    "predeploy": ["bash firebase-web/build-public.sh"],
+    "cleanUrls": true,
+    "appAssociation": "NONE",
+    "rewrites": [
+      { "regex": "^/o/[^/]+/?$", "function": "webSharePage", "region": "us-central1" },
+      { "regex": "^/r/[^/]+/?$", "function": "webSharePage", "region": "us-central1" }
+    ],
+    "headers": [
+      {
+        "regex": "^/([^or].*|[or]([^/].*)?)?$",
+        "headers": [
+          { "key": "Access-Control-Allow-Origin", "value": "*" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        ]
+      },
+      {
+        "source": "**/*.@(css|js|mjs|png|jpg|jpeg|gif|webp|avif|svg|ico|woff|woff2|ttf|otf|pdf|zip|mp4|webm)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=14400, must-revalidate" }
+        ]
+      },
+      {
+        "source": "/admin",
+        "headers": [
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "Referrer-Policy", "value": "no-referrer" },
+          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+          { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'" }
+        ]
+      },
+      {
+        "source": "/admin/**",
+        "headers": [
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "Referrer-Policy", "value": "no-referrer" },
+          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+          { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://firebasestorage.googleapis.com; connect-src 'self' https://us-central1-eatout-70b8b.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://apis.google.com https://www.google.com; frame-src https://eatout-70b8b.firebaseapp.com https://maps.google.com https://www.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'" }
+        ]
+      },
+      {
+        "source": "/.well-known/@(apple-app-site-association|assetlinks.json)",
+        "headers": [
+          { "key": "Content-Type", "value": "application/json" }
+        ]
+      }
+    ]
+  },
+  "functions": [
+    {
+      "source": "firebase-web",
+      "codebase": "web",
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"],
+      "ignore": ["node_modules", ".git", "src", "test", "build.mjs", "build-public.sh", "*.local"]
+    }
+  ]
+}
