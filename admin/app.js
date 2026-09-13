@@ -74,6 +74,7 @@ const postsIncludeExpired = document.getElementById("postsIncludeExpired");
 const postsLoading = document.getElementById("postsLoading");
 const postsEmpty = document.getElementById("postsEmpty");
 const postsList = document.getElementById("postsList");
+const ingestPane = document.getElementById("ingestPane");
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabTitle = document.getElementById("tabTitle");
 const tabEyebrow = document.getElementById("tabEyebrow");
@@ -84,7 +85,7 @@ let searchTerm = (new URLSearchParams(window.location.search).get("q") || "").tr
 let activeView = new URLSearchParams(window.location.search).get("view") || localStorage.getItem("adminView") || "cards";
 if (!["cards", "list"].includes(activeView)) activeView = "cards";
 
-const allowedTabs = ["verifications", "plans", "stats", "posts"];
+const allowedTabs = ["verifications", "plans", "stats", "posts", "ingest"];
 let activeTab = new URLSearchParams(window.location.search).get("tab") || "verifications";
 if (!allowedTabs.includes(activeTab)) activeTab = "verifications";
 let plansLoaded = false;
@@ -260,7 +261,6 @@ function createDetail(label, value) {
 function ensureControls() {
   if (document.getElementById("searchInput")) return;
 
-  const toolbar = workspace.querySelector(".toolbar");
   const controlStrip = document.createElement("div");
   controlStrip.className = "control-strip";
   controlStrip.innerHTML = `
@@ -282,7 +282,8 @@ function ensureControls() {
       </div>
     </div>
   `;
-  toolbar.insertAdjacentElement("afterend", controlStrip);
+  // Dentro de su pestaña: colgada de la barra superior se veía en todas.
+  verificationsPane.prepend(controlStrip);
 
   const searchInput = document.getElementById("searchInput");
   searchInput.value = searchTerm;
@@ -401,6 +402,14 @@ function renderItems() {
         </div>
       `;
       row.querySelector("[data-open-detail]").addEventListener("click", () => openDetail(item));
+      const candidateCount = placeholderCandidates(item).length;
+      if (candidateCount) {
+        const candidatesBtn = document.createElement("button");
+        candidatesBtn.className = "link-btn";
+        candidatesBtn.textContent = `Ya detectado (${candidateCount})`;
+        candidatesBtn.addEventListener("click", () => openDetail(item));
+        row.querySelector(".list-actions").append(candidatesBtn);
+      }
       row.querySelector(".list-actions").append(...createReviewButtons(item, status, () => item.verificationNotes || ""));
       cards.append(row);
       return;
@@ -445,7 +454,9 @@ function renderItems() {
 
     actions.append(...createReviewButtons(item, status, () => notes.value));
     stack.append(notesLabel, notes, actions);
-    article.append(detailGrid, stack);
+    article.append(detailGrid);
+    if (placeholderCandidates(item).length) article.append(buildCandidatesBlock(item));
+    article.append(stack);
     cards.append(article);
   });
 }
@@ -495,6 +506,9 @@ function openDetail(item) {
       </div>
     </div>
   `;
+  if (placeholderCandidates(item).length) {
+    detailContent.querySelector(".modal-grid > .stack:last-child").append(buildCandidatesBlock(item));
+  }
   detailModal.hidden = false;
 }
 
@@ -1125,6 +1139,911 @@ async function deletePost(item, triggerBtn) {
   }
 }
 
+// ── Ingesta tab ──────────────────────────────────────────────────────────
+// Menús leídos de fuentes oficiales (web, PDF, Facebook, Instagram) y los
+// restaurantes no registrados que se dan de alta para publicarlos. Las reglas
+// de verdad (qué publica, qué exige revisión) viven en el backend: aquí sólo
+// se enseñan y se piden las acciones.
+
+const SOURCE_TYPE_LABELS = {
+  official_web: "Web oficial",
+  official_pdf: "PDF en su web",
+  official_facebook: "Facebook oficial",
+  official_instagram: "Instagram oficial",
+};
+
+const SOURCE_TYPE_SHORT = {
+  official_web: "Web",
+  official_pdf: "PDF",
+  official_facebook: "Facebook",
+  official_instagram: "Instagram",
+};
+
+const SOCIAL_SOURCE_TYPES = new Set(["official_facebook", "official_instagram"]);
+
+const DEFAULT_PARSER_BY_TYPE = {
+  official_web: "generic_html",
+  official_pdf: "generic_pdf",
+  official_facebook: "manual",
+  official_instagram: "manual",
+};
+
+const OBSERVATION_STATUS_LABELS = {
+  pending_review: "Pendiente",
+  detected: "Descartada",
+  published: "Publicada",
+  rejected: "Rechazada",
+  stale: "Caducada",
+};
+
+const VERIFICATION_LABELS = {
+  official_domain_link: "Enlazada desde su web",
+  manual_verified: "Verificada a mano",
+  business_claimed: "Reclamada por el restaurante",
+};
+
+const EXTRACTED_FROM_LABELS = {
+  image_ocr: "Leído de imagen",
+  pdf: "Leído de PDF",
+  mixed: "Texto e imagen",
+};
+
+// Por qué la regla no deja publicar (`shouldPublishObservation`).
+const PUBLISH_REASON_LABELS = {
+  not_approved: "primero hay que aprobarla",
+  missing_observation: "la observación ya no existe",
+  source_not_official: "la fuente no es de un tipo oficial",
+  observation_rejected: "está rechazada",
+  social_source_not_verified: "la cuenta social no tiene verificación",
+  missing_publication_url: "falta el enlace a la publicación",
+  social_post_not_current: "el post no tiene señales de ser de hoy",
+  menu_date_not_today: "el menú no es de hoy",
+  no_daily_menu_signal: "el texto no parece un menú del día",
+  no_price: "no se ha encontrado el precio",
+  duplicate_active_offer: "el comercio ya tiene una oferta activa hoy",
+  source_disabled: "la fuente está desactivada",
+  social_requires_review: "una fuente social siempre pasa por revisión",
+  generic_parser_needs_review: "la lectura de página entera siempre pasa por revisión",
+  low_confidence: "la confianza de la lectura es baja",
+  auto_publish_disabled: "la fuente no publica sola",
+};
+
+const CLAIM_REASON_LABELS = {
+  placeholder_not_found: "el restaurante detectado ya no existe",
+  merchant_not_found: "el comercio ya no existe",
+  same_document: "son la misma ficha",
+  already_claimed: "ese restaurante detectado ya lo reclamó otro comercio",
+  not_a_placeholder: "esa ficha no es un restaurante detectado",
+  merchant_is_placeholder: "el comercio también es un restaurante detectado",
+  merchant_not_verified: "primero hay que aprobar al comercio",
+};
+
+const CANDIDATE_SIGNAL_LABELS = {
+  place_id: "Mismo sitio de Google",
+  name_and_distance: "Mismo nombre y a poca distancia",
+  name_and_city: "Mismo nombre y misma ciudad",
+  fuzzy_name_and_distance: "Nombre parecido y a poca distancia",
+};
+
+const CLAIM_FIELD_LABELS = {
+  website: "web",
+  shortDescription: "descripción",
+};
+
+const ingestMessage = document.getElementById("ingestMessage");
+const ingestViewButtons = document.querySelectorAll("[data-ingest-view]");
+const ingestStatusFilters = document.getElementById("ingestStatusFilters");
+const ingestStatusButtons = document.querySelectorAll("[data-ingest-status]");
+const ingestHint = document.getElementById("ingestHint");
+const ingestQueue = document.getElementById("ingestQueue");
+const ingestQueueLoading = document.getElementById("ingestQueueLoading");
+const ingestQueueEmpty = document.getElementById("ingestQueueEmpty");
+const ingestQueueList = document.getElementById("ingestQueueList");
+const ingestQueueMore = document.getElementById("ingestQueueMore");
+const ingestSources = document.getElementById("ingestSources");
+const ingestSourcesLoading = document.getElementById("ingestSourcesLoading");
+const ingestSourcesEmpty = document.getElementById("ingestSourcesEmpty");
+const ingestSourcesList = document.getElementById("ingestSourcesList");
+const ingestSourcesMore = document.getElementById("ingestSourcesMore");
+const ingestNewSourceBtn = document.getElementById("ingestNewSourceBtn");
+const sourceForm = document.getElementById("sourceForm");
+const sourceFormTitle = document.getElementById("sourceFormTitle");
+const sourceTypeInput = document.getElementById("sourceTypeInput");
+const sourceParserInput = document.getElementById("sourceParserInput");
+const sourceUrlInput = document.getElementById("sourceUrlInput");
+const sourceBusinessModeInputs = document.querySelectorAll("input[name='sourceBusinessMode']");
+const sourceBusinessExisting = document.getElementById("sourceBusinessExisting");
+const sourceBusinessSearch = document.getElementById("sourceBusinessSearch");
+const sourceBusinessPicker = document.getElementById("sourceBusinessPicker");
+const sourceBusinessSelected = document.getElementById("sourceBusinessSelected");
+const sourceBusinessNew = document.getElementById("sourceBusinessNew");
+const bizNameInput = document.getElementById("bizNameInput");
+const bizAddressInput = document.getElementById("bizAddressInput");
+const bizLatInput = document.getElementById("bizLatInput");
+const bizLngInput = document.getElementById("bizLngInput");
+const bizPhoneInput = document.getElementById("bizPhoneInput");
+const bizWebsiteInput = document.getElementById("bizWebsiteInput");
+const sourceSocialFieldset = document.getElementById("sourceSocialFieldset");
+const sourceVerificationInput = document.getElementById("sourceVerificationInput");
+const sourceUsernameInput = document.getElementById("sourceUsernameInput");
+const sourceAccountIdInput = document.getElementById("sourceAccountIdInput");
+const sourcePollingInput = document.getElementById("sourcePollingInput");
+const sourceEnabledInput = document.getElementById("sourceEnabledInput");
+const sourceAutoPublishInput = document.getElementById("sourceAutoPublishInput");
+const sourceManualReviewInput = document.getElementById("sourceManualReviewInput");
+const sourceSocialLockHint = document.getElementById("sourceSocialLockHint");
+const sourceCancelBtn = document.getElementById("sourceCancelBtn");
+
+let ingestView = "queue";
+let ingestStatus = "pending_review";
+let ingestLoaded = false;
+let ingestQueueCursor = null;
+let ingestSourcesCursor = null;
+// Un cambio de filtro mientras carga la página anterior no puede pintar
+// resultados viejos debajo de los nuevos.
+let ingestQueueRequest = 0;
+let ingestSourcesRequest = 0;
+let sourceFormOriginal = null;
+let sourceFormBusiness = null;
+let sourceBusinessSearchDebounce = null;
+const businessNames = new Map();
+
+/** Sólo enlaces http(s): lo que llega de una fuente externa no se pinta como href a ciegas. */
+function safeHttpUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function formatPrice(value) {
+  return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value);
+}
+
+function formatYmd(ymd) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd || "");
+  if (!match) return ymd || "—";
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return new Intl.DateTimeFormat("es-ES", { dateStyle: "medium" }).format(date);
+}
+
+function formatDistance(meters) {
+  return meters < 1000 ? `${meters} m` : `${(meters / 1000).toFixed(1).replace(".", ",")} km`;
+}
+
+function businessLabel(businessId) {
+  return businessNames.get(businessId) || businessId || "(sin comercio)";
+}
+
+/**
+ * Los listados traen `businessId`, no el nombre. Una búsqueda sin filtro cubre
+ * a todos mientras haya pocos comercios; lo que no salga ahí se busca por id.
+ * Si falla, se enseña el id: no merece bloquear la revisión.
+ */
+async function resolveBusinessNames(ids) {
+  const missing = [...new Set(ids.filter(Boolean))].filter((id) => !businessNames.has(id));
+  if (!missing.length) return;
+  try {
+    const { items = [] } = await authedFetch("adminSearchMerchants");
+    items.forEach((it) => { if (it.name) businessNames.set(it.merchantId, it.name); });
+    const stillMissing = missing.filter((id) => !businessNames.has(id));
+    await Promise.all(stillMissing.map(async (id) => {
+      const { items: found = [] } = await authedFetch(`adminSearchMerchants?q=${encodeURIComponent(id)}`);
+      const hit = found.find((it) => it.merchantId === id);
+      if (hit && hit.name) businessNames.set(id, hit.name);
+    }));
+  } catch (_) {
+    // Se queda el id.
+  }
+}
+
+function createButton(label, className, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.dataset.actionBtn = "true";
+  button.textContent = label;
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function createExternalLink(label, href) {
+  const link = document.createElement("a");
+  link.className = "btn-secondary";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.href = href;
+  link.textContent = label;
+  return link;
+}
+
+function setIngestView(view) {
+  ingestView = view === "sources" ? "sources" : "queue";
+  ingestViewButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.ingestView === ingestView));
+  ingestQueue.hidden = ingestView !== "queue";
+  ingestStatusFilters.hidden = ingestView !== "queue";
+  ingestSources.hidden = ingestView !== "sources";
+  ingestHint.innerHTML = ingestView === "queue"
+    ? "Menús leídos de fuentes oficiales. <strong>Aprobar no publica</strong>: aprueba, revisa y luego pulsa <strong>Publicar</strong>. Una fuente de Facebook o Instagram nunca publica sola."
+    : "Cada fuente es la página de <strong>un</strong> restaurante, escrita por él. <strong>Inspeccionar</strong> la lee ahora y deja la lectura en la cola de revisión.";
+  hideMessage(ingestMessage);
+  loadIngestView();
+}
+
+function loadIngestView() {
+  if (ingestView === "sources") loadIngestSources();
+  else loadIngestQueue();
+}
+
+// ── Cola de revisión ──
+
+async function loadIngestQueue({ append = false } = {}) {
+  const request = ++ingestQueueRequest;
+  if (!append) {
+    ingestQueueList.innerHTML = "";
+    ingestQueueCursor = null;
+  }
+  ingestQueueEmpty.hidden = true;
+  ingestQueueMore.hidden = true;
+  ingestQueueLoading.hidden = false;
+  setBusy(true);
+  try {
+    const params = new URLSearchParams({ limit: "30" });
+    if (ingestStatus) params.set("status", ingestStatus);
+    if (append && ingestQueueCursor != null) params.set("cursor", String(ingestQueueCursor));
+    const { items = [], nextCursor = null } = await authedFetch(`adminListMenuObservations?${params.toString()}`);
+    await resolveBusinessNames(items.map((it) => it.businessId));
+    if (request !== ingestQueueRequest) return;
+    items.forEach((it) => ingestQueueList.appendChild(buildObservationRow(it)));
+    ingestQueueCursor = nextCursor;
+    ingestQueueMore.hidden = nextCursor == null;
+    ingestQueueEmpty.hidden = ingestQueueList.children.length > 0;
+  } catch (error) {
+    if (request !== ingestQueueRequest) return;
+    showMessage(ingestMessage, error.message || "No se pudieron cargar las observaciones.");
+  } finally {
+    if (request === ingestQueueRequest) ingestQueueLoading.hidden = true;
+    setBusy(false);
+  }
+}
+
+function observationStatusClass(status) {
+  if (status === "published") return "active";
+  if (status === "rejected") return "expired";
+  if (status === "pending_review") return "warn";
+  return "";
+}
+
+function buildObservationRow(item) {
+  const row = document.createElement("article");
+  row.className = "post-row ingest-row";
+
+  const thumb = document.createElement("div");
+  thumb.className = "post-thumb";
+  const image = (item.mediaUrls || []).map(safeHttpUrl).find(Boolean);
+  if (image) {
+    const link = document.createElement("a");
+    link.href = image;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    const img = document.createElement("img");
+    img.loading = "lazy";
+    img.alt = "Imagen de la publicación";
+    img.referrerPolicy = "no-referrer";
+    img.src = image;
+    link.appendChild(img);
+    thumb.appendChild(link);
+  } else {
+    thumb.textContent = SOURCE_TYPE_SHORT[item.sourceType] || "Fuente";
+  }
+
+  const status = item.status || "detected";
+  const review = item.review || null;
+  const approved = review?.decision === "approved";
+  const confidence = typeof item.confidence === "number" ? `${Math.round(item.confidence * 100)} %` : "—";
+  const lowConfidence = typeof item.confidence === "number" && item.confidence < 0.7;
+  const sourceLabel = item.sourceLabel || SOURCE_TYPE_LABELS[item.sourceType] || item.sourceType || "Fuente";
+
+  const main = document.createElement("div");
+  main.className = "post-main";
+  main.innerHTML = `
+    <h4 class="post-title">${esc(businessLabel(item.businessId))}</h4>
+    <p class="post-meta">${esc(sourceLabel)} · Menú del ${esc(formatYmd(item.menuDate))} · Leído ${esc(formatDate(item.retrievedAt))}</p>
+    <div class="post-badges">
+      <span class="post-badge ${observationStatusClass(status)}">${esc(OBSERVATION_STATUS_LABELS[status] || status)}</span>
+      <span class="post-badge ${item.price != null ? "" : "warn"}">${item.price != null ? esc(formatPrice(item.price)) : "Sin precio"}</span>
+      <span class="post-badge ${lowConfidence ? "warn" : ""}">Confianza ${esc(confidence)}</span>
+      <span class="post-badge">${Number(item.dishCount) || 0} platos</span>
+      ${item.hasDailyMenuSignal ? "" : `<span class="post-badge warn">Sin señal de menú del día</span>`}
+      ${EXTRACTED_FROM_LABELS[item.extractedFrom] ? `<span class="post-badge">${esc(EXTRACTED_FROM_LABELS[item.extractedFrom])}</span>` : ""}
+      ${review ? `<span class="post-badge ${approved ? "active" : "expired"}">${approved ? "Aprobada" : "Rechazada"} por ${esc(review.by) || "—"}</span>` : ""}
+    </div>
+    ${item.publicationCreatedAt ? `<p class="ingest-caption">Publicado en la fuente el ${esc(formatDate(item.publicationCreatedAt))}</p>` : ""}
+    ${item.sourceCaption ? `<p class="ingest-caption">Texto del post: ${esc(item.sourceCaption)}</p>` : ""}
+    <pre class="ingest-menu">${esc(item.menuText) || "(sin texto)"}</pre>
+    ${review?.notes ? `<p class="ingest-caption">Nota de revisión: ${esc(review.notes)}</p>` : ""}
+  `;
+
+  const actions = document.createElement("div");
+  actions.className = "post-actions";
+  const publicationUrl = safeHttpUrl(item.publicationUrl) || safeHttpUrl(item.sourceUrl);
+  if (publicationUrl) actions.appendChild(createExternalLink("Abrir publicación", publicationUrl));
+
+  if (status === "published") {
+    if (item.publishedOfferId) {
+      actions.appendChild(createExternalLink("Ver oferta", `/o/${encodeURIComponent(item.publishedOfferId)}`));
+    }
+  } else {
+    const notesBox = document.createElement("div");
+    notesBox.className = "ingest-review";
+    const notes = document.createElement("textarea");
+    notes.placeholder = "Nota interna (opcional): por qué se aprueba o se rechaza";
+    notesBox.appendChild(notes);
+    main.appendChild(notesBox);
+
+    if (approved) {
+      actions.appendChild(createButton("Publicar", "btn-primary", () => publishObservation(item)));
+    } else {
+      actions.appendChild(createButton("Aprobar", "btn-success", () => reviewObservation(item, "approve", notes.value)));
+    }
+    if (status !== "rejected") {
+      actions.appendChild(createButton("Rechazar", "btn-danger", () => reviewObservation(item, "reject", notes.value)));
+    }
+  }
+
+  row.append(thumb, main, actions);
+  return row;
+}
+
+async function reviewObservation(item, action, notes) {
+  hideMessage(ingestMessage);
+  const label = businessLabel(item.businessId);
+  setBusy(true);
+  try {
+    await authedFetch("adminReviewMenuObservation", {
+      method: "POST",
+      body: JSON.stringify({ observationId: item.id, action, notes }),
+    });
+    await loadIngestQueue();
+    showMessage(ingestMessage, action === "approve"
+      ? `Aprobada la lectura de ${label}. Todavía no está publicada: búscala en Pendientes y pulsa Publicar.`
+      : `Rechazada la lectura de ${label}.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo guardar la revisión.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function publishObservation(item) {
+  const label = businessLabel(item.businessId);
+  const sourceLabel = item.sourceLabel || "Fuente oficial";
+  if (!confirm(`¿Publicar hoy el menú de ${label} en Zampa?\n\nSaldrá en el feed con la etiqueta «${sourceLabel}».`)) return;
+  hideMessage(ingestMessage);
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminPublishMenuObservation", {
+      method: "POST",
+      body: JSON.stringify({ observationId: item.id }),
+    });
+    await loadIngestQueue();
+    if (result.published) {
+      showMessage(ingestMessage, `Publicado el menú de ${label}. Oferta ${result.offerId}.`, "ok");
+    } else {
+      showMessage(ingestMessage, `No se ha publicado el menú de ${label}: ${PUBLISH_REASON_LABELS[result.reason] || result.reason}.`);
+    }
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo publicar.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+// ── Fuentes ──
+
+async function loadIngestSources({ append = false } = {}) {
+  const request = ++ingestSourcesRequest;
+  if (!append) {
+    ingestSourcesList.innerHTML = "";
+    ingestSourcesCursor = null;
+  }
+  ingestSourcesEmpty.hidden = true;
+  ingestSourcesMore.hidden = true;
+  ingestSourcesLoading.hidden = false;
+  setBusy(true);
+  try {
+    const params = new URLSearchParams({ limit: "50" });
+    if (append && ingestSourcesCursor != null) params.set("cursor", String(ingestSourcesCursor));
+    const { items = [], nextCursor = null } = await authedFetch(`adminListMenuSources?${params.toString()}`);
+    await resolveBusinessNames(items.map((it) => it.businessId));
+    if (request !== ingestSourcesRequest) return;
+    items.forEach((it) => ingestSourcesList.appendChild(buildSourceRow(it)));
+    ingestSourcesCursor = nextCursor;
+    ingestSourcesMore.hidden = nextCursor == null;
+    ingestSourcesEmpty.hidden = ingestSourcesList.children.length > 0;
+  } catch (error) {
+    if (request !== ingestSourcesRequest) return;
+    showMessage(ingestMessage, error.message || "No se pudieron cargar las fuentes.");
+  } finally {
+    if (request === ingestSourcesRequest) ingestSourcesLoading.hidden = true;
+    setBusy(false);
+  }
+}
+
+function buildSourceRow(source) {
+  const row = document.createElement("article");
+  row.className = "post-row ingest-row";
+
+  const thumb = document.createElement("div");
+  thumb.className = "post-thumb";
+  thumb.textContent = SOURCE_TYPE_SHORT[source.type] || "Fuente";
+
+  const enabled = source.enabled !== false;
+  const url = safeHttpUrl(source.url);
+  const main = document.createElement("div");
+  main.className = "post-main";
+  main.innerHTML = `
+    <h4 class="post-title">${esc(businessLabel(source.businessId))}</h4>
+    <p class="post-meta">${esc(SOURCE_TYPE_LABELS[source.type] || source.type)} · lectura ${esc(source.parserType) || "—"}</p>
+    <p class="post-meta">${esc(source.url)}</p>
+    <div class="post-badges">
+      <span class="post-badge ${enabled ? "active" : "expired"}">${enabled ? "Activa" : "Desactivada"}</span>
+      <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
+      ${source.verificationMethod ? `<span class="post-badge">${esc(VERIFICATION_LABELS[source.verificationMethod] || source.verificationMethod)}</span>` : ""}
+      ${source.platformUsername ? `<span class="post-badge">@${esc(source.platformUsername)}</span>` : ""}
+      <span class="post-badge">${source.lastCheckedAt ? `Leída ${esc(formatDate(source.lastCheckedAt))}` : "Nunca leída"}</span>
+    </div>
+    ${source.lastError ? `<p class="ingest-caption" style="color:var(--danger)">Último error: ${esc(source.lastError)}</p>` : ""}
+  `;
+
+  const actions = document.createElement("div");
+  actions.className = "post-actions";
+  if (url) actions.appendChild(createExternalLink("Abrir", url));
+  if (enabled) {
+    actions.appendChild(createButton("Inspeccionar", "btn-primary", () => toggleInspectPanel(row, source)));
+  }
+  actions.appendChild(createButton("Editar", "btn-secondary", () => openSourceForm(source)));
+  if (enabled) {
+    actions.appendChild(createButton("Desactivar", "btn-danger", () => disableSource(source)));
+  }
+
+  row.append(thumb, main, actions);
+  return row;
+}
+
+function toggleInspectPanel(row, source) {
+  const existing = row.querySelector(".ingest-inspect");
+  if (existing) {
+    existing.remove();
+    return;
+  }
+  const readsUrl = source.parserType === "generic_html" || source.parserType === "generic_pdf";
+  const panel = document.createElement("div");
+  panel.className = "ingest-inspect";
+  panel.innerHTML = `
+    <label>Texto del menú</label>
+    <textarea placeholder="Pega aquí el menú tal como aparece en la fuente"></textarea>
+    <p class="form-hint">${readsUrl
+      ? "Esta fuente se lee sola desde su URL: déjalo vacío. Si pegas texto, el lector de la URL manda igualmente."
+      : "Esta fuente no tiene lector automático: pega el texto del menú. Es obligatorio."}</p>
+    <div class="actions"></div>
+  `;
+  const textarea = panel.querySelector("textarea");
+  panel.querySelector(".actions").append(
+    createButton("Leer ahora", "btn-primary", () => inspectSource(source, textarea.value)),
+    createButton("Cancelar", "btn-secondary", () => panel.remove()),
+  );
+  row.appendChild(panel);
+  textarea.focus();
+}
+
+async function inspectSource(source, text) {
+  hideMessage(ingestMessage);
+  const label = businessLabel(source.businessId);
+  const extractedText = text.trim() ? text : undefined;
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminInspectMenuSource", {
+      method: "POST",
+      body: JSON.stringify({ sourceId: source.id, extractedText }),
+    });
+    await loadIngestSources();
+    const statusLabel = OBSERVATION_STATUS_LABELS[result.status] || result.status;
+    if (result.unchanged) {
+      showMessage(ingestMessage, `${label}: el mismo menú que ya se leyó hoy. No se ha creado nada nuevo (estado: ${statusLabel}).`, "ok");
+    } else if (result.published) {
+      showMessage(ingestMessage, `${label}: leído y publicado solo. Oferta ${result.offerId}.`, "ok");
+    } else {
+      const why = PUBLISH_REASON_LABELS[result.reason];
+      const next = result.status === "pending_review" ? " Revísalo en la cola." : "";
+      showMessage(ingestMessage, `${label}: leído, queda en «${statusLabel}»${why ? ` porque ${why}` : ""}.${next}`, "ok");
+    }
+  } catch (error) {
+    // Un fallo de lectura queda anotado en la fuente: se recarga para verlo.
+    await loadIngestSources();
+    showMessage(ingestMessage, `${label}: ${error.message || "no se pudo leer la fuente."}`);
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function disableSource(source) {
+  const label = businessLabel(source.businessId);
+  if (!confirm(`¿Desactivar la fuente de ${label}?\n\nDeja de leerse y de publicar. No se borra nada.`)) return;
+  hideMessage(ingestMessage);
+  setBusy(true);
+  try {
+    await authedFetch("adminDisableMenuSource", {
+      method: "POST",
+      body: JSON.stringify({ sourceId: source.id }),
+    });
+    await loadIngestSources();
+    showMessage(ingestMessage, `Fuente de ${label} desactivada.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo desactivar la fuente.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+// ── Formulario de fuente ──
+
+function sourceBusinessMode() {
+  return [...sourceBusinessModeInputs].find((input) => input.checked)?.value || "existing";
+}
+
+function applySourceBusinessMode() {
+  const mode = sourceBusinessMode();
+  sourceBusinessExisting.hidden = mode !== "existing";
+  sourceBusinessNew.hidden = mode !== "new";
+}
+
+/** Una fuente social siempre pasa por revisión y nunca publica sola: el formulario lo enseña así. */
+function applySourceTypeRules() {
+  const isSocial = SOCIAL_SOURCE_TYPES.has(sourceTypeInput.value);
+  sourceSocialFieldset.hidden = !isSocial;
+  sourceSocialLockHint.hidden = !isSocial;
+  sourceAutoPublishInput.disabled = isSocial;
+  sourceManualReviewInput.disabled = isSocial;
+  if (isSocial) {
+    sourceAutoPublishInput.checked = false;
+    sourceManualReviewInput.checked = true;
+  }
+}
+
+function setSourceFormBusiness(business) {
+  sourceFormBusiness = business;
+  sourceBusinessSelected.hidden = !business;
+  sourceBusinessSelected.textContent = business ? `${business.name || "(sin nombre)"} · ${business.merchantId}` : "";
+}
+
+function openSourceForm(source = null) {
+  sourceFormOriginal = source;
+  sourceForm.reset();
+  sourceFormTitle.textContent = source ? `Editar fuente de ${businessLabel(source.businessId)}` : "Nueva fuente";
+  sourceTypeInput.value = source?.type && SOURCE_TYPE_LABELS[source.type] ? source.type : "official_web";
+  sourceParserInput.value = source?.parserType || DEFAULT_PARSER_BY_TYPE[sourceTypeInput.value];
+  sourceUrlInput.value = source?.url || "";
+  sourceVerificationInput.value = source?.verificationMethod || "";
+  sourceUsernameInput.value = source?.platformUsername || "";
+  sourceAccountIdInput.value = source?.platformAccountId || "";
+  sourcePollingInput.value = source?.pollingStrategy || "";
+  sourceEnabledInput.checked = source ? source.enabled !== false : true;
+  sourceAutoPublishInput.checked = source?.autoPublishEnabled === true;
+  sourceManualReviewInput.checked = source?.requiresManualReview === true;
+
+  // Al editar, el comercio no cambia: una fuente de otro comercio es otra fuente.
+  sourceBusinessModeInputs.forEach((input) => {
+    input.checked = input.value === "existing";
+    input.disabled = !!source;
+  });
+  sourceBusinessSearch.hidden = !!source;
+  sourceBusinessPicker.hidden = true;
+  sourceBusinessPicker.innerHTML = "";
+  setSourceFormBusiness(source ? { merchantId: source.businessId, name: businessNames.get(source.businessId) || "" } : null);
+  applySourceBusinessMode();
+  applySourceTypeRules();
+
+  sourceForm.hidden = false;
+  sourceForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closeSourceForm() {
+  sourceForm.hidden = true;
+  sourceFormOriginal = null;
+  setSourceFormBusiness(null);
+}
+
+async function searchBusinessesForSource() {
+  const q = sourceBusinessSearch.value.trim();
+  try {
+    const items = await fetchMerchantSearch(q);
+    sourceBusinessPicker.innerHTML = "";
+    sourceBusinessPicker.hidden = false;
+    if (!items.length) {
+      sourceBusinessPicker.innerHTML = `<div class="empty" style="margin:0">Sin resultados. Si el restaurante no está en Zampa, dalo de alta.</div>`;
+      return;
+    }
+    items.slice(0, 20).forEach((it) => {
+      const row = document.createElement("div");
+      row.className = "pick-row";
+      row.innerHTML = `
+        <div>
+          <strong>${esc(it.name) || "(sin nombre)"}</strong>
+          <div class="pick-sub">${esc(it.addressText) || "Sin dirección"}</div>
+          <div class="pick-id">${esc(it.merchantId)}</div>
+        </div>
+      `;
+      row.addEventListener("click", () => {
+        setSourceFormBusiness({ merchantId: it.merchantId, name: it.name || "" });
+        sourceBusinessPicker.hidden = true;
+      });
+      sourceBusinessPicker.appendChild(row);
+    });
+  } catch (error) {
+    if (error.name === "AbortError") return;
+    showMessage(ingestMessage, error.message || "No se pudo buscar comercios.");
+  }
+}
+
+function parseCoordinate(value, min, max) {
+  const text = value.trim().replace(",", ".");
+  if (!text) return null;
+  const number = Number(text);
+  return Number.isFinite(number) && number >= min && number <= max ? number : NaN;
+}
+
+/** Devuelve el cuerpo de `adminUpsertMenuSource` o lanza con un motivo para el admin. */
+function buildSourceRequestBody() {
+  const original = sourceFormOriginal;
+  const type = sourceTypeInput.value;
+  const isSocial = SOCIAL_SOURCE_TYPES.has(type);
+  const url = sourceUrlInput.value.trim();
+  if (!url) throw new Error("Falta la URL de la fuente.");
+  if (!/^https:\/\//i.test(url)) throw new Error("La URL tiene que empezar por https://");
+
+  const body = { type, url, parserType: sourceParserInput.value };
+  if (original) body.sourceId = original.id;
+
+  if (original) {
+    body.businessId = original.businessId;
+  } else if (sourceBusinessMode() === "existing") {
+    if (!sourceFormBusiness) throw new Error("Elige el comercio de la fuente, o dalo de alta.");
+    body.businessId = sourceFormBusiness.merchantId;
+  } else {
+    const name = bizNameInput.value.trim();
+    if (!name) throw new Error("Falta el nombre del restaurante.");
+    const addressText = bizAddressInput.value.trim();
+    const lat = parseCoordinate(bizLatInput.value, -90, 90);
+    const lng = parseCoordinate(bizLngInput.value, -180, 180);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) throw new Error("Latitud o longitud no válidas.");
+    if ((lat == null) !== (lng == null)) throw new Error("Pon latitud y longitud, o ninguna.");
+    body.business = {
+      name,
+      addressText,
+      phone: bizPhoneInput.value.trim(),
+      website: bizWebsiteInput.value.trim(),
+    };
+    if (lat != null) body.business.address = { formatted: addressText, lat, lng };
+  }
+
+  if (isSocial && !sourceVerificationInput.value) {
+    throw new Error("Elige cómo sabemos que la cuenta es del restaurante.");
+  }
+  if (sourceVerificationInput.value) body.verificationMethod = sourceVerificationInput.value;
+  body.platformUsername = sourceUsernameInput.value.trim().replace(/^@/, "");
+  body.platformAccountId = sourceAccountIdInput.value.trim();
+  if (sourcePollingInput.value) body.pollingStrategy = sourcePollingInput.value;
+
+  // El backend recalcula `requiresManualReview` en cada guardado: se manda siempre.
+  body.requiresManualReview = sourceManualReviewInput.checked;
+  // Los interruptores, al editar, sólo viajan si el admin los ha cambiado: una
+  // edición no puede reencender por accidente una fuente que apagó una fusión.
+  const enabled = sourceEnabledInput.checked;
+  const autoPublish = sourceAutoPublishInput.checked;
+  if (!original || enabled !== (original.enabled !== false)) body.enabled = enabled;
+  if (!original || autoPublish !== (original.autoPublishEnabled === true)) body.autoPublishEnabled = autoPublish;
+  return body;
+}
+
+async function saveSource(event) {
+  event.preventDefault();
+  hideMessage(ingestMessage);
+  let body;
+  try {
+    body = buildSourceRequestBody();
+  } catch (error) {
+    showMessage(ingestMessage, error.message);
+    ingestMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  if (body.enabled === true && sourceFormOriginal && sourceFormOriginal.enabled === false
+    && !confirm("Vas a reactivar una fuente desactivada. Si se desactivó al fusionar el restaurante, volvería a leer y publicar a nombre del comercio real. ¿Seguir?")) {
+    return;
+  }
+
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminUpsertMenuSource", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    if (result.createdBusiness && body.business) {
+      businessNames.set(result.businessId, body.business.name);
+      invalidateMerchantSearchCache();
+    }
+    const label = businessLabel(result.businessId);
+    closeSourceForm();
+    await loadIngestSources();
+    const parts = [result.created ? `Fuente creada para ${label}.` : `Fuente de ${label} actualizada.`];
+    if (result.createdBusiness) parts.push(`Restaurante dado de alta como no reclamado (${result.businessId}).`);
+    if (result.created) parts.push("Pulsa Inspeccionar para leerla por primera vez.");
+    showMessage(ingestMessage, parts.join(" "), "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo guardar la fuente.");
+  } finally {
+    setBusy(false);
+  }
+  ingestMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+ingestViewButtons.forEach((btn) => {
+  btn.addEventListener("click", () => setIngestView(btn.dataset.ingestView));
+});
+
+ingestStatusButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    ingestStatus = btn.dataset.ingestStatus;
+    ingestStatusButtons.forEach((other) => other.classList.toggle("active", other === btn));
+    hideMessage(ingestMessage);
+    loadIngestQueue();
+  });
+});
+
+ingestQueueMore.addEventListener("click", () => loadIngestQueue({ append: true }));
+ingestSourcesMore.addEventListener("click", () => loadIngestSources({ append: true }));
+ingestNewSourceBtn.addEventListener("click", () => openSourceForm());
+sourceCancelBtn.addEventListener("click", closeSourceForm);
+sourceForm.addEventListener("submit", saveSource);
+sourceBusinessModeInputs.forEach((input) => input.addEventListener("change", applySourceBusinessMode));
+sourceTypeInput.addEventListener("change", () => {
+  sourceParserInput.value = DEFAULT_PARSER_BY_TYPE[sourceTypeInput.value];
+  // Al salir de social se sueltan los dos interruptores que el tipo forzaba.
+  if (sourceAutoPublishInput.disabled && !SOCIAL_SOURCE_TYPES.has(sourceTypeInput.value)) {
+    sourceManualReviewInput.checked = false;
+  }
+  applySourceTypeRules();
+});
+sourceBusinessSearch.addEventListener("input", () => {
+  if (sourceBusinessSearchDebounce) clearTimeout(sourceBusinessSearchDebounce);
+  sourceBusinessSearchDebounce = setTimeout(searchBusinessesForSource, 180);
+});
+
+// ── Fusión de un restaurante detectado (desde Verificaciones) ──
+
+function placeholderCandidates(item) {
+  return Array.isArray(item.placeholderCandidates) ? item.placeholderCandidates.filter((c) => c && c.placeholderId) : [];
+}
+
+function buildCandidatesBlock(item) {
+  const candidates = placeholderCandidates(item);
+  const box = document.createElement("div");
+  box.className = "candidates";
+  const title = document.createElement("p");
+  title.className = "review-label";
+  title.textContent = candidates.length === 1
+    ? "Puede ser un restaurante que Zampa ya había detectado"
+    : `Puede ser uno de estos ${candidates.length} restaurantes que Zampa ya había detectado`;
+  box.appendChild(title);
+
+  candidates.forEach((candidate) => {
+    const row = document.createElement("div");
+    row.className = "candidate";
+    const score = typeof candidate.score === "number" ? ` · coincidencia ${Math.round(candidate.score * 100)} %` : "";
+    const distance = typeof candidate.distanceMeters === "number" ? ` · a ${formatDistance(candidate.distanceMeters)}` : "";
+    const info = document.createElement("div");
+    info.innerHTML = `
+      <strong>${esc(candidate.name) || "(sin nombre)"}</strong>
+      <div class="card-meta">${esc(candidate.addressText) || "Sin dirección"}</div>
+      <div class="card-meta">${esc(CANDIDATE_SIGNAL_LABELS[candidate.signal] || candidate.signal || "")}${score}${esc(distance)}</div>
+    `;
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    const preview = document.createElement("div");
+    preview.className = "claim-preview";
+    preview.hidden = true;
+    actions.appendChild(createButton("Ver qué pasaría al fusionar", "btn-secondary", () => previewClaim(item, candidate, preview)));
+    row.append(info, actions, preview);
+    box.appendChild(row);
+  });
+  return box;
+}
+
+async function previewClaim(item, candidate, container) {
+  container.hidden = false;
+  container.textContent = "Calculando la fusión...";
+  try {
+    const params = new URLSearchParams({ placeholderId: candidate.placeholderId, merchantId: item.merchantId });
+    const result = await authedFetch(`adminPreviewClaimPlan?${params.toString()}`);
+    renderClaimPreview(container, item, candidate, result);
+  } catch (error) {
+    container.textContent = error.message || "No se pudo calcular la fusión.";
+  }
+}
+
+function renderClaimPreview(container, item, candidate, result) {
+  container.innerHTML = "";
+  const merchantName = item.name || item.merchantId;
+  const placeholderName = candidate.name || candidate.placeholderId;
+
+  if (result.reason === "already_claimed_by_this_merchant") {
+    const pending = Number(result.favoritesPending) || 0;
+    container.innerHTML = `<p style="margin:0">Ya está fusionado con ${esc(merchantName)}.${pending
+      ? ` Quedan <strong>${pending}</strong> clientes que le seguían por mover de una fusión anterior que no terminó.`
+      : ""}</p>`;
+    if (pending) {
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.appendChild(createButton("Terminar de mover los favoritos", "btn-primary", () => claimPlaceholder(item, candidate, container)));
+      container.appendChild(actions);
+    }
+    return;
+  }
+  if (!result.ok || !result.plan) {
+    container.innerHTML = `<p style="margin:0;color:var(--danger)">No se puede fusionar: ${esc(CLAIM_REASON_LABELS[result.reason] || result.reason || "motivo desconocido")}.</p>`;
+    return;
+  }
+
+  const plan = result.plan;
+  const copied = Object.keys(plan.businessPatch || {}).map((field) => CLAIM_FIELD_LABELS[field] || field);
+  const oldOffers = Array.isArray(plan.skipped?.offers) ? plan.skipped.offers.length : 0;
+  container.innerHTML = `
+    <p style="margin:0">Al fusionar <strong>${esc(placeholderName)}</strong> con <strong>${esc(merchantName)}</strong>:</p>
+    <ul>
+      <li>${copied.length ? `Se copia a su ficha, porque la tiene vacía: ${esc(copied.join(", "))}.` : "No se copia nada a su ficha."}</li>
+      <li>Ofertas de hoy que pasan a su nombre: <strong>${(plan.offersToRepoint || []).length}</strong>.</li>
+      <li>Lecturas de hoy que pasan a su nombre: <strong>${(plan.observationsToRepoint || []).length}</strong>.</li>
+      <li>Fuentes que se desactivan: <strong>${(plan.sourcesToDisable || []).length}</strong>.</li>
+      <li>Clientes que le seguían y pasan a seguir a ${esc(merchantName)}: <strong>${(plan.favoritesToRepoint || []).length}</strong>.</li>
+      <li>No se migra el histórico${oldOffers ? ` (${oldOffers} ofertas antiguas, métricas e historial)` : " (métricas e historial)"}: falsearía sus estadísticas.</li>
+    </ul>
+  `;
+  const actions = document.createElement("div");
+  actions.className = "actions";
+  actions.appendChild(createButton("Fusionar", "btn-primary", () => claimPlaceholder(item, candidate, container)));
+  container.appendChild(actions);
+}
+
+async function claimPlaceholder(item, candidate, container) {
+  const merchantName = item.name || item.merchantId;
+  const placeholderName = candidate.name || candidate.placeholderId;
+  if (!confirm(`¿Fusionar «${placeholderName}» con «${merchantName}»?\n\nNo se puede deshacer desde la consola.`)) return;
+  hideMessage(workspaceMessage);
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminClaimPlaceholderBusiness", {
+      method: "POST",
+      body: JSON.stringify({ placeholderId: candidate.placeholderId, merchantId: item.merchantId }),
+    });
+    if (result.claimed) {
+      const offers = result.plan ? (result.plan.offersToRepoint || []).length : 0;
+      const text = `Fusionado «${placeholderName}» con «${merchantName}». Ofertas de hoy repuntadas: ${offers}. Favoritos movidos: ${Number(result.favoritesRepointed) || 0}.`;
+      container.innerHTML = `<p style="margin:0;color:var(--success)">${esc(text)}</p>`;
+      showMessage(workspaceMessage, text, "ok");
+      invalidateMerchantSearchCache();
+    } else {
+      container.innerHTML = `<p style="margin:0;color:var(--danger)">No se ha fusionado: ${esc(CLAIM_REASON_LABELS[result.reason] || result.reason || "motivo desconocido")}.</p>`;
+    }
+  } catch (error) {
+    container.innerHTML = `<p style="margin:0;color:var(--danger)">${esc(error.message || "No se pudo fusionar.")}</p>`;
+  } finally {
+    setBusy(false);
+  }
+}
+
 function switchTab(tab) {
   if (!allowedTabs.includes(tab)) tab = "verifications";
   activeTab = tab;
@@ -1135,6 +2054,7 @@ function switchTab(tab) {
   plansPane.hidden = tab !== "plans";
   statsPane.hidden = tab !== "stats";
   postsPane.hidden = tab !== "posts";
+  ingestPane.hidden = tab !== "ingest";
   if (tab === "plans") {
     tabEyebrow.textContent = "Gestión de planes";
     tabTitle.textContent = "Extender plan gratuito";
@@ -1151,6 +2071,13 @@ function switchTab(tab) {
     tabTitle.textContent = "Publicaciones de comercios";
     if (!postsSelectedMerchant && !postsPicker.children.length) {
       searchMerchantsForPosts();
+    }
+  } else if (tab === "ingest") {
+    tabEyebrow.textContent = "Menús detectados";
+    tabTitle.textContent = "Ingesta de fuentes oficiales";
+    if (!ingestLoaded) {
+      ingestLoaded = true;
+      loadIngestView();
     }
   } else {
     tabEyebrow.textContent = "Bandeja de revisión";
@@ -1246,6 +2173,10 @@ refreshBtn.addEventListener("click", () => {
   } else if (activeTab === "posts") {
     if (postsSelectedMerchant) loadMerchantPosts();
     else searchMerchantsForPosts();
+  } else if (activeTab === "ingest") {
+    businessNames.clear();
+    hideMessage(ingestMessage);
+    loadIngestView();
   } else {
     loadPending();
   }
@@ -1288,6 +2219,7 @@ onAuthStateChanged(auth, async (user) => {
   hideMessage(plansMessage);
   hideMessage(statsMessage);
   hideMessage(postsMessage);
+  hideMessage(ingestMessage);
 
   if (!user) {
     loginCard.hidden = false;
@@ -1302,6 +2234,11 @@ onAuthStateChanged(auth, async (user) => {
     postsPicker.hidden = true;
     postsIncludeExpired.checked = false;
     clearPostsSelection();
+    ingestLoaded = false;
+    ingestQueueList.innerHTML = "";
+    ingestSourcesList.innerHTML = "";
+    businessNames.clear();
+    closeSourceForm();
     return;
   }
 

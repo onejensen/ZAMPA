@@ -1664,6 +1664,225 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ── Ingesta: menús detectados ─────────────────────────────────────── */
+
+    /* Estas clases fijan `display`, que gana al `hidden` del navegador. */
+    .filters[hidden],
+    .source-form[hidden],
+    .fieldset[hidden],
+    .form-grid[hidden],
+    .claim-preview[hidden] {
+      display: none !important;
+    }
+
+    .filters.ingest-views { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .filters.ingest-status { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    .ingest-row { align-items: start; }
+
+    .ingest-row .post-thumb {
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ingest-row .post-thumb a { display: block; width: 100%; height: 100%; }
+
+    .ingest-menu {
+      margin: 10px 0 0;
+      padding: 12px 13px;
+      max-height: 260px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font: inherit;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .ingest-caption {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .ingest-review {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ingest-review textarea { min-height: 56px; padding: 10px 12px; }
+
+    .post-badge.warn {
+      background: rgba(251, 191, 36, 0.14);
+      color: var(--warning);
+    }
+
+    .ingest-row .post-actions .btn-success,
+    .ingest-row .post-actions .btn-primary {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .ingest-row .post-actions a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .ingest-more { justify-content: center; }
+
+    .source-form {
+      display: grid;
+      gap: 16px;
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--panel-strong);
+    }
+
+    .source-form h3 { margin: 0; font-size: 1.05rem; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 16px;
+    }
+
+    .form-grid .span-2 { grid-column: 1 / -1; }
+
+    .source-form input:not([type="checkbox"]):not([type="radio"]),
+    .source-form select {
+      padding: 11px 13px;
+    }
+
+    .source-form select,
+    .ingest-inspect select {
+      width: 100%;
+      font: inherit;
+      color: var(--ink);
+      background: var(--field);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      outline: none;
+    }
+
+    .source-form select:focus { border-color: rgba(243, 111, 47, 0.58); }
+
+    .form-hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      cursor: pointer;
+    }
+
+    .check-row input:disabled + span { opacity: 0.55; }
+
+    .segmented {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .fieldset {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .fieldset > .review-label { text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .selected-business {
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 7px;
+      background: rgba(33, 122, 83, 0.12);
+      color: var(--success);
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .ingest-inspect {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+    }
+
+    .ingest-inspect .actions { margin-top: 0; }
+
+    .candidates {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      border-radius: 8px;
+      background: rgba(251, 191, 36, 0.06);
+    }
+
+    .candidate {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      align-items: center;
+    }
+
+    .candidate .actions { margin-top: 0; }
+    .candidate .actions button { padding: 8px 12px; font-size: 0.85rem; }
+
+    .claim-preview {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 7px;
+      background: var(--field);
+      font-size: 0.88rem;
+    }
+
+    .claim-preview ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+    @media (max-width: 760px) {
+      .filters.ingest-status { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .form-grid { grid-template-columns: 1fr; }
+      .candidate { grid-template-columns: 1fr; }
+      /* Hasta cuatro acciones: de dos en dos, no apretadas en una fila. */
+      .ingest-row .post-actions > * { flex: 1 1 40%; }
+    }
+
+    @media (pointer: coarse) {
+      .source-form select,
+      .ingest-inspect select { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -1711,6 +1930,7 @@
             <button class="tab-btn" role="tab" data-tab="plans">Planes</button>
             <button class="tab-btn" role="tab" data-tab="stats">Stats</button>
             <button class="tab-btn" role="tab" data-tab="posts">Publicaciones</button>
+            <button class="tab-btn" role="tab" data-tab="ingest">Ingesta</button>
           </div>
           <p class="eyebrow" id="tabEyebrow">Bandeja de revisión</p>
           <h2 id="tabTitle">Verificaciones de comercios</h2>
@@ -1865,6 +2085,166 @@
           Origen: <code>dailyOffers</code> filtrado por <code>merchantId</code>. La eliminación borra el documento y dispara el cleanup habitual (imagen, índices y métricas asociadas). Acción definitiva — solo recuperable desde backup de Firestore. Cada borrado queda registrado en logs con el motivo indicado.
         </p>
       </div>
+
+      <div id="ingestPane" class="tab-pane" hidden>
+        <div id="ingestMessage" class="message ok" hidden></div>
+        <div class="control-strip">
+          <div class="filters ingest-views" id="ingestViews">
+            <button class="filter-btn active" data-ingest-view="queue">Cola de revisión</button>
+            <button class="filter-btn" data-ingest-view="sources">Fuentes</button>
+          </div>
+          <div class="filters ingest-status" id="ingestStatusFilters">
+            <button class="filter-btn active" data-ingest-status="pending_review">Pendientes</button>
+            <button class="filter-btn" data-ingest-status="detected">Descartadas</button>
+            <button class="filter-btn" data-ingest-status="published">Publicadas</button>
+            <button class="filter-btn" data-ingest-status="rejected">Rechazadas</button>
+            <button class="filter-btn" data-ingest-status="">Todas</button>
+          </div>
+          <p class="card-meta" id="ingestHint">Menús leídos de fuentes oficiales. <strong>Aprobar no publica</strong>: aprueba, revisa y luego pulsa <strong>Publicar</strong>. Una fuente de Facebook o Instagram nunca publica sola.</p>
+        </div>
+
+        <div id="ingestQueue">
+          <div id="ingestQueueLoading" class="loading" hidden>Cargando observaciones...</div>
+          <div id="ingestQueueEmpty" class="empty" hidden>No hay observaciones con este estado.</div>
+          <div id="ingestQueueList" class="posts-list"></div>
+          <div class="actions ingest-more"><button id="ingestQueueMore" class="btn-secondary" hidden>Cargar más</button></div>
+        </div>
+
+        <div id="ingestSources" hidden>
+          <div class="actions" style="margin-top:0;">
+            <button id="ingestNewSourceBtn" class="btn-primary">Nueva fuente</button>
+          </div>
+
+          <form id="sourceForm" class="source-form" hidden novalidate>
+            <h3 id="sourceFormTitle">Nueva fuente</h3>
+            <input type="hidden" id="sourceIdInput">
+
+            <div class="form-grid">
+              <div>
+                <label for="sourceTypeInput">Tipo</label>
+                <select id="sourceTypeInput">
+                  <option value="official_web">Web oficial</option>
+                  <option value="official_pdf">PDF en su web</option>
+                  <option value="official_facebook">Facebook oficial</option>
+                  <option value="official_instagram">Instagram oficial</option>
+                </select>
+              </div>
+              <div>
+                <label for="sourceParserInput">Lectura</label>
+                <select id="sourceParserInput">
+                  <option value="generic_html">Leer la página (generic_html)</option>
+                  <option value="generic_pdf">Leer el PDF (generic_pdf)</option>
+                  <option value="manual">Pegar el texto a mano (manual)</option>
+                </select>
+              </div>
+              <div class="span-2">
+                <label for="sourceUrlInput">URL</label>
+                <input id="sourceUrlInput" type="url" inputmode="url" placeholder="https://restaurante.com/menu-del-dia">
+                <p class="form-hint">Sólo https y sólo la página del propio restaurante: nunca un directorio que recopila menús de varios.</p>
+              </div>
+            </div>
+
+            <div class="fieldset" id="sourceBusinessFieldset">
+              <p class="review-label">Comercio</p>
+              <div class="segmented" id="sourceBusinessMode">
+                <label class="check-row"><input type="radio" name="sourceBusinessMode" value="existing" checked> <span>Ya está en Zampa</span></label>
+                <label class="check-row"><input type="radio" name="sourceBusinessMode" value="new"> <span>Dar de alta un restaurante no registrado</span></label>
+              </div>
+
+              <div id="sourceBusinessExisting">
+                <input id="sourceBusinessSearch" class="search-input" type="search" placeholder="Buscar comercio por nombre, teléfono, dirección o UID">
+                <div id="sourceBusinessPicker" class="stats-picker" hidden></div>
+                <p id="sourceBusinessSelected" class="selected-business" hidden></p>
+              </div>
+
+              <div id="sourceBusinessNew" class="form-grid" hidden>
+                <div class="span-2">
+                  <label for="bizNameInput">Nombre</label>
+                  <input id="bizNameInput" type="text" autocomplete="off">
+                </div>
+                <div class="span-2">
+                  <label for="bizAddressInput">Dirección</label>
+                  <input id="bizAddressInput" type="text" autocomplete="off">
+                </div>
+                <div>
+                  <label for="bizLatInput">Latitud</label>
+                  <input id="bizLatInput" type="text" inputmode="decimal" placeholder="39.5696">
+                </div>
+                <div>
+                  <label for="bizLngInput">Longitud</label>
+                  <input id="bizLngInput" type="text" inputmode="decimal" placeholder="2.6502">
+                </div>
+                <p class="form-hint span-2">Sin coordenadas el restaurante no enseña distancia en la app ni puede emparejarse por cercanía cuando su dueño se registre.</p>
+                <div>
+                  <label for="bizPhoneInput">Teléfono</label>
+                  <input id="bizPhoneInput" type="tel" autocomplete="off">
+                </div>
+                <div>
+                  <label for="bizWebsiteInput">Web</label>
+                  <input id="bizWebsiteInput" type="url" inputmode="url" autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="fieldset" id="sourceSocialFieldset" hidden>
+              <p class="review-label">Cuenta oficial</p>
+              <div class="form-grid">
+                <div class="span-2">
+                  <label for="sourceVerificationInput">Cómo sabemos que es suya</label>
+                  <select id="sourceVerificationInput">
+                    <option value="">— Elige una —</option>
+                    <option value="official_domain_link">Su web oficial enlaza esta cuenta</option>
+                    <option value="manual_verified">Lo he comprobado yo y lo firmo</option>
+                    <option value="business_claimed">El propio restaurante la ha reclamado</option>
+                  </select>
+                  <p class="form-hint">Obligatorio. Cualquiera puede abrir una cuenta con el nombre de un restaurante.</p>
+                </div>
+                <div>
+                  <label for="sourceUsernameInput">Usuario</label>
+                  <input id="sourceUsernameInput" type="text" autocomplete="off" placeholder="canpep">
+                </div>
+                <div>
+                  <label for="sourceAccountIdInput">ID de la cuenta</label>
+                  <input id="sourceAccountIdInput" type="text" autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div>
+                <label for="sourcePollingInput">Cómo se vuelve a mirar</label>
+                <select id="sourcePollingInput">
+                  <option value="">Por defecto según el tipo</option>
+                  <option value="webpage">Leyendo la página</option>
+                  <option value="public_post_metadata">Datos públicos del post</option>
+                  <option value="api_authorized">API autorizada</option>
+                  <option value="manual">A mano</option>
+                </select>
+              </div>
+              <div class="stack">
+                <label class="check-row"><input type="checkbox" id="sourceEnabledInput" checked> <span>Activa</span></label>
+                <label class="check-row"><input type="checkbox" id="sourceAutoPublishInput"> <span>Publica sola si la lectura es buena</span></label>
+                <label class="check-row"><input type="checkbox" id="sourceManualReviewInput"> <span>Requiere revisión humana</span></label>
+                <p class="form-hint" id="sourceSocialLockHint" hidden>Una fuente social siempre pasa por revisión y nunca publica sola.</p>
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top:0;">
+              <button type="submit" id="sourceSaveBtn" class="btn-primary" data-action-btn="true">Guardar fuente</button>
+              <button type="button" id="sourceCancelBtn" class="btn-secondary">Cancelar</button>
+            </div>
+          </form>
+
+          <div id="ingestSourcesLoading" class="loading" hidden>Cargando fuentes...</div>
+          <div id="ingestSourcesEmpty" class="empty" hidden>Todavía no hay fuentes dadas de alta.</div>
+          <div id="ingestSourcesList" class="posts-list"></div>
+          <div class="actions ingest-more"><button id="ingestSourcesMore" class="btn-secondary" hidden>Cargar más</button></div>
+        </div>
+
+        <p class="footer-note">
+          Origen: <code>externalMenuObservations</code> y <code>menuSources</code>. Publicar escribe en <code>dailyOffers</code> con la etiqueta de procedencia del tipo de fuente (<em>Fuente: Web oficial</em>, <em>Facebook oficial</em>, <em>Instagram oficial</em>). Cada alta, inspección, revisión, publicación y desactivación queda en <code>adminAuditLogs</code>.
+        </p>
+      </div>
     </section>
   </main>
 
@@ -1881,6 +2261,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=1"></script>
+  <script type="module" src="app.js?v=2"></script>
 </body>
 </html>
