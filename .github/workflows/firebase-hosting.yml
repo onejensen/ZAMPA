@@ -1,0 +1,47 @@
+# Publica getzampa.com en Firebase Hosting en cada push a main.
+#
+# Sin claves guardadas: GitHub entrega un token OIDC de esta ejecución y Google lo
+# canjea por la cuenta de servicio `github-web-deploy` (federación `github` /
+# `zampa-web`, que sólo acepta tokens del repo onejensen/ZAMPA). La cuenta sólo
+# puede desplegar Hosting y la función `webSharePage`.
+name: Firebase Hosting
+
+on:
+  push:
+    branches: [main, feat/firebase-hosting]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: firebase-hosting
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: firebase-web/package-lock.json
+
+      - name: Dependencias y tests de la función
+        run: |
+          npm ci --prefix firebase-web
+          npm test --prefix firebase-web
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/840515033444/locations/global/workloadIdentityPools/github/providers/zampa-web
+          service_account: github-web-deploy@eatout-70b8b.iam.gserviceaccount.com
+
+      # Los predeploy de firebase.json generan la copia pública (desde este commit)
+      # y empaquetan la función; el CLI no redespliega la función si no ha cambiado.
+      - name: Desplegar
+        run: npx --yes firebase-tools@15.17.0 deploy --only functions:web,hosting:getzampa --project eatout-70b8b --non-interactive
