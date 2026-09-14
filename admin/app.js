@@ -1395,6 +1395,7 @@ async function loadIngestQueue({ append = false } = {}) {
     if (ingestStatus) params.set("status", ingestStatus);
     if (append && ingestQueueCursor != null) params.set("cursor", String(ingestQueueCursor));
     const { items = [], nextCursor = null } = await authedFetch(`adminListMenuObservations?${params.toString()}`);
+    items.forEach((it) => { if (it.businessName && !businessNames.has(it.businessId)) businessNames.set(it.businessId, it.businessName); });
     await resolveBusinessNames(items.map((it) => it.businessId));
     if (request !== ingestQueueRequest) return;
     items.forEach((it) => ingestQueueList.appendChild(buildObservationRow(it)));
@@ -1531,7 +1532,7 @@ async function publishObservation(item) {
     });
     await loadIngestQueue();
     if (result.published) {
-      showMessage(ingestMessage, `Publicado el menú de ${label}. Oferta ${result.offerId}.`, "ok");
+      showMessage(ingestMessage, `Publicado el menú de ${label}. Oferta ${result.offerId}.${result.createdBusiness ? " Es su primer menú: el restaurante ya aparece en la app." : ""}`, "ok");
     } else {
       showMessage(ingestMessage, `No se ha publicado el menú de ${label}: ${PUBLISH_REASON_LABELS[result.reason] || result.reason}.`);
     }
@@ -1558,6 +1559,8 @@ async function loadIngestSources({ append = false } = {}) {
     const params = new URLSearchParams({ limit: "50" });
     if (append && ingestSourcesCursor != null) params.set("cursor", String(ingestSourcesCursor));
     const { items = [], nextCursor = null } = await authedFetch(`adminListMenuSources?${params.toString()}`);
+    // Un restaurante sin ficha todavía sólo tiene nombre en el alta guardada en su fuente.
+    items.forEach((it) => { if (it.businessDraft?.name && !businessNames.has(it.businessId)) businessNames.set(it.businessId, it.businessDraft.name); });
     await resolveBusinessNames(items.map((it) => it.businessId));
     if (request !== ingestSourcesRequest) return;
     items.forEach((it) => ingestSourcesList.appendChild(buildSourceRow(it)));
@@ -1591,6 +1594,7 @@ function buildSourceRow(source) {
     <p class="post-meta">${esc(source.url)}</p>
     <div class="post-badges">
       <span class="post-badge ${enabled ? "active" : "expired"}">${enabled ? "Activa" : "Desactivada"}</span>
+      ${source.businessDraft ? `<span class="post-badge warn">Aún no está en la app</span>` : ""}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
       ${source.verificationMethod ? `<span class="post-badge">${esc(VERIFICATION_LABELS[source.verificationMethod] || source.verificationMethod)}</span>` : ""}
       ${source.platformUsername ? `<span class="post-badge">@${esc(source.platformUsername)}</span>` : ""}
@@ -1614,6 +1618,44 @@ function buildSourceRow(source) {
   return row;
 }
 
+// La captura se manda como la foto de una pizarra desde la app: JPEG de 1280 px
+// como mucho. El backend rechaza más de 2 MB.
+const PHOTO_MAX_SIDE = 1280;
+const PHOTO_MAX_BYTES = 2 * 1024 * 1024;
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("No se pudo abrir la imagen."));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("El archivo no es una imagen que el navegador sepa abrir."));
+    img.src = src;
+  });
+}
+
+async function imageToJpegBase64(file) {
+  const img = await loadImage(await fileToDataUrl(file));
+  const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+  for (const quality of [0.85, 0.7, 0.55]) {
+    const dataUrl = canvas.toDataURL("image/jpeg", quality);
+    const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+    if ((base64.length * 3) / 4 <= PHOTO_MAX_BYTES) return { base64, dataUrl };
+  }
+  throw new Error("La imagen pesa demasiado incluso comprimida.");
+}
+
 function toggleInspectPanel(row, source) {
   const existing = row.querySelector(".ingest-inspect");
   if (existing) {
@@ -1621,45 +1663,113 @@ function toggleInspectPanel(row, source) {
     return;
   }
   const readsUrl = source.parserType === "generic_html" || source.parserType === "generic_pdf";
+  const isSocial = SOCIAL_SOURCE_TYPES.has(source.type);
   const panel = document.createElement("div");
   panel.className = "ingest-inspect";
   panel.innerHTML = `
     <label>Texto del menú</label>
     <textarea placeholder="Pega aquí el menú tal como aparece en la fuente"></textarea>
+    <div class="photo-read">
+      <input type="file" accept="image/*" data-photo-input hidden>
+      <span class="form-hint" data-photo-status>O lee una captura del post: con el botón, o pegándola aquí con ⌘V.</span>
+      <img class="photo-preview" data-photo-preview alt="Captura leída" hidden>
+    </div>
     <p class="form-hint">${readsUrl
       ? "Esta fuente se lee sola desde su URL: déjalo vacío. Si pegas texto, el lector de la URL manda igualmente."
-      : "Esta fuente no tiene lector automático: pega el texto del menú. Es obligatorio."}</p>
+      : "Esta fuente no tiene lector automático: pega el texto del menú o léelo desde una captura. Es obligatorio."}</p>
+    ${isSocial ? `
+      <div class="form-grid">
+        <div class="span-2">
+          <label>Enlace al post</label>
+          <input type="url" inputmode="url" data-publication-url placeholder="${source.type === "official_instagram" ? "https://www.instagram.com/p/…" : "https://www.facebook.com/…/posts/…"}">
+        </div>
+        <label class="check-row span-2"><input type="checkbox" data-published-today> <span>El post es de hoy</span></label>
+        <p class="form-hint span-2">Sin el enlace al post y la fecha de hoy, una lectura de redes no se puede publicar.</p>
+      </div>` : ""}
     <div class="actions"></div>
   `;
   const textarea = panel.querySelector("textarea");
+  const photoInput = panel.querySelector("[data-photo-input]");
+  const photoStatus = panel.querySelector("[data-photo-status]");
+  const photoPreview = panel.querySelector("[data-photo-preview]");
+  // De dónde sale el texto: se marca al leer una foto y va con la observación.
+  let reading = { extractedFrom: null, evidenceHash: null };
+
+  const photoBtn = createButton("Leer desde foto", "btn-secondary", () => photoInput.click());
+  async function readPhoto(file) {
+    if (!file) return;
+    photoBtn.disabled = true;
+    photoStatus.textContent = "Leyendo la foto…";
+    try {
+      const { base64, dataUrl } = await imageToJpegBase64(file);
+      photoPreview.src = dataUrl;
+      photoPreview.hidden = false;
+      const result = await authedFetch("adminReadMenuImage", {
+        method: "POST",
+        body: JSON.stringify({ image: base64 }),
+      });
+      textarea.value = result.text || "";
+      reading = { extractedFrom: "image_ocr", evidenceHash: result.evidenceHash || null };
+      photoStatus.textContent = `Leído desde la foto: ${(result.lines || []).length} líneas. Revisa el texto antes de pulsar «Leer ahora».`;
+    } catch (error) {
+      photoStatus.textContent = `No se pudo leer la foto: ${error.message || "error desconocido"}.`;
+    } finally {
+      photoBtn.disabled = false;
+      photoInput.value = "";
+    }
+  }
+  photoInput.addEventListener("change", () => readPhoto(photoInput.files && photoInput.files[0]));
+  panel.addEventListener("paste", (event) => {
+    const item = [...(event.clipboardData?.items || [])].find((it) => it.type.startsWith("image/"));
+    if (!item) return; // texto: se pega normal en el cuadro
+    event.preventDefault();
+    readPhoto(item.getAsFile());
+  });
+  photoStatus.before(photoBtn);
+
   panel.querySelector(".actions").append(
-    createButton("Leer ahora", "btn-primary", () => inspectSource(source, textarea.value)),
+    createButton("Leer ahora", "btn-primary", () => inspectSource(source, {
+      text: textarea.value,
+      publicationUrl: panel.querySelector("[data-publication-url]")?.value || "",
+      publishedToday: panel.querySelector("[data-published-today]")?.checked === true,
+      ...reading,
+    })),
     createButton("Cancelar", "btn-secondary", () => panel.remove()),
   );
   row.appendChild(panel);
   textarea.focus();
 }
 
-async function inspectSource(source, text) {
+async function inspectSource(source, { text = "", publicationUrl = "", publishedToday = false, extractedFrom = null, evidenceHash = null } = {}) {
   hideMessage(ingestMessage);
   const label = businessLabel(source.businessId);
-  const extractedText = text.trim() ? text : undefined;
+  const isSocial = SOCIAL_SOURCE_TYPES.has(source.type);
+  const body = { sourceId: source.id };
+  if (text.trim()) body.extractedText = text;
+  if (publicationUrl.trim()) body.publicationUrl = publicationUrl.trim();
+  if (publishedToday) body.publicationCreatedAt = Date.now();
+  if (extractedFrom) body.extractedFrom = extractedFrom;
+  if (evidenceHash) body.evidenceHash = evidenceHash;
   setBusy(true);
   try {
     const result = await authedFetch("adminInspectMenuSource", {
       method: "POST",
-      body: JSON.stringify({ sourceId: source.id, extractedText }),
+      body: JSON.stringify(body),
     });
     await loadIngestSources();
     const statusLabel = OBSERVATION_STATUS_LABELS[result.status] || result.status;
+    // Una lectura social sin enlace o sin fecha se guarda, pero no llegará a publicarse.
+    const socialWarning = isSocial && (!body.publicationUrl || !body.publicationCreatedAt)
+      ? " Ojo: sin el enlace al post y la fecha de hoy no se podrá publicar."
+      : "";
     if (result.unchanged) {
-      showMessage(ingestMessage, `${label}: el mismo menú que ya se leyó hoy. No se ha creado nada nuevo (estado: ${statusLabel}).`, "ok");
+      showMessage(ingestMessage, `${label}: el mismo menú que ya se leyó hoy. No se ha creado nada nuevo (estado: ${statusLabel}).${socialWarning}`, "ok");
     } else if (result.published) {
       showMessage(ingestMessage, `${label}: leído y publicado solo. Oferta ${result.offerId}.`, "ok");
     } else {
       const why = PUBLISH_REASON_LABELS[result.reason];
       const next = result.status === "pending_review" ? " Revísalo en la cola." : "";
-      showMessage(ingestMessage, `${label}: leído, queda en «${statusLabel}»${why ? ` porque ${why}` : ""}.${next}`, "ok");
+      showMessage(ingestMessage, `${label}: leído, queda en «${statusLabel}»${why ? ` porque ${why}` : ""}.${next}${socialWarning}`, "ok");
     }
   } catch (error) {
     // Un fallo de lectura queda anotado en la fuente: se recarga para verlo.
@@ -1871,7 +1981,7 @@ async function saveSource(event) {
       method: "POST",
       body: JSON.stringify(body),
     });
-    if (result.createdBusiness && body.business) {
+    if (result.businessPending && body.business) {
       businessNames.set(result.businessId, body.business.name);
       invalidateMerchantSearchCache();
     }
@@ -1879,7 +1989,7 @@ async function saveSource(event) {
     closeSourceForm();
     await loadIngestSources();
     const parts = [result.created ? `Fuente creada para ${label}.` : `Fuente de ${label} actualizada.`];
-    if (result.createdBusiness) parts.push(`Restaurante dado de alta como no reclamado (${result.businessId}).`);
+    if (result.businessPending) parts.push("El restaurante aparecerá en la app cuando se publique su primer menú.");
     if (result.created) parts.push("Pulsa Inspeccionar para leerla por primera vez.");
     showMessage(ingestMessage, parts.join(" "), "ok");
   } catch (error) {
