@@ -1272,6 +1272,7 @@ const sourcePollingInput = document.getElementById("sourcePollingInput");
 const sourceEnabledInput = document.getElementById("sourceEnabledInput");
 const sourceAutoPublishInput = document.getElementById("sourceAutoPublishInput");
 const sourceManualReviewInput = document.getElementById("sourceManualReviewInput");
+const sourceDeclaredDailyInput = document.getElementById("sourceDeclaredDailyInput");
 const sourceSocialLockHint = document.getElementById("sourceSocialLockHint");
 const sourceCancelBtn = document.getElementById("sourceCancelBtn");
 
@@ -1602,6 +1603,7 @@ function buildSourceRow(source) {
           : `<span class="post-badge warn">Sin horario</span>`)
         : ""}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
+      ${source.declaredDailyMenu ? `<span class="post-badge">Menú del día declarado</span>` : ""}
       ${source.verificationMethod ? `<span class="post-badge">${esc(VERIFICATION_LABELS[source.verificationMethod] || source.verificationMethod)}</span>` : ""}
       ${source.platformUsername ? `<span class="post-badge">@${esc(source.platformUsername)}</span>` : ""}
       <span class="post-badge">${source.lastCheckedAt ? `Leída ${esc(formatDate(source.lastCheckedAt))}` : "Nunca leída"}</span>
@@ -1673,7 +1675,7 @@ function toggleInspectPanel(row, source) {
     existing.remove();
     return;
   }
-  const readsUrl = ["generic_html", "generic_pdf", "dated_image_menu"].includes(source.parserType);
+  const readsUrl = ["generic_html", "generic_pdf", "dated_image_menu", "dated_weekly_pdf"].includes(source.parserType);
   const isSocial = SOCIAL_SOURCE_TYPES.has(source.type);
   const panel = document.createElement("div");
   panel.className = "ingest-inspect";
@@ -1954,6 +1956,7 @@ function openSourceForm(source = null) {
   sourceEnabledInput.checked = source ? source.enabled !== false : true;
   sourceAutoPublishInput.checked = source?.autoPublishEnabled === true;
   sourceManualReviewInput.checked = source?.requiresManualReview === true;
+  sourceDeclaredDailyInput.checked = source?.declaredDailyMenu === true;
 
   // Al editar, el comercio no cambia: una fuente de otro comercio es otra fuente.
   sourceBusinessModeInputs.forEach((input) => {
@@ -2066,6 +2069,8 @@ function buildSourceRequestBody() {
   const autoPublish = sourceAutoPublishInput.checked;
   if (!original || enabled !== (original.enabled !== false)) body.enabled = enabled;
   if (!original || autoPublish !== (original.autoPublishEnabled === true)) body.autoPublishEnabled = autoPublish;
+  const declaredDaily = sourceDeclaredDailyInput.checked;
+  if (!original || declaredDaily !== (original.declaredDailyMenu === true)) body.declaredDailyMenu = declaredDaily;
   return body;
 }
 

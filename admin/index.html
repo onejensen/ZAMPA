@@ -2175,6 +2175,7 @@
                   <option value="generic_html">Leer la página (generic_html)</option>
                   <option value="generic_pdf">Leer el PDF (generic_pdf)</option>
                   <option value="dated_image_menu">Foto del menú con la fecha de hoy, leída con IA (dated_image_menu)</option>
+                  <option value="dated_weekly_pdf">PDF semanal con la fecha de esta semana, de lunes a viernes (dated_weekly_pdf)</option>
                   <option value="manual">Pegar el texto a mano (manual)</option>
                 </select>
               </div>
@@ -2266,6 +2267,7 @@
                 <label class="check-row"><input type="checkbox" id="sourceEnabledInput" checked> <span>Activa</span></label>
                 <label class="check-row"><input type="checkbox" id="sourceAutoPublishInput"> <span>Publica sola si la lectura es buena</span></label>
                 <label class="check-row"><input type="checkbox" id="sourceManualReviewInput"> <span>Requiere revisión humana</span></label>
+                <label class="check-row"><input type="checkbox" id="sourceDeclaredDailyInput"> <span>Publica menú del día aunque no lo diga con esas palabras (lo he comprobado)</span></label>
                 <p class="form-hint" id="sourceSocialLockHint" hidden>Una fuente social siempre pasa por revisión y nunca publica sola.</p>
               </div>
             </div>
@@ -2302,6 +2304,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=7"></script>
+  <script type="module" src="app.js?v=8"></script>
 </body>
 </html>
