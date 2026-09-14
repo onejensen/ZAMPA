@@ -1596,6 +1596,11 @@ function buildSourceRow(source) {
     <div class="post-badges">
       <span class="post-badge ${enabled ? "active" : "expired"}">${enabled ? "Activa" : "Desactivada"}</span>
       ${source.businessDraft ? `<span class="post-badge warn">Aún no está en la app</span>` : ""}
+      ${source.detectedBusiness?.editable
+        ? (source.detectedBusiness.schedule?.length
+          ? `<span class="post-badge">Horario: ${pluralDays(source.detectedBusiness.schedule.length)}</span>`
+          : `<span class="post-badge warn">Sin horario</span>`)
+        : ""}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
       ${source.verificationMethod ? `<span class="post-badge">${esc(VERIFICATION_LABELS[source.verificationMethod] || source.verificationMethod)}</span>` : ""}
       ${source.platformUsername ? `<span class="post-badge">@${esc(source.platformUsername)}</span>` : ""}
@@ -1609,6 +1614,11 @@ function buildSourceRow(source) {
   if (url) actions.appendChild(createExternalLink("Abrir", url));
   if (enabled) {
     actions.appendChild(createButton("Inspeccionar", "btn-primary", () => toggleInspectPanel(row, source)));
+  }
+  // El horario sólo se edita en un restaurante detectado; el de un comercio con
+  // dueño lo pone él desde la app (el backend responde 403 igualmente).
+  if (source.detectedBusiness?.editable) {
+    actions.appendChild(createButton("Horario", "btn-secondary", () => toggleSchedulePanel(row, source)));
   }
   actions.appendChild(createButton("Editar", "btn-secondary", () => openSourceForm(source)));
   if (enabled) {
@@ -1776,6 +1786,105 @@ async function inspectSource(source, { text = "", publicationUrl = "", published
     // Un fallo de lectura queda anotado en la fuente: se recarga para verlo.
     await loadIngestSources();
     showMessage(ingestMessage, `${label}: ${error.message || "no se pudo leer la fuente."}`);
+  } finally {
+    setBusy(false);
+  }
+}
+
+// ── Horario de un restaurante detectado ──
+
+const SCHEDULE_DAYS = [
+  ["monday", "Lunes"], ["tuesday", "Martes"], ["wednesday", "Miércoles"], ["thursday", "Jueves"],
+  ["friday", "Viernes"], ["saturday", "Sábado"], ["sunday", "Domingo"],
+];
+
+function pluralDays(n) {
+  return `${n} ${n === 1 ? "día" : "días"}`;
+}
+
+function toggleSchedulePanel(row, source) {
+  const existing = row.querySelector(".schedule-panel");
+  if (existing) {
+    existing.remove();
+    return;
+  }
+  const current = new Map((source.detectedBusiness?.schedule || []).map((entry) => [entry.day, entry]));
+  const panel = document.createElement("div");
+  panel.className = "ingest-inspect schedule-panel";
+  panel.innerHTML = `
+    <label>Horario</label>
+    <p class="form-hint">Cópialo de la web oficial del restaurante, nunca de Google Maps: sus condiciones no permiten copiar el horario. Un turno que cierra a medianoche o más tarde se pone tal cual (por ejemplo 20:00 – 01:30; medianoche es 00:00).</p>
+    <div class="schedule-grid">
+      ${SCHEDULE_DAYS.map(([day, name]) => {
+        const entry = current.get(day);
+        const hasSecond = !!(entry?.open2 && entry?.close2);
+        return `
+          <div class="schedule-row" data-day="${day}">
+            <label class="check-row"><input type="checkbox" data-open ${entry ? "checked" : ""}> <span>${name}</span></label>
+            <input type="time" data-from value="${esc(entry?.open || "")}" aria-label="${name}: abre">
+            <input type="time" data-to value="${esc(entry?.close || "")}" aria-label="${name}: cierra">
+            <label class="check-row"><input type="checkbox" data-second ${hasSecond ? "checked" : ""}> <span>2.º turno</span></label>
+            <input type="time" data-from2 value="${esc(entry?.open2 || "")}" aria-label="${name}: abre el 2.º turno">
+            <input type="time" data-to2 value="${esc(entry?.close2 || "")}" aria-label="${name}: cierra el 2.º turno">
+          </div>`;
+      }).join("")}
+    </div>
+    <p class="form-hint">Un día sin marcar queda cerrado. Sin ningún día marcado, la app mostrará «Sin horario».</p>
+    <div class="actions"></div>
+  `;
+  panel.querySelector(".actions").append(
+    createButton("Guardar horario", "btn-primary", () => saveSchedule(source, panel)),
+    createButton("Cancelar", "btn-secondary", () => panel.remove()),
+  );
+  row.appendChild(panel);
+}
+
+/** Lee el panel y devuelve el horario, o lanza con el motivo para el admin. */
+function readSchedulePanel(panel) {
+  const schedule = [];
+  for (const rowEl of panel.querySelectorAll(".schedule-row")) {
+    if (!rowEl.querySelector("[data-open]").checked) continue;
+    const day = rowEl.dataset.day;
+    const name = SCHEDULE_DAYS.find(([key]) => key === day)[1];
+    const open = rowEl.querySelector("[data-from]").value;
+    const close = rowEl.querySelector("[data-to]").value;
+    if (!open || !close) throw new Error(`${name}: falta la hora de apertura o de cierre.`);
+    const entry = { day, open, close };
+    if (rowEl.querySelector("[data-second]").checked) {
+      const open2 = rowEl.querySelector("[data-from2]").value;
+      const close2 = rowEl.querySelector("[data-to2]").value;
+      if (!open2 || !close2) throw new Error(`${name}: falta una hora del 2.º turno.`);
+      entry.open2 = open2;
+      entry.close2 = close2;
+    }
+    schedule.push(entry);
+  }
+  return schedule;
+}
+
+async function saveSchedule(source, panel) {
+  hideMessage(ingestMessage);
+  const label = businessLabel(source.businessId);
+  let schedule;
+  try {
+    schedule = readSchedulePanel(panel);
+  } catch (error) {
+    showMessage(ingestMessage, error.message);
+    ingestMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminSetDetectedSchedule", {
+      method: "POST",
+      body: JSON.stringify({ sourceId: source.id, schedule }),
+    });
+    await loadIngestSources();
+    showMessage(ingestMessage, result.appliedTo === "business"
+      ? `Horario de ${label} guardado: ${pluralDays(result.days)}. Ya se ve en la app.`
+      : `Horario de ${label} guardado: ${pluralDays(result.days)}. Se verá en la app cuando se publique su primer menú.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo guardar el horario.");
   } finally {
     setBusy(false);
   }

@@ -1840,6 +1840,29 @@
 
     .ingest-inspect .actions { margin-top: 0; }
 
+    .schedule-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .schedule-row {
+      display: grid;
+      grid-template-columns: 130px repeat(2, minmax(0, 110px)) auto repeat(2, minmax(0, 110px));
+      justify-content: start;
+      gap: 8px 10px;
+      align-items: center;
+    }
+
+    .schedule-row input[type="time"] {
+      padding: 8px 10px;
+      color-scheme: dark;
+    }
+
+    @media (max-width: 760px) {
+      .schedule-row { grid-template-columns: 1fr 1fr; }
+      .schedule-row .check-row { grid-column: 1 / -1; }
+    }
+
     .photo-read {
       display: flex;
       flex-wrap: wrap;
@@ -2279,6 +2302,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=6"></script>
+  <script type="module" src="app.js?v=7"></script>
 </body>
 </html>
