@@ -1203,6 +1203,7 @@ const PUBLISH_REASON_LABELS = {
   duplicate_active_offer: "el comercio ya tiene una oferta activa hoy",
   source_disabled: "la fuente está desactivada",
   social_requires_review: "una fuente social siempre pasa por revisión",
+  manual_review_required: "la fuente pide revisión humana",
   generic_parser_needs_review: "la lectura de página entera siempre pasa por revisión",
   low_confidence: "la confianza de la lectura es baja",
   auto_publish_disabled: "la fuente no publica sola",
