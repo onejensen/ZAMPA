@@ -1139,7 +1139,7 @@ async function deletePost(item, triggerBtn) {
   }
 }
 
-// ── Ingesta tab ──────────────────────────────────────────────────────────
+// ── Menús detectados tab ──────────────────────────────────────────────────────────
 // Menús leídos de fuentes oficiales (web, PDF, Facebook, Instagram) y los
 // restaurantes no registrados que se dan de alta para publicarlos. Las reglas
 // de verdad (qué publica, qué exige revisión) viven en el backend: aquí sólo
@@ -2073,8 +2073,8 @@ function switchTab(tab) {
       searchMerchantsForPosts();
     }
   } else if (tab === "ingest") {
-    tabEyebrow.textContent = "Menús detectados";
-    tabTitle.textContent = "Ingesta de fuentes oficiales";
+    tabEyebrow.textContent = "Fuentes oficiales";
+    tabTitle.textContent = "Menús detectados";
     if (!ingestLoaded) {
       ingestLoaded = true;
       loadIngestView();
