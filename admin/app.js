@@ -1663,7 +1663,7 @@ function toggleInspectPanel(row, source) {
     existing.remove();
     return;
   }
-  const readsUrl = source.parserType === "generic_html" || source.parserType === "generic_pdf";
+  const readsUrl = ["generic_html", "generic_pdf", "dated_image_menu"].includes(source.parserType);
   const isSocial = SOCIAL_SOURCE_TYPES.has(source.type);
   const panel = document.createElement("div");
   panel.className = "ingest-inspect";
