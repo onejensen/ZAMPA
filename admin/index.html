@@ -1741,6 +1741,20 @@
 
     .ingest-more { justify-content: center; }
 
+    .apify-panel {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+    }
+    .apify-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+    .apify-head h3 { margin: 0; }
+    .apify-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .apify-list li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; overflow-wrap: anywhere; }
+    .apify-errors li { color: var(--danger, #b42318); }
+
     .source-form {
       display: grid;
       gap: 16px;
@@ -2151,6 +2165,21 @@
         </div>
 
         <div id="ingestSources" hidden>
+          <section id="apifyPanel" class="apify-panel">
+            <div class="apify-head">
+              <h3>Instagram y Facebook, con tus tareas de Apify</h3>
+              <button type="button" id="apifyRunBtn" class="btn-secondary" data-action-btn="true">Leer ahora</button>
+            </div>
+            <p id="apifyStatus" class="card-meta">Cargando…</p>
+            <ul id="apifyTasks" class="apify-list"></ul>
+            <ul id="apifyErrors" class="apify-list apify-errors" hidden></ul>
+            <div id="apifyUnmatched" hidden>
+              <p class="review-label">Cuentas de tus tareas sin fuente</p>
+              <p class="form-hint">No se leen hasta darlas de alta: ahí compruebas que la cuenta es del restaurante y lo sitúas en el mapa. Si el restaurante ya es comercio de Zampa, no la des de alta: publica él.</p>
+              <ul id="apifyUnmatchedList" class="apify-list"></ul>
+            </div>
+          </section>
+
           <div class="actions" style="margin-top:0;">
             <button id="ingestNewSourceBtn" class="btn-primary">Nueva fuente</button>
           </div>
@@ -2304,6 +2333,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=8"></script>
+  <script type="module" src="app.js?v=9"></script>
 </body>
 </html>

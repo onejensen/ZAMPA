@@ -1275,6 +1275,12 @@ const sourceManualReviewInput = document.getElementById("sourceManualReviewInput
 const sourceDeclaredDailyInput = document.getElementById("sourceDeclaredDailyInput");
 const sourceSocialLockHint = document.getElementById("sourceSocialLockHint");
 const sourceCancelBtn = document.getElementById("sourceCancelBtn");
+const apifyRunBtn = document.getElementById("apifyRunBtn");
+const apifyStatus = document.getElementById("apifyStatus");
+const apifyTasks = document.getElementById("apifyTasks");
+const apifyErrors = document.getElementById("apifyErrors");
+const apifyUnmatched = document.getElementById("apifyUnmatched");
+const apifyUnmatchedList = document.getElementById("apifyUnmatchedList");
 
 let ingestView = "queue";
 let ingestStatus = "pending_review";
@@ -1547,11 +1553,106 @@ async function publishObservation(item) {
 
 // ── Fuentes ──
 
+// ── Instagram y Facebook, con Apify ──
+
+const madridDateTime = new Intl.DateTimeFormat("es-ES", { dateStyle: "short", timeStyle: "short", timeZone: "Europe/Madrid" });
+
+function apifyItem(text, action = null) {
+  const li = document.createElement("li");
+  const span = document.createElement("span");
+  span.textContent = text;
+  li.appendChild(span);
+  if (action) li.appendChild(action);
+  return li;
+}
+
+/** La cuenta de una URL de Instagram o Facebook, para prellenar el alta. */
+function accountFromUrl(url) {
+  try {
+    const first = new URL(url).pathname.split("/").filter(Boolean)[0] || "";
+    return first === "p" || first === "people" || first === "profile.php" ? "" : first;
+  } catch (_) {
+    return "";
+  }
+}
+
+function openSourceFormForAccount(account) {
+  openSourceForm();
+  sourceTypeInput.value = account.sourceType;
+  sourceParserInput.value = DEFAULT_PARSER_BY_TYPE[account.sourceType];
+  sourceUrlInput.value = account.url;
+  sourceUsernameInput.value = accountFromUrl(account.url);
+  sourceBusinessModeInputs.forEach((input) => { input.checked = input.value === "new"; });
+  bizNameInput.value = account.name || "";
+  applySourceBusinessMode();
+  applySourceTypeRules();
+}
+
+function renderApifyStatus(data) {
+  const tasks = Array.isArray(data.tasks) ? data.tasks : [];
+  const results = Array.isArray(data.results) ? data.results : [];
+  const unmatched = Array.isArray(data.unmatchedAccounts) ? data.unmatchedAccounts : [];
+
+  apifyStatus.textContent = data.checkedAt
+    ? `Última lectura: ${madridDateTime.format(new Date(data.checkedAt))}. ${data.inspected || 0} ${data.inspected === 1 ? "post leído" : "posts leídos"} a la cola de revisión.${data.quotaExhausted ? " Cupo diario de IA agotado: lo pendiente se lee mañana." : ""} Se lee sola cada hora de 10:10 a 15:10.`
+    : "Todavía no se ha leído nada. Se lee sola cada hora de 10:10 a 15:10, del último run de hoy de cada tarea «zampa-».";
+
+  apifyTasks.innerHTML = "";
+  tasks.forEach((task) => {
+    const network = task.sourceType === "official_facebook" ? "Facebook" : "Instagram";
+    const state = task.error
+      ? `error: ${task.error}`
+      : task.readToday ? `run de hoy, ${task.posts} ${task.posts === 1 ? "post" : "posts"}` : "sin run terminado hoy";
+    apifyTasks.appendChild(apifyItem(`${task.name} · ${network} · ${state}`));
+  });
+
+  const errors = results.filter((r) => r.error).slice(0, 5);
+  apifyErrors.innerHTML = "";
+  errors.forEach((r) => apifyErrors.appendChild(apifyItem(`${r.sourceId}: ${r.error}`)));
+  apifyErrors.hidden = errors.length === 0;
+
+  apifyUnmatchedList.innerHTML = "";
+  unmatched.forEach((account) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn-secondary";
+    button.textContent = "Dar de alta";
+    button.addEventListener("click", () => openSourceFormForAccount(account));
+    const label = `${account.name ? `${account.name} · ` : ""}${SOURCE_TYPE_LABELS[account.sourceType] || account.sourceType} · ${account.url}`;
+    apifyUnmatchedList.appendChild(apifyItem(label, button));
+  });
+  apifyUnmatched.hidden = unmatched.length === 0;
+}
+
+async function loadApifyStatus() {
+  try {
+    renderApifyStatus(await authedFetch("adminApifyStatus"));
+  } catch (error) {
+    apifyStatus.textContent = `No se pudo cargar el estado de Apify: ${error.message || "error"}`;
+  }
+}
+
+apifyRunBtn.addEventListener("click", async () => {
+  apifyRunBtn.disabled = true;
+  apifyStatus.textContent = "Leyendo las tareas de Apify…";
+  try {
+    const result = await authedFetch("adminRunApify", { method: "POST", body: "{}" });
+    renderApifyStatus(result);
+    showMessage(ingestMessage, `Apify leído: ${result.inspected || 0} ${result.inspected === 1 ? "post" : "posts"} a la cola de revisión.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo leer Apify.");
+    loadApifyStatus();
+  } finally {
+    apifyRunBtn.disabled = false;
+  }
+});
+
 async function loadIngestSources({ append = false } = {}) {
   const request = ++ingestSourcesRequest;
   if (!append) {
     ingestSourcesList.innerHTML = "";
     ingestSourcesCursor = null;
+    loadApifyStatus();
   }
   ingestSourcesEmpty.hidden = true;
   ingestSourcesMore.hidden = true;
