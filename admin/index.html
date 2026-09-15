@@ -2157,6 +2157,21 @@
           <p class="card-meta" id="ingestHint">Menús leídos de fuentes oficiales. <strong>Aprobar no publica</strong>: aprueba, revisa y luego pulsa <strong>Publicar</strong>. Una fuente de Facebook o Instagram nunca publica sola.</p>
         </div>
 
+        <section id="apifyPanel" class="apify-panel">
+          <div class="apify-head">
+            <h3>Instagram y Facebook, con tus tareas de Apify</h3>
+            <button type="button" id="apifyRunBtn" class="btn-secondary" data-action-btn="true">Leer ahora</button>
+          </div>
+          <p id="apifyStatus" class="card-meta">Cargando…</p>
+          <ul id="apifyTasks" class="apify-list"></ul>
+          <ul id="apifyErrors" class="apify-list apify-errors" hidden></ul>
+          <div id="apifyUnmatched" hidden>
+            <p class="review-label">Cuentas de tus tareas sin fuente</p>
+            <p class="form-hint">No se leen hasta darlas de alta: ahí compruebas que la cuenta es del restaurante y lo sitúas en el mapa. Si ya es comercio de Zampa, publica él: dala de alta sólo si decides publicar por él, eligiéndolo en «Ya está en Zampa» y marcando «Publicar por el comercio».</p>
+            <ul id="apifyUnmatchedList" class="apify-list"></ul>
+          </div>
+        </section>
+
         <div id="ingestQueue">
           <div id="ingestQueueLoading" class="loading" hidden>Cargando observaciones...</div>
           <div id="ingestQueueEmpty" class="empty" hidden>No hay observaciones con este estado.</div>
@@ -2165,21 +2180,6 @@
         </div>
 
         <div id="ingestSources" hidden>
-          <section id="apifyPanel" class="apify-panel">
-            <div class="apify-head">
-              <h3>Instagram y Facebook, con tus tareas de Apify</h3>
-              <button type="button" id="apifyRunBtn" class="btn-secondary" data-action-btn="true">Leer ahora</button>
-            </div>
-            <p id="apifyStatus" class="card-meta">Cargando…</p>
-            <ul id="apifyTasks" class="apify-list"></ul>
-            <ul id="apifyErrors" class="apify-list apify-errors" hidden></ul>
-            <div id="apifyUnmatched" hidden>
-              <p class="review-label">Cuentas de tus tareas sin fuente</p>
-              <p class="form-hint">No se leen hasta darlas de alta: ahí compruebas que la cuenta es del restaurante y lo sitúas en el mapa. Si el restaurante ya es comercio de Zampa, no la des de alta: publica él.</p>
-              <ul id="apifyUnmatchedList" class="apify-list"></ul>
-            </div>
-          </section>
-
           <div class="actions" style="margin-top:0;">
             <button id="ingestNewSourceBtn" class="btn-primary">Nueva fuente</button>
           </div>
@@ -2297,6 +2297,7 @@
                 <label class="check-row"><input type="checkbox" id="sourceAutoPublishInput"> <span>Publica sola si la lectura es buena</span></label>
                 <label class="check-row"><input type="checkbox" id="sourceManualReviewInput"> <span>Requiere revisión humana</span></label>
                 <label class="check-row"><input type="checkbox" id="sourceDeclaredDailyInput"> <span>Publica menú del día aunque no lo diga con esas palabras (lo he comprobado)</span></label>
+                <label class="check-row"><input type="checkbox" id="sourcePublishForOwnerInput"> <span>Publicar por el comercio aunque ya esté registrado en Zampa</span></label>
                 <p class="form-hint" id="sourceSocialLockHint" hidden>Una fuente social siempre pasa por revisión y nunca publica sola.</p>
               </div>
             </div>
@@ -2333,6 +2334,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=9"></script>
+  <script type="module" src="app.js?v=10"></script>
 </body>
 </html>

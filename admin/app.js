@@ -1273,6 +1273,7 @@ const sourceEnabledInput = document.getElementById("sourceEnabledInput");
 const sourceAutoPublishInput = document.getElementById("sourceAutoPublishInput");
 const sourceManualReviewInput = document.getElementById("sourceManualReviewInput");
 const sourceDeclaredDailyInput = document.getElementById("sourceDeclaredDailyInput");
+const sourcePublishForOwnerInput = document.getElementById("sourcePublishForOwnerInput");
 const sourceSocialLockHint = document.getElementById("sourceSocialLockHint");
 const sourceCancelBtn = document.getElementById("sourceCancelBtn");
 const apifyRunBtn = document.getElementById("apifyRunBtn");
@@ -1382,6 +1383,7 @@ function setIngestView(view) {
 }
 
 function loadIngestView() {
+  loadApifyStatus();
   if (ingestView === "sources") loadIngestSources();
   else loadIngestQueue();
 }
@@ -1577,6 +1579,8 @@ function accountFromUrl(url) {
 }
 
 function openSourceFormForAccount(account) {
+  // El formulario vive en «Fuentes»; el panel se ve también desde la cola.
+  if (ingestView !== "sources") setIngestView("sources");
   openSourceForm();
   sourceTypeInput.value = account.sourceType;
   sourceParserInput.value = DEFAULT_PARSER_BY_TYPE[account.sourceType];
@@ -1652,7 +1656,6 @@ async function loadIngestSources({ append = false } = {}) {
   if (!append) {
     ingestSourcesList.innerHTML = "";
     ingestSourcesCursor = null;
-    loadApifyStatus();
   }
   ingestSourcesEmpty.hidden = true;
   ingestSourcesMore.hidden = true;
@@ -1705,6 +1708,7 @@ function buildSourceRow(source) {
         : ""}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
       ${source.declaredDailyMenu ? `<span class="post-badge">Menú del día declarado</span>` : ""}
+      ${source.publishForOwner ? `<span class="post-badge">Publicamos por el comercio</span>` : ""}
       ${source.verificationMethod ? `<span class="post-badge">${esc(VERIFICATION_LABELS[source.verificationMethod] || source.verificationMethod)}</span>` : ""}
       ${source.platformUsername ? `<span class="post-badge">@${esc(source.platformUsername)}</span>` : ""}
       <span class="post-badge">${source.lastCheckedAt ? `Leída ${esc(formatDate(source.lastCheckedAt))}` : "Nunca leída"}</span>
@@ -2058,6 +2062,7 @@ function openSourceForm(source = null) {
   sourceAutoPublishInput.checked = source?.autoPublishEnabled === true;
   sourceManualReviewInput.checked = source?.requiresManualReview === true;
   sourceDeclaredDailyInput.checked = source?.declaredDailyMenu === true;
+  sourcePublishForOwnerInput.checked = source?.publishForOwner === true;
 
   // Al editar, el comercio no cambia: una fuente de otro comercio es otra fuente.
   sourceBusinessModeInputs.forEach((input) => {
@@ -2172,6 +2177,8 @@ function buildSourceRequestBody() {
   if (!original || autoPublish !== (original.autoPublishEnabled === true)) body.autoPublishEnabled = autoPublish;
   const declaredDaily = sourceDeclaredDailyInput.checked;
   if (!original || declaredDaily !== (original.declaredDailyMenu === true)) body.declaredDailyMenu = declaredDaily;
+  const forOwner = sourcePublishForOwnerInput.checked;
+  if (!original || forOwner !== (original.publishForOwner === true)) body.publishForOwner = forOwner;
   return body;
 }
 
