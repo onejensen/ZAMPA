@@ -2155,22 +2155,30 @@ function logoBadges(detected) {
 async function removeLogo(source) {
   const name = businessLabel(source.businessId);
   if (!confirm(`¿Quitar el logo de ${name}? No se volverá a poner solo; «Volver a buscar» lo recupera.`)) return;
+  hideMessage(ingestMessage);
+  setBusy(true);
   try {
     await authedFetch("adminRemoveBusinessLogo", { method: "POST", body: JSON.stringify({ businessId: source.businessId }) });
+    await loadIngestSources();
     showMessage(ingestMessage, `Logo de ${name} quitado.`, "ok");
-    loadIngestSources();
   } catch (error) {
     showMessage(ingestMessage, error.message || "No se pudo quitar el logo.");
+  } finally {
+    setBusy(false);
   }
 }
 
 async function retryLogo(source) {
   const name = businessLabel(source.businessId);
+  hideMessage(ingestMessage);
+  setBusy(true);
   try {
     const result = await authedFetch("adminFindBusinessLogos", {
       method: "POST",
       body: JSON.stringify({ businessIds: [source.businessId], force: true }),
     });
+    await loadIngestSources();
+    await loadApifyStatus();
     if (result.errors?.length) {
       showMessage(ingestMessage, result.errors.map((error) => error.error).join(" · "));
     } else if (result.jobs?.length) {
@@ -2179,10 +2187,10 @@ async function retryLogo(source) {
       const reason = result.skipped?.[0]?.reason;
       showMessage(ingestMessage, `No se ha buscado el logo de ${name}: ${LOGO_SKIP_LABELS[reason] || reason || "sin motivo"}.`);
     }
-    loadIngestSources();
-    loadApifyStatus();
   } catch (error) {
     showMessage(ingestMessage, error.message || "No se pudo buscar el logo.");
+  } finally {
+    setBusy(false);
   }
 }
 
