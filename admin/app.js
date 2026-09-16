@@ -1685,6 +1685,7 @@ async function loadIngestSources({ append = false } = {}) {
 function buildSourceRow(source) {
   const row = document.createElement("article");
   row.className = "post-row ingest-row";
+  row.dataset.sourceId = source.id;
 
   const thumb = document.createElement("div");
   thumb.className = "post-thumb";
@@ -1706,6 +1707,7 @@ function buildSourceRow(source) {
           ? `<span class="post-badge">Horario: ${pluralDays(source.detectedBusiness.schedule.length)}</span>`
           : `<span class="post-badge warn">Sin horario</span>`)
         : ""}
+      ${enrichBadges(source.detectedBusiness)}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
       ${source.declaredDailyMenu ? `<span class="post-badge">Menú del día declarado</span>` : ""}
       ${source.publishForOwner ? `<span class="post-badge">Publicamos por el comercio</span>` : ""}
@@ -1726,6 +1728,7 @@ function buildSourceRow(source) {
   // dueño lo pone él desde la app (el backend responde 403 igualmente).
   if (source.detectedBusiness?.editable) {
     actions.appendChild(createButton("Horario", "btn-secondary", () => toggleSchedulePanel(row, source)));
+    actions.appendChild(createButton("Autorrellenar", "btn-secondary", () => toggleEnrichPanel(row, source)));
   }
   actions.appendChild(createButton("Editar", "btn-secondary", () => openSourceForm(source)));
   if (enabled) {
@@ -1920,7 +1923,7 @@ function toggleSchedulePanel(row, source) {
   panel.className = "ingest-inspect schedule-panel";
   panel.innerHTML = `
     <label>Horario</label>
-    <p class="form-hint">Cópialo de la web oficial del restaurante, nunca de Google Maps: sus condiciones no permiten copiar el horario. Un turno que cierra a medianoche o más tarde se pone tal cual (por ejemplo 20:00 – 01:30; medianoche es 00:00).</p>
+    <p class="form-hint">Cópialo de la web oficial del restaurante, o usa «Autorrellenar», que lo pide a Google Places API. No lo copies a mano de la web de Google Maps. Un turno que cierra a medianoche o más tarde se pone tal cual (por ejemplo 20:00 – 01:30; medianoche es 00:00).</p>
     <div class="schedule-grid">
       ${SCHEDULE_DAYS.map(([day, name]) => {
         const entry = current.get(day);
@@ -1992,6 +1995,302 @@ async function saveSchedule(source, panel) {
       : `Horario de ${label} guardado: ${pluralDays(result.days)}. Se verá en la app cuando se publique su primer menú.`, "ok");
   } catch (error) {
     showMessage(ingestMessage, error.message || "No se pudo guardar el horario.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+// ── Autorrellenar ficha (Google Places API New) ──
+//
+// Llama a `adminEnrichDetectedBusiness`: rellena sólo los campos vacíos de un
+// restaurante detectado. Con una coincidencia ambigua el admin elige candidato;
+// el horario que Google da y no cabe se revisa aquí; y las redes enlazadas desde
+// su web oficial se dan de alta a mano, una a una.
+
+const ENRICH_FIELD_LABELS = {
+  name: "nombre",
+  addressText: "dirección",
+  address: "coordenadas",
+  placeId: "ficha de Google",
+  phone: "teléfono",
+  website: "web",
+  schedule: "horario",
+};
+
+const ENRICH_SCHEDULE_REASONS = {
+  overnight: "tiene turnos que pasan de medianoche",
+  open_24_hours: "abre 24 horas",
+  more_than_two_shifts: "tiene más de dos turnos en un día",
+  invalid_period: "trae un turno que no se entiende",
+};
+
+/** Ciudad de una dirección «Calle 1, 07001 Palma»; si no hay código postal, el último trozo. */
+function cityFromAddress(text) {
+  const value = typeof text === "string" ? text : "";
+  const match = /\b\d{5}\s+([^,(]+)/.exec(value);
+  if (match) return match[1].trim();
+  const parts = value.split(",").map((part) => part.trim()).filter(Boolean);
+  return parts.length > 1 ? parts[parts.length - 1] : "";
+}
+
+function enrichBadges(detected) {
+  if (!detected?.editable) return "";
+  const enrichment = detected.enrichment;
+  const badges = [];
+  if (enrichment?.outcome === "ambiguous") badges.push(`<span class="post-badge warn">Google: elegir candidato</span>`);
+  else if (enrichment?.outcome === "no_match") badges.push(`<span class="post-badge warn">Google no lo encuentra</span>`);
+  else if (detected.placeId) badges.push(`<span class="post-badge">Ficha de Google</span>`);
+  if (enrichment?.scheduleReview) badges.push(`<span class="post-badge warn">Horario de Google a revisar</span>`);
+  const pending = (enrichment?.socialCandidates || []).filter((candidate) => !candidate.alreadySource).length;
+  if (pending) badges.push(`<span class="post-badge warn">${pending === 1 ? "1 red" : `${pending} redes`} por revisar</span>`);
+  return badges.join("");
+}
+
+function toggleEnrichPanel(row, source, { result = null } = {}) {
+  const existing = row.querySelector(".enrich-panel");
+  if (existing && !result) {
+    existing.remove();
+    return;
+  }
+  existing?.remove();
+  const detected = source.detectedBusiness || {};
+  const panel = document.createElement("div");
+  panel.className = "ingest-inspect enrich-panel";
+  panel.innerHTML = `
+    <label>Autorrellenar ficha con Google</label>
+    <p class="form-hint">Busca el restaurante en Google Places con nombre, ciudad y país, y rellena sólo lo que la ficha tiene vacío: dirección, coordenadas, teléfono, web, horario y su ficha de Google. Nunca pisa lo que ya hay. Cada búsqueda gasta del cupo de Google (1.000 gratis al mes).</p>
+    <div class="form-grid">
+      <div>
+        <label>Nombre</label>
+        <input type="text" data-enrich-name value="${esc(businessLabel(source.businessId))}" aria-label="Nombre del restaurante">
+      </div>
+      <div>
+        <label>Ciudad</label>
+        <input type="text" data-enrich-city value="${esc(cityFromAddress(detected.addressText))}" placeholder="Palma" aria-label="Ciudad">
+      </div>
+      <div>
+        <label>País</label>
+        <input type="text" data-enrich-country value="España" aria-label="País">
+      </div>
+    </div>
+    <div class="actions"></div>
+    <div data-enrich-result></div>
+  `;
+  panel.querySelector(".actions").append(
+    createButton("Buscar en Google", "btn-primary", () => runEnrich(row, source, panel)),
+    createButton("Cerrar", "btn-secondary", () => panel.remove()),
+  );
+  row.appendChild(panel);
+  renderEnrichResult(panel, row, source, result || detected.enrichment || null);
+}
+
+function enrichListItem(content, ...controls) {
+  const item = document.createElement("li");
+  const text = document.createElement("span");
+  if (content instanceof Node) text.appendChild(content);
+  else text.textContent = content;
+  item.appendChild(text);
+  if (controls.length) {
+    const actions = document.createElement("span");
+    actions.className = "actions";
+    actions.append(...controls);
+    item.appendChild(actions);
+  }
+  return item;
+}
+
+function enrichCaption(text, isWarning = false) {
+  const caption = document.createElement("p");
+  caption.className = "ingest-caption";
+  if (isWarning) caption.style.color = "var(--warning)";
+  caption.textContent = text;
+  return caption;
+}
+
+function renderEnrichResult(panel, row, source, enrichment) {
+  const box = panel.querySelector("[data-enrich-result]");
+  box.innerHTML = "";
+  if (!enrichment) {
+    box.appendChild(enrichCaption("Todavía no se ha autorrellenado."));
+    return;
+  }
+  const when = enrichment.checkedAt ? ` (${formatDate(enrichment.checkedAt)})` : "";
+  const fields = (enrichment.fieldsUpdated || []).map((field) => ENRICH_FIELD_LABELS[field] || field);
+
+  if (enrichment.outcome === "updated") {
+    box.appendChild(enrichCaption(`Rellenado con Google${when}: ${fields.join(", ")}.`));
+  } else if (enrichment.outcome === "nothing_to_update") {
+    box.appendChild(enrichCaption(`Google no trae nada que la ficha no tenga ya${when}.`));
+  } else if (enrichment.outcome === "no_match") {
+    box.appendChild(enrichCaption(`Google no encuentra este restaurante${when}. Revisa el nombre y la ciudad.`, true));
+  } else if (enrichment.outcome === "ambiguous") {
+    box.appendChild(enrichCaption(`Google devuelve varios sitios parecidos${when}. Elige el correcto: no se ha escrito nada.`, true));
+    const list = document.createElement("ul");
+    list.className = "apify-list";
+    (enrichment.candidates || []).forEach((candidate) => {
+      const distance = candidate.distanceMeters == null
+        ? "sin coordenadas para comparar"
+        : candidate.distanceMeters < 1000 ? `a ${candidate.distanceMeters} m` : `a ${(candidate.distanceMeters / 1000).toFixed(1)} km`;
+      const controls = [];
+      const mapsUrl = safeHttpUrl(candidate.googleMapsUrl);
+      if (mapsUrl) controls.push(createExternalLink("Ver en Google Maps", mapsUrl));
+      controls.push(createButton("Es este", "btn-primary", () => runEnrich(row, source, panel, candidate.placeId)));
+      list.appendChild(enrichListItem(`${candidate.name || "(sin nombre)"} · ${candidate.address || "(sin dirección)"} · ${distance}`, ...controls));
+    });
+    box.appendChild(list);
+  }
+
+  if (enrichment.ignoredWebsite) {
+    box.appendChild(enrichCaption(`Google tiene como web un perfil de red social (${enrichment.ignoredWebsite}): no se ha guardado como web.`));
+  }
+
+  const review = enrichment.scheduleReview;
+  if (review) {
+    box.appendChild(enrichCaption(`El horario de Google no se ha guardado: ${ENRICH_SCHEDULE_REASONS[review.reason] || review.reason}.`, true));
+    if (Array.isArray(review.weekdayDescriptions) && review.weekdayDescriptions.length) {
+      const list = document.createElement("ul");
+      list.className = "apify-list";
+      review.weekdayDescriptions.forEach((line) => list.appendChild(enrichListItem(line)));
+      box.appendChild(list);
+    }
+    if (Array.isArray(review.candidateSchedule) && review.candidateSchedule.length) {
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.appendChild(createButton("Usar este horario", "btn-primary", () => useEnrichSchedule(row, source, review.candidateSchedule)));
+      box.appendChild(actions);
+    }
+  }
+
+  const social = enrichment.socialCandidates || [];
+  if (social.length) {
+    box.appendChild(enrichCaption("Redes enlazadas desde su web oficial. Revísalas antes de darlas de alta: a veces la web enlaza la cuenta de la agencia que la hizo. Para que se lean, la cuenta también tiene que estar en una tarea de Apify."));
+    const list = document.createElement("ul");
+    list.className = "apify-list";
+    social.forEach((candidate) => {
+      const label = `${SOURCE_TYPE_LABELS[candidate.type] || candidate.type} · ${candidate.url}`;
+      const controls = [];
+      const url = safeHttpUrl(candidate.url);
+      if (url) controls.push(createExternalLink("Abrir", url));
+      if (candidate.alreadySource) {
+        const badge = document.createElement("span");
+        badge.className = "post-badge";
+        badge.textContent = "Ya es fuente";
+        controls.push(badge);
+      } else {
+        controls.push(createButton("Dar de alta como fuente", "btn-secondary", () => registerEnrichSocial(source, candidate)));
+      }
+      list.appendChild(enrichListItem(label, ...controls));
+    });
+    box.appendChild(list);
+  }
+  if (enrichment.socialError) {
+    box.appendChild(enrichCaption(`No se pudo leer su web para buscar redes: ${enrichment.socialError}`));
+  }
+}
+
+/** Vuelve a pintar las filas de un restaurante con el listado de ahora, y reabre el panel donde se trabajaba. */
+async function refreshBusinessRows(businessId, reopenSourceId, result) {
+  const params = new URLSearchParams({ businessId, limit: "50" });
+  const { items = [] } = await authedFetch(`adminListMenuSources?${params.toString()}`);
+  items.forEach((item) => {
+    const old = [...ingestSourcesList.children].find((child) => child.dataset.sourceId === item.id);
+    if (!old) return;
+    const fresh = buildSourceRow(item);
+    old.replaceWith(fresh);
+    if (item.id === reopenSourceId) toggleEnrichPanel(fresh, item, { result: result || item.detectedBusiness?.enrichment || null });
+  });
+}
+
+async function runEnrich(row, source, panel, placeId = null) {
+  hideMessage(ingestMessage);
+  const label = businessLabel(source.businessId);
+  const name = panel.querySelector("[data-enrich-name]").value.trim();
+  const city = panel.querySelector("[data-enrich-city]").value.trim();
+  const country = panel.querySelector("[data-enrich-country]").value.trim();
+  if (!city) {
+    showMessage(ingestMessage, "Pon la ciudad: la búsqueda en Google es nombre + ciudad + país.");
+    ingestMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  const body = { businessId: source.businessId, city, country: country || "España" };
+  if (name) body.name = name;
+  if (placeId) body.placeId = placeId;
+
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminEnrichDetectedBusiness", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    const enrichment = { ...result, checkedAt: Date.now() };
+    const summary = {
+      updated: `Ficha de ${label} rellenada con Google: ${(result.fieldsUpdated || []).map((field) => ENRICH_FIELD_LABELS[field] || field).join(", ")}.`,
+      nothing_to_update: `Google no trae nada nuevo para ${label}.`,
+      ambiguous: `Google devuelve varios sitios para ${label}: elige el correcto en su panel.`,
+      no_match: `Google no encuentra ${label}. Revisa el nombre y la ciudad.`,
+    }[result.outcome] || `Autorrelleno de ${label}: ${result.outcome}.`;
+    try {
+      await refreshBusinessRows(source.businessId, row.dataset.sourceId, enrichment);
+    } catch (_) {
+      // Si no se puede recargar, al menos se ve el resultado en el panel abierto.
+      renderEnrichResult(panel, row, source, enrichment);
+    }
+    showMessage(ingestMessage, summary, result.outcome === "updated" || result.outcome === "nothing_to_update" ? "ok" : "error");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo autorrellenar la ficha.");
+    ingestMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function useEnrichSchedule(row, source, schedule) {
+  const label = businessLabel(source.businessId);
+  if (!confirm(`¿Guardar para ${label} el horario que da Google?\n\nRevisa antes los turnos de noche: un turno que cierra más tarde de medianoche se guarda tal cual.`)) return;
+  hideMessage(ingestMessage);
+  setBusy(true);
+  try {
+    const result = await authedFetch("adminSetDetectedSchedule", {
+      method: "POST",
+      body: JSON.stringify({ sourceId: source.id, schedule }),
+    });
+    try {
+      await refreshBusinessRows(source.businessId, row.dataset.sourceId, null);
+    } catch (_) {
+      await loadIngestSources();
+    }
+    showMessage(ingestMessage, `Horario de ${label} guardado: ${pluralDays(result.days)}.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo guardar el horario.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function registerEnrichSocial(source, candidate) {
+  const label = businessLabel(source.businessId);
+  const network = SOURCE_TYPE_LABELS[candidate.type] || candidate.type;
+  if (!confirm(`¿Dar de alta ${candidate.url} como ${network} de ${label}?\n\nQueda verificada porque la enlaza su web oficial (${candidate.foundOn}). Sus lecturas irán siempre a la cola de revisión: nunca publica sola.`)) return;
+  hideMessage(ingestMessage);
+  const body = {
+    businessId: source.businessId,
+    type: candidate.type,
+    url: candidate.url,
+    parserType: "manual",
+    verificationMethod: "official_domain_link",
+  };
+  if (/^\d{6,}$/.test(candidate.accountKey || "")) body.platformAccountId = candidate.accountKey;
+  else if (candidate.accountKey) body.platformUsername = candidate.accountKey;
+  // Un restaurante sin ficha todavía: el backend necesita su alta.
+  if (!source.detectedBusiness?.exists && source.businessDraft) body.business = source.businessDraft;
+
+  setBusy(true);
+  try {
+    await authedFetch("adminUpsertMenuSource", { method: "POST", body: JSON.stringify(body) });
+    await loadIngestSources();
+    showMessage(ingestMessage, `${network} de ${label} dado de alta como fuente. Para que se lea, añade la cuenta a la tarea de Apify.`, "ok");
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo dar de alta la red.");
   } finally {
     setBusy(false);
   }
