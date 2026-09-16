@@ -1754,6 +1754,11 @@
     .apify-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
     .apify-list li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; overflow-wrap: anywhere; }
     .apify-errors li { color: var(--danger, #b42318); }
+    .apify-head-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .post-title-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .post-title-row .post-title { min-width: 0; }
+    .logo-mini { flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #3f3f46; color: #fafafa; font-weight: 800; }
+    .logo-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     .source-form {
       display: grid;
@@ -2173,7 +2178,10 @@
         <section id="apifyPanel" class="apify-panel">
           <div class="apify-head">
             <h3>Instagram y Facebook, con tus tareas de Apify</h3>
-            <button type="button" id="apifyRunBtn" class="btn-secondary" data-action-btn="true">Leer ahora</button>
+            <div class="apify-head-actions">
+              <button type="button" id="apifyLogosBtn" class="btn-secondary" data-action-btn="true">Buscar logos que faltan</button>
+              <button type="button" id="apifyRunBtn" class="btn-secondary" data-action-btn="true">Leer ahora</button>
+            </div>
           </div>
           <p id="apifyStatus" class="card-meta">Cargando…</p>
           <ul id="apifyTasks" class="apify-list"></ul>
@@ -2182,6 +2190,11 @@
             <p class="review-label">Cuentas de tus tareas sin fuente</p>
             <p class="form-hint">No se leen hasta darlas de alta: ahí compruebas que la cuenta es del restaurante y lo sitúas en el mapa. Si ya es comercio de Zampa, publica él: dala de alta sólo si decides publicar por él, eligiéndolo en «Ya está en Zampa» y marcando «Publicar por el comercio».</p>
             <ul id="apifyUnmatchedList" class="apify-list"></ul>
+          </div>
+          <div id="apifyLogoJobs" hidden>
+            <p class="review-label">Logos de los restaurantes detectados</p>
+            <p class="form-hint">La foto de perfil de su Facebook (o de su Instagram si no tiene Facebook), leída con Apify: unos 0,012 USD por página. Se recoge sola cada 10 minutos. Nunca se pone en un comercio con dueño ni pisa una foto que no puso Zampa.</p>
+            <ul id="apifyLogoJobsList" class="apify-list"></ul>
           </div>
         </section>
 

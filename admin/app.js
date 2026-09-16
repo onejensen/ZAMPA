@@ -1282,6 +1282,24 @@ const apifyTasks = document.getElementById("apifyTasks");
 const apifyErrors = document.getElementById("apifyErrors");
 const apifyUnmatched = document.getElementById("apifyUnmatched");
 const apifyUnmatchedList = document.getElementById("apifyUnmatchedList");
+const apifyLogosBtn = document.getElementById("apifyLogosBtn");
+const apifyLogoJobs = document.getElementById("apifyLogoJobs");
+const apifyLogoJobsList = document.getElementById("apifyLogoJobsList");
+
+// Logos de los restaurantes detectados (`functions/business-logos.js`).
+const LOGO_SOURCE_TYPES = ["official_facebook", "official_instagram"];
+const LOGO_NETWORK_LABELS = { facebook: "Facebook", instagram: "Instagram" };
+const LOGO_JOB_STATUS_LABELS = { running: "en marcha", collecting: "recogiendo", done: "terminado", failed: "fallido" };
+const LOGO_TRIGGER_LABELS = { admin_missing: "buscar que faltan", admin_retry: "volver a buscar", source_created: "alta de fuente", chained: "respaldo de Instagram" };
+const LOGO_SKIP_LABELS = {
+  no_social_source: "no tiene fuente de Facebook o Instagram verificada y activa",
+  no_business: "aún no tiene ficha",
+  claimed: "tiene dueño",
+  foreign_photo: "ya tiene una foto que no puso Zampa",
+  searching: "ya se está buscando",
+  removed: "está quitado",
+  already_set: "ya tiene logo",
+};
 
 let ingestView = "queue";
 let ingestStatus = "pending_review";
@@ -1626,6 +1644,9 @@ function renderApifyStatus(data) {
     apifyUnmatchedList.appendChild(apifyItem(label, button));
   });
   apifyUnmatched.hidden = unmatched.length === 0;
+
+  // «Leer ahora» devuelve la pasada sin los trabajos de logos: sólo se repintan si vienen.
+  if (Array.isArray(data.logoJobs)) renderLogoJobs(data.logoJobs);
 }
 
 async function loadApifyStatus() {
@@ -1635,6 +1656,58 @@ async function loadApifyStatus() {
     apifyStatus.textContent = `No se pudo cargar el estado de Apify: ${error.message || "error"}`;
   }
 }
+
+function renderLogoJobs(jobs) {
+  apifyLogoJobsList.innerHTML = "";
+  jobs.forEach((job) => {
+    const network = LOGO_NETWORK_LABELS[job.network] || job.network;
+    const when = job.startedAtMs ? madridDateTime.format(new Date(job.startedAtMs)) : "—";
+    const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    let outcome;
+    if (job.status === "done") {
+      outcome = [
+        plural(job.set, "logo puesto", "logos puestos"),
+        job.notFound ? `${job.notFound} sin foto` : "",
+        job.failed ? `${job.failed} con error` : "",
+        job.skipped ? plural(job.skipped, "omitido", "omitidos") : "",
+      ].filter(Boolean).join(", ");
+    } else if (job.status === "failed") {
+      outcome = `error: ${job.error || "desconocido"}`;
+    } else {
+      outcome = plural(job.businesses, "restaurante", "restaurantes");
+    }
+    const trigger = LOGO_TRIGGER_LABELS[job.trigger] || job.trigger;
+    const status = LOGO_JOB_STATUS_LABELS[job.status] || job.status;
+    apifyLogoJobsList.appendChild(apifyItem(`${when} · ${network} · ${trigger} · ${status} · ${outcome}`));
+  });
+  apifyLogoJobs.hidden = false;
+}
+
+apifyLogosBtn.addEventListener("click", async () => {
+  apifyLogosBtn.disabled = true;
+  try {
+    const plan = await authedFetch("adminFindBusinessLogos", { method: "POST", body: JSON.stringify({ dryRun: true }) });
+    const total = plan.planned.facebook + plan.planned.instagram;
+    if (total === 0) {
+      showMessage(ingestMessage, "No falta ningún logo que se pueda buscar: los detectados con red ya lo tienen, lo tienen quitado o se está buscando.", "ok");
+      return;
+    }
+    const usd = plan.estimatedUsd.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (!confirm(`¿Buscar el logo de ${total} ${total === 1 ? "restaurante" : "restaurantes"} con Apify? Coste estimado: ${usd} USD.`)) return;
+    const result = await authedFetch("adminFindBusinessLogos", { method: "POST", body: "{}" });
+    if (result.errors.length) {
+      showMessage(ingestMessage, result.errors.map((error) => error.error).join(" · "));
+    } else {
+      showMessage(ingestMessage, `Buscando ${total === 1 ? "1 logo" : `${total} logos`}: salen en la app en unos 15 minutos.`, "ok");
+    }
+    loadApifyStatus();
+    if (!ingestSources.hidden) loadIngestSources();
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudieron buscar los logos.");
+  } finally {
+    apifyLogosBtn.disabled = false;
+  }
+});
 
 apifyRunBtn.addEventListener("click", async () => {
   apifyRunBtn.disabled = true;
@@ -1696,7 +1769,7 @@ function buildSourceRow(source) {
   const main = document.createElement("div");
   main.className = "post-main";
   main.innerHTML = `
-    <h4 class="post-title">${esc(businessLabel(source.businessId))}</h4>
+    ${logoTitle(source)}
     <p class="post-meta">${esc(SOURCE_TYPE_LABELS[source.type] || source.type)} · lectura ${esc(source.parserType) || "—"}</p>
     <p class="post-meta">${esc(source.url)}</p>
     <div class="post-badges">
@@ -1708,6 +1781,7 @@ function buildSourceRow(source) {
           : `<span class="post-badge warn">Sin horario</span>`)
         : ""}
       ${enrichBadges(source.detectedBusiness)}
+      ${logoBadges(source.detectedBusiness)}
       <span class="post-badge ${source.autoPublishEnabled ? "warn" : ""}">${source.autoPublishEnabled ? "Publica sola" : "No publica sola"}</span>
       ${source.declaredDailyMenu ? `<span class="post-badge">Menú del día declarado</span>` : ""}
       ${source.publishForOwner ? `<span class="post-badge">Publicamos por el comercio</span>` : ""}
@@ -1729,6 +1803,14 @@ function buildSourceRow(source) {
   if (source.detectedBusiness?.editable) {
     actions.appendChild(createButton("Horario", "btn-secondary", () => toggleSchedulePanel(row, source)));
     actions.appendChild(createButton("Autorrellenar", "btn-secondary", () => toggleEnrichPanel(row, source)));
+    if (source.detectedBusiness.exists && LOGO_SOURCE_TYPES.includes(source.type)) {
+      const logo = source.detectedBusiness.logo;
+      if (logo?.url) actions.appendChild(createButton("Quitar logo", "btn-danger", () => removeLogo(source)));
+      if (logo?.status !== "searching") {
+        const label = logo?.url || logo?.status === "removed" ? "Volver a buscar" : "Buscar logo";
+        actions.appendChild(createButton(label, "btn-secondary", () => retryLogo(source)));
+      }
+    }
   }
   actions.appendChild(createButton("Editar", "btn-secondary", () => openSourceForm(source)));
   if (enabled) {
@@ -2044,6 +2126,64 @@ function enrichBadges(detected) {
   const pending = (enrichment?.socialCandidates || []).filter((candidate) => !candidate.alreadySource).length;
   if (pending) badges.push(`<span class="post-badge warn">${pending === 1 ? "1 red" : `${pending} redes`} por revisar</span>`);
   return badges.join("");
+}
+
+/** Título de la fila; en un restaurante detectado con ficha, con su logo (o su inicial) delante. */
+function logoTitle(source) {
+  const name = businessLabel(source.businessId);
+  const title = `<h4 class="post-title">${esc(name)}</h4>`;
+  const detected = source.detectedBusiness;
+  if (!detected?.editable || !detected.exists) return title;
+  const url = detected.logo?.url ? safeHttpUrl(detected.logo.url) : null;
+  const inner = url ? `<img src="${esc(url)}" alt="" loading="lazy">` : esc((name || "?").trim().charAt(0).toUpperCase());
+  return `<div class="post-title-row"><span class="logo-mini">${inner}</span>${title}</div>`;
+}
+
+function logoBadges(detected) {
+  if (!detected?.editable || !detected.exists) return "";
+  const logo = detected.logo;
+  if (!logo?.status) return `<span class="post-badge warn">Sin logo</span>`;
+  switch (logo.status) {
+    case "searching": return `<span class="post-badge">Buscando logo…</span>`;
+    case "set": return `<span class="post-badge">Logo de ${esc(LOGO_NETWORK_LABELS[logo.network] || logo.network)}</span>`;
+    case "removed": return `<span class="post-badge">Logo quitado</span>`;
+    case "not_found": return `<span class="post-badge warn" title="${esc(logo.error || "")}">Sin logo: la red no tiene foto</span>`;
+    default: return `<span class="post-badge warn" title="${esc(logo.error || "")}">Logo: error</span>`;
+  }
+}
+
+async function removeLogo(source) {
+  const name = businessLabel(source.businessId);
+  if (!confirm(`¿Quitar el logo de ${name}? No se volverá a poner solo; «Volver a buscar» lo recupera.`)) return;
+  try {
+    await authedFetch("adminRemoveBusinessLogo", { method: "POST", body: JSON.stringify({ businessId: source.businessId }) });
+    showMessage(ingestMessage, `Logo de ${name} quitado.`, "ok");
+    loadIngestSources();
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo quitar el logo.");
+  }
+}
+
+async function retryLogo(source) {
+  const name = businessLabel(source.businessId);
+  try {
+    const result = await authedFetch("adminFindBusinessLogos", {
+      method: "POST",
+      body: JSON.stringify({ businessIds: [source.businessId], force: true }),
+    });
+    if (result.errors?.length) {
+      showMessage(ingestMessage, result.errors.map((error) => error.error).join(" · "));
+    } else if (result.jobs?.length) {
+      showMessage(ingestMessage, `Buscando el logo de ${name}: sale en la app en unos 15 minutos.`, "ok");
+    } else {
+      const reason = result.skipped?.[0]?.reason;
+      showMessage(ingestMessage, `No se ha buscado el logo de ${name}: ${LOGO_SKIP_LABELS[reason] || reason || "sin motivo"}.`);
+    }
+    loadIngestSources();
+    loadApifyStatus();
+  } catch (error) {
+    showMessage(ingestMessage, error.message || "No se pudo buscar el logo.");
+  }
 }
 
 function toggleEnrichPanel(row, source, { result = null } = {}) {
