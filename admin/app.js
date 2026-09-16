@@ -2204,7 +2204,7 @@ async function saveSource(event) {
       method: "POST",
       body: JSON.stringify(body),
     });
-    if (result.businessPending && body.business) {
+    if ((result.businessPending || result.createdBusiness) && body.business) {
       businessNames.set(result.businessId, body.business.name);
       invalidateMerchantSearchCache();
     }
@@ -2212,7 +2212,8 @@ async function saveSource(event) {
     closeSourceForm();
     await loadIngestSources();
     const parts = [result.created ? `Fuente creada para ${label}.` : `Fuente de ${label} actualizada.`];
-    if (result.businessPending) parts.push("El restaurante aparecerá en la app cuando se publique su primer menú.");
+    if (result.createdBusiness) parts.push("El restaurante ya sale en el mapa de la app.");
+    if (result.businessPending) parts.push("Sin coordenadas no sale en el mapa: aparecerá cuando se publique su primer menú.");
     if (result.created) parts.push("Pulsa Inspeccionar para leerla por primera vez.");
     showMessage(ingestMessage, parts.join(" "), "ok");
   } catch (error) {
