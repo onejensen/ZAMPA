@@ -1806,7 +1806,7 @@ function buildSourceRow(source) {
     if (source.detectedBusiness.exists && LOGO_SOURCE_TYPES.includes(source.type)) {
       const logo = source.detectedBusiness.logo;
       if (logo?.url) actions.appendChild(createButton("Quitar logo", "btn-danger", () => removeLogo(source)));
-      if (logo?.status !== "searching") {
+      if (!logoIsSearching(logo)) {
         const label = logo?.url || logo?.status === "removed" ? "Volver a buscar" : "Buscar logo";
         actions.appendChild(createButton(label, "btn-secondary", () => retryLogo(source)));
       }
@@ -2139,12 +2139,23 @@ function logoTitle(source) {
   return `<div class="post-title-row"><span class="logo-mini">${inner}</span>${title}</div>`;
 }
 
+// Igual que `isSearching` en functions/business-logos.js: una reserva sin trabajo de
+// hace más de 10 minutos se cortó antes de lanzar el run y ya no bloquea.
+const LOGO_RESERVATION_STALE_MS = 10 * 60 * 1000;
+function logoIsSearching(logo) {
+  if (logo?.status !== "searching") return false;
+  return !!logo.jobId || Date.now() - (logo.reservedAtMs || 0) <= LOGO_RESERVATION_STALE_MS;
+}
+
 function logoBadges(detected) {
   if (!detected?.editable || !detected.exists) return "";
   const logo = detected.logo;
   if (!logo?.status) return `<span class="post-badge warn">Sin logo</span>`;
   switch (logo.status) {
-    case "searching": return `<span class="post-badge">Buscando logo…</span>`;
+    case "searching":
+      return logoIsSearching(logo)
+        ? `<span class="post-badge">Buscando logo…</span>`
+        : `<span class="post-badge warn" title="La búsqueda se cortó antes de lanzar el run. Vuelve a buscar.">Logo: error</span>`;
     case "set": return `<span class="post-badge">Logo de ${esc(LOGO_NETWORK_LABELS[logo.network] || logo.network)}</span>`;
     case "removed": return `<span class="post-badge">Logo quitado</span>`;
     case "not_found": return `<span class="post-badge warn" title="${esc(logo.error || "")}">Sin logo: la red no tiene foto</span>`;
