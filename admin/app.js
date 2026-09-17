@@ -1616,7 +1616,7 @@ function renderApifyStatus(data) {
   const unmatched = Array.isArray(data.unmatchedAccounts) ? data.unmatchedAccounts : [];
 
   apifyStatus.textContent = data.checkedAt
-    ? `Última lectura: ${madridDateTime.format(new Date(data.checkedAt))}. ${data.inspected || 0} ${data.inspected === 1 ? "post leído" : "posts leídos"} a la cola de revisión.${data.quotaExhausted ? " Cupo diario de IA agotado: lo pendiente se lee mañana." : ""} Se lee sola cada hora de 10:10 a 15:10.`
+    ? `Última lectura: ${madridDateTime.format(new Date(data.checkedAt))}. ${data.inspected || 0} ${data.inspected === 1 ? "post leído" : "posts leídos"} (publicados solos si pasan las guardas; si no, a la cola de revisión).${data.quotaExhausted ? " Cupo diario de IA agotado: lo pendiente se lee mañana." : ""} Se lee sola cada hora de 10:10 a 15:10.`
     : "Todavía no se ha leído nada. Se lee sola cada hora de 10:10 a 15:10, del último run de hoy de cada tarea «zampa-».";
 
   apifyTasks.innerHTML = "";
@@ -1715,7 +1715,7 @@ apifyRunBtn.addEventListener("click", async () => {
   try {
     const result = await authedFetch("adminRunApify", { method: "POST", body: "{}" });
     renderApifyStatus(result);
-    showMessage(ingestMessage, `Apify leído: ${result.inspected || 0} ${result.inspected === 1 ? "post" : "posts"} a la cola de revisión.`, "ok");
+    showMessage(ingestMessage, `Apify leído: ${result.inspected || 0} ${result.inspected === 1 ? "post leído" : "posts leídos"}: los que pasan las guardas se publican solos y el resto va a la cola de revisión.`, "ok");
   } catch (error) {
     showMessage(ingestMessage, error.message || "No se pudo leer Apify.");
     loadApifyStatus();
@@ -2495,8 +2495,9 @@ function applySourceTypeRules() {
   const isSocial = SOCIAL_SOURCE_TYPES.has(sourceTypeInput.value);
   sourceSocialFieldset.hidden = !isSocial;
   sourceSocialLockHint.hidden = !isSocial;
-  if (isSocial && !sourceFormOriginal) {
-    sourceAutoPublishInput.checked = true;
+  if (!sourceFormOriginal) {
+    // Una red nace publicando sola; una web, no (hay que marcarlo a propósito).
+    sourceAutoPublishInput.checked = isSocial;
     sourceManualReviewInput.checked = false;
   }
 }
@@ -2705,10 +2706,6 @@ sourceForm.addEventListener("submit", saveSource);
 sourceBusinessModeInputs.forEach((input) => input.addEventListener("change", applySourceBusinessMode));
 sourceTypeInput.addEventListener("change", () => {
   sourceParserInput.value = DEFAULT_PARSER_BY_TYPE[sourceTypeInput.value];
-  // Al salir de social se sueltan los dos interruptores que el tipo forzaba.
-  if (sourceAutoPublishInput.disabled && !SOCIAL_SOURCE_TYPES.has(sourceTypeInput.value)) {
-    sourceManualReviewInput.checked = false;
-  }
   applySourceTypeRules();
 });
 sourceBusinessSearch.addEventListener("input", () => {
