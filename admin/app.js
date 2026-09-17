@@ -1290,7 +1290,7 @@ const apifyLogoJobsList = document.getElementById("apifyLogoJobsList");
 const LOGO_SOURCE_TYPES = ["official_facebook", "official_instagram"];
 const LOGO_NETWORK_LABELS = { facebook: "Facebook", instagram: "Instagram" };
 const LOGO_JOB_STATUS_LABELS = { running: "en marcha", collecting: "recogiendo", done: "terminado", failed: "fallido" };
-const LOGO_TRIGGER_LABELS = { admin_missing: "buscar que faltan", admin_retry: "volver a buscar", source_created: "alta de fuente", chained: "respaldo de Instagram" };
+const LOGO_TRIGGER_LABELS = { admin_missing: "buscar que faltan", admin_retry: "volver a buscar", source_created: "alta de fuente", business_created: "ficha nueva", chained: "respaldo de Instagram" };
 const LOGO_SKIP_LABELS = {
   no_social_source: "no tiene fuente de Facebook o Instagram verificada y activa",
   no_business: "aún no tiene ficha",
