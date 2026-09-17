@@ -1394,8 +1394,8 @@ function setIngestView(view) {
   ingestStatusFilters.hidden = ingestView !== "queue";
   ingestSources.hidden = ingestView !== "sources";
   ingestHint.innerHTML = ingestView === "queue"
-    ? "Menús leídos de fuentes oficiales. <strong>Aprobar no publica</strong>: aprueba, revisa y luego pulsa <strong>Publicar</strong>. Una fuente de Facebook o Instagram nunca publica sola."
-    : "Cada fuente es la página de <strong>un</strong> restaurante, escrita por él. <strong>Inspeccionar</strong> la lee ahora y deja la lectura en la cola de revisión.";
+    ? "Menús leídos de fuentes oficiales. <strong>Aprobar no publica</strong>: aprueba, revisa y luego pulsa <strong>Publicar</strong>. Lo que llega aquí no pasó las guardas para publicarse solo, o su fuente pide revisión."
+    : "Cada fuente es la página de <strong>un</strong> restaurante, escrita por él. <strong>Inspeccionar</strong> la lee ahora: si la fuente publica sola y la lectura pasa las guardas, se publica; si no, va a la cola de revisión.";
   hideMessage(ingestMessage);
   loadIngestView();
 }
@@ -2429,7 +2429,7 @@ async function useEnrichSchedule(row, source, schedule) {
 async function registerEnrichSocial(source, candidate) {
   const label = businessLabel(source.businessId);
   const network = SOURCE_TYPE_LABELS[candidate.type] || candidate.type;
-  if (!confirm(`¿Dar de alta ${candidate.url} como ${network} de ${label}?\n\nQueda verificada porque la enlaza su web oficial (${candidate.foundOn}). Sus lecturas irán siempre a la cola de revisión: nunca publica sola.`)) return;
+  if (!confirm(`¿Dar de alta ${candidate.url} como ${network} de ${label}?\n\nQueda verificada porque la enlaza su web oficial (${candidate.foundOn}). Publicará sola lo que pase las guardas (post de hoy, menú del día, precio, confianza); lo demás irá a la cola de revisión.`)) return;
   hideMessage(ingestMessage);
   const body = {
     businessId: source.businessId,
@@ -2486,16 +2486,18 @@ function applySourceBusinessMode() {
   sourceBusinessNew.hidden = mode !== "new";
 }
 
-/** Una fuente social siempre pasa por revisión y nunca publica sola: el formulario lo enseña así. */
+/**
+ * Una fuente social nueva nace publicando sola y sin revisión obligatoria
+ * (decisión del 2026-09-17); al editar se respeta lo que tenga, y las dos casillas
+ * se pueden cambiar para apagar una cuenta que lea mal.
+ */
 function applySourceTypeRules() {
   const isSocial = SOCIAL_SOURCE_TYPES.has(sourceTypeInput.value);
   sourceSocialFieldset.hidden = !isSocial;
   sourceSocialLockHint.hidden = !isSocial;
-  sourceAutoPublishInput.disabled = isSocial;
-  sourceManualReviewInput.disabled = isSocial;
-  if (isSocial) {
-    sourceAutoPublishInput.checked = false;
-    sourceManualReviewInput.checked = true;
+  if (isSocial && !sourceFormOriginal) {
+    sourceAutoPublishInput.checked = true;
+    sourceManualReviewInput.checked = false;
   }
 }
 
